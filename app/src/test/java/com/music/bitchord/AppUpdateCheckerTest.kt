@@ -23,9 +23,11 @@ class AppUpdateCheckerTest {
     fun `direct APK selection rejects non-official or insecure asset URLs`() {
         val wrongHost = asset(url = "https://example.invalid/BitChord.apk")
         val cleartext = asset(url = "http://github.com/OPZENITSUUU/zotify/releases/download/v2/Void.Music.apk")
+        val staleRepository = asset(url = "https://github.com/OPZENITSUUU/zotify-music/releases/download/v2/Void.Music.apk")
 
         assertNull(AppUpdateChecker.verifiedApkAsset(release(wrongHost)))
         assertNull(AppUpdateChecker.verifiedApkAsset(release(cleartext)))
+        assertNull(AppUpdateChecker.verifiedApkAsset(release(staleRepository)))
     }
 
     @Test
@@ -36,7 +38,7 @@ class AppUpdateCheckerTest {
         val selected = AppUpdateChecker.verifiedApkAsset(release(split, universal))
 
         assertEquals("Void.Music", selected?.name)
-        assertEquals("https://github.com/OPZENITSUUU/zotify/releases/download/v2/Void.Music.apk", selected?.url)
+        assertEquals("https://github.com/OPZENITSUUU/zotify-music/releases/download/v2/Void.Music.apk", selected?.url)
         assertEquals(digest, selected?.sha256)
     }
 
