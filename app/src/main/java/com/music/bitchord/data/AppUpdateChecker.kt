@@ -60,7 +60,7 @@ object AppUpdateChecker {
     internal const val CHECK_INTERVAL_MS = 24L * 60L * 60L * 1000L
 
     private const val LATEST_RELEASE_URL =
-        "https://api.github.com/repos/OPZENITSUUU/zotify/releases/latest"
+        "https://api.github.com/repos/OPZENITSUUU/zotify-music/releases/latest"
 
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -247,7 +247,7 @@ object AppUpdateChecker {
     private fun isOfficialReleaseUrl(value: String): Boolean {
         val url = value.toHttpUrlOrNull() ?: return false
         return url.scheme == "https" && url.host == "github.com" &&
-            url.encodedPath.startsWith("/OPZENITSUUU/zotify/releases/")
+            url.encodedPath.startsWith("/OPZENITSUUU/zotify-music/releases/")
     }
 
     internal fun verifiedApkAsset(release: JsonObject): VerifiedApkAsset? = runCatching {
@@ -261,7 +261,7 @@ object AppUpdateChecker {
                 val parsedUrl = url.toHttpUrlOrNull() ?: return@mapNotNull null
                 val safeGithubAsset = parsedUrl.scheme == "https" &&
                     parsedUrl.host == "github.com" &&
-                    parsedUrl.encodedPath.startsWith("/OPZENITSUUU/zotify/releases/download/")
+                    parsedUrl.encodedPath.startsWith("/OPZENITSUUU/zotify-music/releases/download/")
                 val isOurApk = name.startsWith(BuildConfig.UPDATE_APK_PREFIX, ignoreCase = true) &&
                     name.endsWith(".apk", ignoreCase = true) &&
                     asset["state"]?.jsonPrimitive?.contentOrNull == "uploaded"
