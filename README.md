@@ -220,6 +220,8 @@ The repository contains more than one target, but **the current Void Music Relea
 
 Android only accepts an in-place update when the package identity and signing certificate are compatible. Back up important data before changing signing tracks or uninstalling an older build.
 
+Maintainers: see [RELEASE_SETUP.md](RELEASE_SETUP.md) for the protected Actions secrets and tag-release process.
+
 ## 🧑‍💻 Build from source
 
 ### Android app
