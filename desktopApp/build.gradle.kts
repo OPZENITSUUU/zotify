@@ -589,3 +589,12 @@ compose.desktop {
     }
 
 }
+
+// Keep generated Compose resources on the package already imported by Main.kt and DesktopApp.kt.
+// Without an explicit package, the generator follows the module's default group/name and the
+// desktop source cannot resolve Res or the generated logo/font accessors.
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "bitchord.desktopapp.generated.resources"
+    generateResClass = always
+}
