@@ -1,6 +1,6 @@
 # Android release setup
 
-The v1.0.12 Zotify release uses a newly generated Android signing identity. Existing Void Music installations signed with the previous key cannot update in place; users must back up any needed data, uninstall the old app, and install the new APK once. Android may remove app-local data during uninstall. After that reinstall, Android can accept updates signed with the new key, subject to the user's install approval.
+The Android source currently identifies itself as v1.0.12 (versionCode 43) and the production release workflow is configured for a newly generated signing identity. No signed APK release is currently published. When that release is published, existing installs signed with the previous certificate cannot update in place; users must back up any needed data, uninstall the old app, and install the new APK once. Android may remove app-local data during uninstall. After that reinstall, Android can accept future updates signed with the new key, subject to the user's install approval.
 
 ## Configure GitHub Actions
 
