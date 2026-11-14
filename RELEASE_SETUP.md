@@ -4,7 +4,7 @@ The v1.0.12 Zotify release uses a newly generated Android signing identity. Exis
 
 ## Configure GitHub Actions
 
-Before running a signed build, add these **repository Actions secrets** in `OPZENITSUUU/zotify`:
+Before running a signed build, add these **repository Actions secrets** in `OPZENITSUUU/zotify-music`:
 
 - `KEYSTORE_BASE64`
 - `KEYSTORE_PASSWORD`
