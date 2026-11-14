@@ -7,13 +7,13 @@
 A customizable music client with flexible sources, detailed playback controls, synced lyrics, an artwork-rich player and a library that stays yours.
 
 <p>
-  <a href="https://github.com/OPZENITSUUU/zotify/releases/latest/download/Void.Music.apk"><img src="https://img.shields.io/badge/GET%20VOID%20MUSIC-Latest%20Android%20APK-8B5CF6?style=for-the-badge&logo=android&logoColor=white" alt="Download the latest Android APK" /></a>
+  <a href="https://github.com/OPZENITSUUU/zotify-music/releases"><img src="https://img.shields.io/badge/VIEW%20ANDROID%20APK-Releases-8B5CF6?style=for-the-badge&logo=android&logoColor=white" alt="View Android APK releases" /></a>
 </p>
 
 <p>
-  <a href="https://github.com/OPZENITSUUU/zotify/releases"><img src="https://img.shields.io/github/v/release/OPZENITSUUU/zotify?style=for-the-badge&label=LATEST%20RELEASE&labelColor=151521" alt="Latest release" /></a>
-  <a href="https://github.com/OPZENITSUUU/zotify/releases"><img src="https://img.shields.io/github/downloads/OPZENITSUUU/zotify/total?style=for-the-badge&label=DOWNLOADS&labelColor=151521" alt="Total downloads" /></a>
-  <a href="https://github.com/OPZENITSUUU/zotify/blob/main/LICENSE"><img src="https://img.shields.io/github/license/OPZENITSUUU/zotify?style=for-the-badge&labelColor=151521" alt="License" /></a>
+  <a href="https://github.com/OPZENITSUUU/zotify-music/releases"><img src="https://img.shields.io/github/v/release/OPZENITSUUU/zotify?style=for-the-badge&label=LATEST%20RELEASE&labelColor=151521" alt="Latest release" /></a>
+  <a href="https://github.com/OPZENITSUUU/zotify-music/releases"><img src="https://img.shields.io/github/downloads/OPZENITSUUU/zotify/total?style=for-the-badge&label=DOWNLOADS&labelColor=151521" alt="Total downloads" /></a>
+  <a href="https://github.com/OPZENITSUUU/zotify-music/blob/main/LICENSE"><img src="https://img.shields.io/github/license/OPZENITSUUU/zotify?style=for-the-badge&labelColor=151521" alt="License" /></a>
 </p>
 
 [Features](#-feature-tour) · [Download](#-download) · [Audio quality](#-playback--audio) · [Build](#-build-from-source) · [Contribute](#-support--contributing)
@@ -191,7 +191,7 @@ The repository contains more than one target, but **the current Void Music Relea
 
 | Target | What the source includes | Current distribution note |
 | --- | --- | --- |
-| **Android phone/tablet** | Main music app, player, sources, lyrics, library, integrations and downloads. | **Published:** install the APK from the Releases page. |
+| **Android phone/tablet** | Main music app, player, sources, lyrics, library, integrations and downloads. | A signed APK is not currently published. Check the Releases page for availability. |
 | **Android TV / Google TV** | Remote-first home, library, search, settings, full-screen player, synced lyrics, display-refresh-rate options, spatial audio and QR sign-in. | Source target; build instructions below. |
 | **Wear OS companion** | Watch-facing now-playing and playback components connected to the phone app. | Companion source is included; compatibility depends on the paired phone/watch builds. |
 | **Desktop** | Compose Multiplatform desktop code for Windows, Linux and macOS, with desktop playback, local music, lyrics, downloads, equalizer and desktop integrations. | Source target; installers are not attached to the current Void Music Android release. Check branding and updater configuration before distributing a custom desktop build. |
@@ -201,22 +201,22 @@ The repository contains more than one target, but **the current Void Music Relea
 
 <div align="center">
 
-<a href="https://github.com/OPZENITSUUU/zotify/releases/latest/download/Void.Music.apk"><img src="https://img.shields.io/badge/Download-Void.Music.apk-8B5CF6?style=for-the-badge&logo=android&logoColor=white" alt="Download Void.Music.apk" /></a>
+<a href="https://github.com/OPZENITSUUU/zotify-music/releases"><img src="https://img.shields.io/badge/View-Android%20APK%20releases-8B5CF6?style=for-the-badge&logo=android&logoColor=white" alt="View Android APK releases" /></a>
 
-**[Open all releases](https://github.com/OPZENITSUUU/zotify/releases)** · **[Report a problem](https://github.com/OPZENITSUUU/zotify/issues)**
+**[Open all releases](https://github.com/OPZENITSUUU/zotify-music/releases)** · **[Report a problem](https://github.com/OPZENITSUUU/zotify-music/issues)**
 
 </div>
 
 ### Install on Android
 
-1. Open the [latest release](https://github.com/OPZENITSUUU/zotify/releases/latest).
+1. Open the [latest release](https://github.com/OPZENITSUUU/zotify-music/releases).
 2. Download **Void.Music.apk** from the release assets.
 3. Open the APK. If prompted, allow your browser or file manager to install apps from that source.
 4. Install and open Void Music, then configure the sources and optional services you use.
 
 **Minimum Android version:** Android 8.0 (API 26) or newer.
 
-**Signing-key migration:** The Zotify v1.0.12 release uses a new signing key. Existing Void Music installs signed with the previous key cannot update in place: back up any data you need, uninstall the old app, then install the Zotify APK. Android may delete app-local data on uninstall. After reinstalling, future Zotify releases can be offered by the in-app updater, but Android still requires user approval to install.
+**Signing-key migration:** The current v1.0.12 source is configured for a new signing key; a signed APK has not yet been published from this repository. Existing Void Music installs signed with the previous key cannot update in place: back up any data you need, uninstall the old app, then install the Zotify APK. Android may delete app-local data on uninstall. After reinstalling, future Zotify releases can be offered by the in-app updater, but Android still requires user approval to install.
 
 Android only accepts an in-place update when the package identity and signing certificate are compatible. Back up important data before changing signing tracks or uninstalling an older build.
 
@@ -228,7 +228,7 @@ Maintainers: see [RELEASE_SETUP.md](RELEASE_SETUP.md) for the protected Actions 
 
 **Requirements:** JDK 17+, Android SDK and the native build components requested by the Gradle project.
 
-<pre><code>git clone https://github.com/OPZENITSUUU/zotify.git
+<pre><code>git clone https://github.com/OPZENITSUUU/zotify-music.git
 cd zotify
 ./gradlew :app:assemblePersonalDebug</code></pre>
 
@@ -297,7 +297,7 @@ Release builds require a release key and suitable configuration. Signing keystor
 
 ## 🐛 Support & contributing
 
-Found a bug or have a feature idea? Open a [GitHub Issue](https://github.com/OPZENITSUUU/zotify/issues). Please include:
+Found a bug or have a feature idea? Open a [GitHub Issue](https://github.com/OPZENITSUUU/zotify-music/issues). Please include:
 
 - App version and device/OS version.
 - What you expected and what actually happened.
