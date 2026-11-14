@@ -23,6 +23,21 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
+      - name: Validate Oracle deployment secrets
+        shell: bash
+        env:
+          ORACLE_DEPLOY_KEY: ${{ secrets.ORACLE_DEPLOY_KEY }}
+          ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
+          ORACLE_KNOWN_HOSTS: ${{ secrets.ORACLE_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for name in ORACLE_DEPLOY_KEY ORACLE_HOST ORACLE_KNOWN_HOSTS; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "::error::Required repository Actions secret is missing or empty: $name"
+              exit 1
+            fi
+          done
+
       - name: Deploy to the Oracle VM
         env:
           KEY: ${{ secrets.ORACLE_DEPLOY_KEY }}
