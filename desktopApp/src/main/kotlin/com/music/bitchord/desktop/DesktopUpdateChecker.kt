@@ -27,7 +27,7 @@ internal object DesktopUpdateChecker {
     data class UpdateInfo(
         val version: String,
         val releaseUrl: String,
-        /** The installer for this platform, or null when the release has none. */
+        /** The verified-by-repository installer asset for this platform. */
         val downloadUrl: String,
         val notes: String?,
     )
