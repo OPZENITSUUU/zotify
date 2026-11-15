@@ -113,6 +113,7 @@
     <string name="update_downloading_body">Zotify Music %1$s indiriliyor…</string>
     <string name="update_ready_body">Zotify Music %1$s yüklenmeye hazır.</string>
     <string name="update_failed_body">Zotify Music %1$s indirilemedi.</string>
+    <string name="update_incompatible_install_body">Bu APK, paket adı veya imzalama sertifikası farklı olduğu için yüklü uygulamayı güncelleyemez. Yeni bir imzalama anahtarına geçmek için önemli verileri yedekle, eski uygulamayı kaldır ve yeni APK dosyasını resmi sürümler sayfasından yükle. Uygulamayı kaldırmak yerel uygulama verilerini silebilir.</string>
     <string name="download_now">Şimdi İndir</string>
     <string name="install_now">Şimdi Yükle</string>
     <string name="later">Daha sonra</string>
