@@ -2,7 +2,7 @@ name: Check
 
 on:
   push:
-    branches: [main]
+    branches: [main, fix/android-emulator-adb-2026-11-15]
   pull_request:
 
 concurrency:
