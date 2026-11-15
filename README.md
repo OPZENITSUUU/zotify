@@ -194,7 +194,7 @@ The repository contains more than one target, but **the current Zotify Music Rel
 | **Android phone/tablet** | Main music app, player, sources, lyrics, library, integrations and downloads. | A signed APK is not currently published. Check the Releases page for availability. |
 | **Android TV / Google TV** | Remote-first home, library, search, settings, full-screen player, synced lyrics, display-refresh-rate options, spatial audio and QR sign-in. | Source target; the current production release workflow does not publish a TV APK. |
 | **Wear OS companion** | Watch-facing now-playing and playback components connected to the phone app. | Companion source is included; compatibility depends on the paired phone/watch builds. |
-| **Desktop** | Compose Multiplatform desktop code for Windows, Linux and macOS, with desktop playback, local music, lyrics, downloads, equalizer and desktop integrations. | Source target; desktop installers are produced separately and are not attached to Android APK releases. |
+| **Desktop** | Compose Multiplatform desktop code for Windows, Linux and macOS, with desktop playback, local music, lyrics, downloads, equalizer and desktop integrations. | Source target; the current repository release workflow does not publish desktop installers. |
 | **Web player + browser extension** | React/TypeScript web client and Chromium/Firefox extension source, with a page-to-extension bridge. | Development source is included. It is not the Android APK and should be built/deployed separately. |
 
 ## ⬇️ Download
