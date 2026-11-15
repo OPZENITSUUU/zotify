@@ -44,7 +44,7 @@ jobs:
 
       - name: The analyser is in the jar
         run: |
-          jar=$(ls desktopApp/build/compose/binaries/main/app/BitChord/lib/app/desktopApp*.jar)
+          jar=$(find "desktopApp/build/compose/binaries/main/app/Zotify Music/lib/app" -maxdepth 1 -name "desktopApp*.jar" -print -quit)
           jar tf "$jar" | grep -q 'native/libbitchord_analysis.so'
           jar tf "$jar" | grep -q 'models/.*\.onnx'
 
@@ -93,7 +93,7 @@ jobs:
       - name: The analyser is in the jar
         shell: bash
         run: |
-          jar=$(ls desktopApp/build/compose/binaries/main/app/BitChord/app/desktopApp*.jar)
+          jar=$(find "desktopApp/build/compose/binaries/main/app/Zotify Music/app" -maxdepth 1 -name "desktopApp*.jar" -print -quit)
           jar tf "$jar" | grep -q 'native/bitchord_analysis.dll'
           jar tf "$jar" | grep -q 'models/.*\.onnx'
           # WinRT, so only MSVC can build it and only this job ever does.
@@ -142,7 +142,7 @@ jobs:
 
       - name: The analyser and models are in the jar
         run: |
-          jar=$(ls desktopApp/build/compose/binaries/main/app/BitChord.app/Contents/app/desktopApp*.jar)
+          jar=$(find "desktopApp/build/compose/binaries/main/app/Zotify Music.app/Contents/app" -maxdepth 1 -name "desktopApp*.jar" -print -quit)
           jar tf "$jar" | grep -q 'models/.*\.onnx'
 
       - name: Upload test reports
