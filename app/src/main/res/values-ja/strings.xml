@@ -103,6 +103,7 @@
     <string name="update_downloading_body">Zotify Music %1$s をダウンロード中…</string>
     <string name="update_ready_body">Zotify Music %1$s のインストール準備ができました。</string>
     <string name="update_failed_body">Zotify Music %1$s をダウンロードできませんでした。</string>
+    <string name="update_incompatible_install_body">パッケージ名または署名証明書が異なるため、この APK ではインストール済みアプリを更新できません。署名キーを移行するには、重要なデータをバックアップし、古いアプリをアンインストールしてから、公式リリースページで新しい APK をインストールしてください。アンインストールするとアプリ内のローカルデータが削除される場合があります。</string>
     <string name="download_now">今すぐダウンロード</string>
     <string name="install_now">今すぐインストール</string>
     <string name="later">後で</string>
