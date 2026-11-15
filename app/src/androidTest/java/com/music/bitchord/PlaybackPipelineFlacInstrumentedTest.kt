@@ -112,7 +112,7 @@ class PlaybackPipelineFlacInstrumentedTest {
         }
 
         await("FLAC decoder ready") {
-            browser.playbackState == Player.STATE_READY && browser.duration > 0
+            onMain { browser.playbackState == Player.STATE_READY && browser.duration > 0 }
         }
         playbackError.get()?.let { throw AssertionError("FLAC playback failed", it) }
 
