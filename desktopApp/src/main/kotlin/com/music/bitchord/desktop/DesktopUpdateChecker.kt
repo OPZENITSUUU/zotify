@@ -16,8 +16,8 @@ import kotlinx.serialization.json.jsonPrimitive
 
 /**
  * Looks at the repo's "latest release" on GitHub once per launch and says whether it is newer
- * than the running build. The installer is not run from here: the dialog opens the asset in the
- * browser, so the user installs it the way they installed the first one.
+ * than the running build. The installer is not run from here: the dialog opens the matching platform
+ * asset in the browser, so the user installs it the way they installed the first one.
  *
  * GitHub's "latest" skips pre-releases and drafts, so a `-beta` desktop build is only ever
  * nudged toward a published release.
@@ -28,7 +28,7 @@ internal object DesktopUpdateChecker {
         val version: String,
         val releaseUrl: String,
         /** The installer for this platform, or null when the release has none. */
-        val downloadUrl: String?,
+        val downloadUrl: String,
         val notes: String?,
     )
 
@@ -57,10 +57,11 @@ internal object DesktopUpdateChecker {
         val url = release["html_url"]?.jsonPrimitive?.contentOrNull ?: return@runCatching null
         val latest = tag.removePrefix("v")
         if (!isNewer(latest, currentVersion)) return@runCatching null
+        val downloadUrl = installerUrl(release) ?: return@runCatching null
         UpdateInfo(
             version = latest,
             releaseUrl = url,
-            downloadUrl = installerUrl(release),
+            downloadUrl = downloadUrl,
             notes = release["body"]?.jsonPrimitive?.contentOrNull,
         )
     }.getOrNull()
@@ -70,7 +71,7 @@ internal object DesktopUpdateChecker {
      * `BitChord-<version>-linux-x86_64.AppImage` (see .github/workflows/release.yml); match on the
      * platform part so a version change does not matter.
      */
-    private fun installerUrl(release: JsonObject): String? {
+    internal fun installerUrl(release: JsonObject): String? {
         val suffixes = when {
             DesktopPlatform.isWindows -> listOf("-windows-x64-setup.exe")
             DesktopPlatform.isLinux -> listOf(".AppImage", "-linux-amd64.deb")
