@@ -204,7 +204,7 @@ object AppUpdateChecker {
      *     BitChordTV-v1.8.apk   BitChordTV-v1.8_arm64-v8a.apk   ...
      *
      * so this app's APKs are the ones named with its own
-     * [BuildConfig.UPDATE_APK_PREFIX] — "Zotify.Music" never matches the TV asset prefix "BitChordTV-",
+     * [BuildConfig.UPDATE_APK_PREFIX] — "Zotify.Music" never matches the TV asset prefix "ZotifyMusicTV-",
      * since the prefix ends at the hyphen. The universal build (no `_ABI`
      * suffix) is taken first, as it installs anywhere; failing that, the split
      * for this device's ABI. A release with neither leaves
