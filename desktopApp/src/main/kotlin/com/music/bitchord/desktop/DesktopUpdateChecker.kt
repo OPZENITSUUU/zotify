@@ -67,9 +67,8 @@ internal object DesktopUpdateChecker {
     }.getOrNull()
 
     /**
-     * The release names its files `BitChord-<version>-windows-x64-setup.exe` and
-     * `BitChord-<version>-linux-x86_64.AppImage` (see .github/workflows/release.yml); match on the
-     * platform part so a version change does not matter.
+     * Only releases with a matching platform installer can produce an update. The
+     * current Android release pipeline does not publish desktop installers.
      */
     internal fun installerUrl(release: JsonObject): String? {
         val suffixes = when {
