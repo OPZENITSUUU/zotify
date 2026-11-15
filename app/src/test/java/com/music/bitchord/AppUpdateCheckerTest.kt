@@ -21,7 +21,7 @@ class AppUpdateCheckerTest {
 
     @Test
     fun `direct APK selection rejects non-official or insecure asset URLs`() {
-        val wrongHost = asset(url = "https://example.invalid/BitChord.apk")
+        val wrongHost = asset(url = "https://example.invalid/Zotify.Music.apk")
         val cleartext = asset(url = "http://github.com/OPZENITSUUU/zotify-music/releases/download/v2/Zotify.Music.apk")
         val staleRepository = asset(url = "https://github.com/OPZENITSUUU/zotify/releases/download/v2/Zotify.Music.apk")
 
