@@ -103,6 +103,7 @@
     <string name="update_downloading_body">Mengunduh Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s siap dipasang.</string>
     <string name="update_failed_body">Gagal mengunduh Zotify Music %1$s.</string>
+    <string name="update_incompatible_install_body">APK ini tidak dapat memperbarui aplikasi yang terpasang karena nama paket atau sertifikat penandatanganannya berbeda. Untuk beralih ke kunci penandatanganan baru, cadangkan data penting, hapus instalasi aplikasi lama, lalu instal APK baru dari halaman Releases resmi. Menghapus instalasi dapat menghapus data lokal aplikasi.</string>
     <string name="download_now">Unduh Sekarang</string>
     <string name="install_now">Pasang Sekarang</string>
     <string name="later">Nanti</string>
