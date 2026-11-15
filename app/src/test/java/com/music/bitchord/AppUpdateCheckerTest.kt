@@ -43,6 +43,13 @@ class AppUpdateCheckerTest {
     }
 
     @Test
+    fun `phone updater ignores Android TV release APK assets`() {
+        val tv = asset(name = "ZotifyMusicTV-v1.8.apk")
+
+        assertNull(AppUpdateChecker.verifiedApkAsset(release(tv)))
+    }
+
+    @Test
     fun `digest parser rejects malformed SHA-256 values`() {
         assertNull(AppUpdateChecker.normalizeSha256Digest("sha256:1234"))
         assertEquals(digest, AppUpdateChecker.normalizeSha256Digest("SHA256:$digest"))
