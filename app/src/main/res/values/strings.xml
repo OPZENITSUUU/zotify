@@ -158,6 +158,7 @@
     <string name="update_downloading_body">Downloading Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s is ready to install.</string>
     <string name="update_failed_body">Couldn’t download Zotify Music %1$s.</string>
+    <string name="update_incompatible_install_body">This APK cannot update the installed copy because its package or signing certificate is different. For a signing-key migration, back up important data, uninstall the older app, then install the new APK from the official Releases page. Uninstalling may delete local app data.</string>
     <string name="download_now" translatable="false">Update Now</string>
     <string name="update_unavailable" translatable="false">No compatible APK available</string>
     <string name="install_now">Install Now</string>
