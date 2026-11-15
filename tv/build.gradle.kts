@@ -148,7 +148,7 @@ android {
         create("dev") {
             dimension = "env"
             applicationId = "com.dev.voidmusic.player.tv"
-            resValue("string", "app_name", "BitChord TV")
+            resValue("string", "app_name", "Zotify Music TV")
         }
         create("prod") {
             dimension = "env"
