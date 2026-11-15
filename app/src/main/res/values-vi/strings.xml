@@ -110,6 +110,7 @@
     <string name="update_downloading_body">Đang tải xuống Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s đã sẵn sàng để cài đặt.</string>
     <string name="update_failed_body">Không thể tải xuống Zotify Music %1$s.</string>
+    <string name="update_incompatible_install_body">APK này không thể cập nhật ứng dụng đã cài đặt vì tên gói hoặc chứng chỉ ký khác nhau. Để chuyển sang khóa ký mới, hãy sao lưu dữ liệu quan trọng, gỡ cài đặt ứng dụng cũ rồi cài APK mới từ trang Bản phát hành chính thức. Việc gỡ cài đặt có thể xóa dữ liệu cục bộ của ứng dụng.</string>
     <string name="download_now">Tải ngay</string>
     <string name="install_now">Cài đặt ngay</string>
     <string name="later">Để sau</string>
