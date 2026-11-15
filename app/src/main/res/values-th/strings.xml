@@ -107,6 +107,7 @@
     <string name="update_downloading_body">กำลังดาวน์โหลด Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s พร้อมติดตั้งแล้ว</string>
     <string name="update_failed_body">ดาวน์โหลด Zotify Music %1$s ไม่สำเร็จ</string>
+    <string name="update_incompatible_install_body">APK นี้ไม่สามารถอัปเดตแอปที่ติดตั้งอยู่ได้ เนื่องจากชื่อแพ็กเกจหรือใบรับรองการลงลายเซ็นแตกต่างกัน หากต้องเปลี่ยนไปใช้คีย์ลงลายเซ็นใหม่ ให้สำรองข้อมูลสำคัญ ถอนการติดตั้งแอปเวอร์ชันเก่า แล้วติดตั้ง APK ใหม่จากหน้า Releases อย่างเป็นทางการ การถอนการติดตั้งอาจลบข้อมูลในแอปที่เก็บไว้ในเครื่อง</string>
     <string name="download_now">ดาวน์โหลดตอนนี้</string>
     <string name="install_now">ติดตั้งตอนนี้</string>
     <string name="later">ภายหลัง</string>
