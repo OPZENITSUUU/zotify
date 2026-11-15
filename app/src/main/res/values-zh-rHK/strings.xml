@@ -103,6 +103,7 @@
     <string name="update_downloading_body">正在下載 Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s 已準備好安裝。</string>
     <string name="update_failed_body">無法下載 Zotify Music %1$s。</string>
+    <string name="update_incompatible_install_body">此 APK 無法更新目前安裝的應用程式，因為套件名稱或簽署憑證不同。如需轉換簽署金鑰，請先備份重要資料，移除舊版應用程式，再從官方 Releases 頁面安裝新版 APK。移除應用程式可能會刪除本機應用程式資料。</string>
     <string name="download_now">立即下載</string>
     <string name="install_now">立即安裝</string>
     <string name="later">以後再說</string>
