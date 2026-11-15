@@ -109,6 +109,7 @@
     <string name="update_downloading_body">Téléchargement de Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s est prêt à être installé.</string>
     <string name="update_failed_body">Impossible de télécharger Zotify Music %1$s.</string>
+    <string name="update_incompatible_install_body">Cet APK ne peut pas mettre à jour l’application installée, car le package ou le certificat de signature est différent. Pour migrer vers une nouvelle clé de signature, sauvegarde les données importantes, désinstalle l’ancienne application, puis installe le nouvel APK depuis la page officielle des versions. La désinstallation peut supprimer les données locales de l’application.</string>
     <string name="download_now">Télécharger maintenant</string>
     <string name="install_now">Installer maintenant</string>
     <string name="later">Plus tard</string>
