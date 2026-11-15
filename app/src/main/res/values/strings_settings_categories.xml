@@ -51,7 +51,7 @@
     <string name="csv_import_succeeded">Imported %1$s monthly records from CSV</string>
     <string name="csv_export_succeeded">Exported %1$s monthly records to CSV</string>
     <string name="import_listening_csv">Import listening history from CSV</string>
-    <string name="import_listening_csv_subtitle">Restore monthly listening totals from an Zotify Music CSV export</string>
+    <string name="import_listening_csv_subtitle">Restore monthly listening totals from a Zotify Music CSV export</string>
     <string name="csv_import_warning">This replaces listening history on this device. Settings are not included in a CSV file.</string>
     <string name="csv_choose_file">Choose CSV file</string>
 </resources>
