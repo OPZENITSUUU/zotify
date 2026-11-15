@@ -119,13 +119,15 @@ class PlaybackPipelineFlacInstrumentedTest {
         val durationMs = onMain { browser.duration }
         assertTrue("Expected about 8 seconds, got $durationMs ms", durationMs in 7_500L..8_500L)
 
+        // Extractor-populated tags are exposed through Player.mediaMetadata.
+        // currentMediaItem.mediaMetadata remains the original (empty) MediaItem metadata.
         await("FLAC container title metadata") {
-            onMain { browser.currentMediaItem?.mediaMetadata?.title?.toString() } == "BitChord FLAC Pipeline Fixture"
+            onMain { browser.mediaMetadata.title?.toString() } == "BitChord FLAC Pipeline Fixture"
         }
         assertEquals(
             "FLAC container metadata should reach the session",
             "BitChord FLAC Pipeline Fixture",
-            onMain { browser.currentMediaItem?.mediaMetadata?.title?.toString() },
+            onMain { browser.mediaMetadata.title?.toString() },
         )
 
         await("Media3 encoded input telemetry") {
