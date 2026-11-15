@@ -2,7 +2,7 @@ package com.music.bitchord.desktop
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertNull
 
 class DesktopUpdateCheckerTest {
