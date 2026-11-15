@@ -110,6 +110,7 @@
     <string name="update_downloading_body">מוריד את Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s מוכן להתקנה.</string>
     <string name="update_failed_body">לא ניתן היה להוריד את Zotify Music %1$s.</string>
+    <string name="update_incompatible_install_body">לא ניתן לעדכן את האפליקציה המותקנת באמצעות קובץ APK זה, מפני ששם החבילה או אישור החתימה שונים. כדי לעבור למפתח חתימה חדש, יש לגבות נתונים חשובים, להסיר את האפליקציה הישנה ולהתקין את קובץ ה-APK החדש מדף הגרסאות הרשמי. הסרת ההתקנה עלולה למחוק נתונים מקומיים של האפליקציה.</string>
     <string name="download_now">הורדה עכשיו</string>
     <string name="install_now">התקנה עכשיו</string>
     <string name="later">מאוחר יותר</string>
