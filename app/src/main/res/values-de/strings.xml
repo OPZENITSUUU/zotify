@@ -108,6 +108,7 @@
     <string name="update_downloading_body">Zotify Music %1$s wird heruntergeladen…</string>
     <string name="update_ready_body">Zotify Music %1$s ist bereit zur Installation.</string>
     <string name="update_failed_body">Zotify Music %1$s konnte nicht heruntergeladen werden.</string>
+    <string name="update_incompatible_install_body">Dieses APK kann die installierte App nicht aktualisieren, weil Paketname oder Signaturzertifikat abweichen. Für einen Wechsel des Signaturschlüssels sichere wichtige Daten, deinstalliere die ältere App und installiere das neue APK von der offiziellen Releases-Seite. Beim Deinstallieren können lokale App-Daten gelöscht werden.</string>
     <string name="download_now">Jetzt herunterladen</string>
     <string name="install_now">Jetzt installieren</string>
     <string name="later">Später</string>
