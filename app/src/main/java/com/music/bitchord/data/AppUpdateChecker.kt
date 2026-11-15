@@ -9,6 +9,7 @@ import android.os.Build
 import android.provider.Settings
 import androidx.core.content.FileProvider
 import com.music.bitchord.BuildConfig
+import com.music.bitchord.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +26,7 @@ import java.io.FileOutputStream
 import java.security.MessageDigest
 
 /**
- * Void Music ships as a sideloaded APK off its GitHub Releases rather than through
+ * Zotify Music ships as a sideloaded APK off its GitHub Releases rather than through
  * a store, so there's nothing to push an update notice on its own — this
  * polls the repo's "latest release" once per launch and compares its tag
  * against the running build.
@@ -368,7 +369,7 @@ object AppUpdateChecker {
             }
             if (!hasMatchingInstalledCertificate(context, partial)) {
                 partial.delete()
-                error("Downloaded APK package or signing certificate does not match the installed app")
+                error(context.getString(R.string.update_incompatible_install_body))
             }
             check(partial.renameTo(target)) { "Could not finalize the verified APK" }
             _download.value = DownloadState.Ready(target)
