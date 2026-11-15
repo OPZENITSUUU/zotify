@@ -108,6 +108,7 @@
     <string name="update_downloading_body">Zotify Music %1$s डाउनलोड हो रहा है…</string>
     <string name="update_ready_body">Zotify Music %1$s इंस्टॉल के लिए तैयार है।</string>
     <string name="update_failed_body">Zotify Music %1$s डाउनलोड नहीं हो सका।</string>
+    <string name="update_incompatible_install_body">यह APK इंस्टॉल किए गए ऐप को अपडेट नहीं कर सकता, क्योंकि पैकेज या साइनिंग प्रमाणपत्र अलग है। साइनिंग कुंजी बदलने के लिए, पहले ज़रूरी डेटा का बैकअप लें, पुराने ऐप को अनइंस्टॉल करें और फिर आधिकारिक Releases पेज से नया APK इंस्टॉल करें। अनइंस्टॉल करने से ऐप का स्थानीय डेटा मिट सकता है।</string>
     <string name="download_now">अभी डाउनलोड करें</string>
     <string name="install_now">अभी इंस्टॉल करें</string>
     <string name="later">बाद में</string>
