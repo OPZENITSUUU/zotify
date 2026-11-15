@@ -220,7 +220,9 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_2
-          disable-animations: true
+          # The runner's optional ADB settings writes failed with Broken pipe after boot on API 30.
+          # Keep the emulator's default -no-boot-anim option and skip those extra settings calls.
+          disable-animations: false
           script: ./gradlew :app:connectedProdDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.music.bitchord.PlaybackPipelineFlacInstrumentedTest#localFlacPlaysReportsContainerFactsAndSupportsSeeking
 
       - name: Upload Android instrumentation reports
