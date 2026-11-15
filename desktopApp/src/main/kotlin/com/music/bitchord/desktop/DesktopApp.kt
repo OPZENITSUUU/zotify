@@ -533,7 +533,7 @@ fun BitChordDesktopApp() {
             },
             confirmButton = {
                 TextButton(onClick = {
-                    DesktopExternalLinks.open(update.downloadUrl ?: update.releaseUrl)
+                    DesktopExternalLinks.open(update.downloadUrl)
                     availableUpdate = null
                 }) { Text(DesktopStrings["d_download", "Download"]) }
             },
