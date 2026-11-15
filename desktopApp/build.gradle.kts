@@ -526,11 +526,11 @@ compose.desktop {
                 TargetFormat.Deb,
                 TargetFormat.Rpm,
             )
-            packageName = "BitChord"
+            packageName = "Zotify Music"
             packageVersion = nativePackageVersion
-            description = if (targetOs == "windows") "BitChord" else "Aesthetic YouTube Music client"
-            vendor = "BitChord contributors"
-            copyright = "Copyright © 2026 BitChord contributors"
+            description = "Zotify Music desktop music player"
+            vendor = "Zotify Music contributors"
+            copyright = "Copyright © 2026 Zotify Music contributors"
 
             modules(
                 "java.base",
@@ -560,7 +560,7 @@ compose.desktop {
                 iconFile.set(project.file("packaging/icons/AppIcon.icns"))
                 bundleID = "com.music.bitchord"
                 appCategory = "public.app-category.music"
-                dockName = "BitChord"
+                dockName = "Zotify Music"
                 infoPlist {
                     extraKeysRawXml = """
                         <key>NSRequiresAquaSystemAppearance</key>
@@ -580,7 +580,7 @@ compose.desktop {
             windows {
                 iconFile.set(project.file("packaging/icons/AppIcon.ico"))
                 upgradeUuid = "8f3c1d24-6a2b-4f5e-9c17-2b8d54e0a913"
-                menuGroup = "BitChord"
+                menuGroup = "Zotify Music"
                 shortcut = true
                 dirChooser = false
                 perUserInstall = true
