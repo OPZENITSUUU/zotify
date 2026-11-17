@@ -56,7 +56,7 @@ func getDiscordWebhookURL(key string) string {
 		return ""
 	}
 	u, err := url.Parse(val)
-	if err != nil || u.Scheme != "https" || u.User != nil || u.RawQuery != "" || u.Fragment != "" {
+	if err != nil || u.Scheme != "https" || u.User != nil || u.RawQuery != "" || u.Fragment != "" || (u.Port() != "" && u.Port() != "443") {
 		log.Printf("%s is not a valid Discord webhook URL; contact delivery disabled", key)
 		return ""
 	}
