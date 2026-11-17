@@ -6,7 +6,8 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 /**
  * Sends a support note to the app backend. The Discord webhook stays on the
@@ -24,11 +25,10 @@ class OwnerContactClient(
     )
 
     suspend fun send(type: String, message: String): DeliveryResult = withContext(Dispatchers.IO) {
-        val payload = JSONObject()
-            .put("type", type)
-            .put("message", message)
-            .toString()
-            .toRequestBody(JSON)
+        val payload = buildJsonObject {
+            put("type", type)
+            put("message", message)
+        }.toString().toRequestBody(JSON)
         val request = Request.Builder()
             .url(endpoint)
             .post(payload)
