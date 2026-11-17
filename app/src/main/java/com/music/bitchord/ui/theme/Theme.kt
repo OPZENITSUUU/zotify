@@ -6,6 +6,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.Typography
+import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
@@ -18,6 +19,8 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.music.bitchord.R
 import com.music.bitchord.data.settings.UiSkin
 
@@ -97,6 +100,14 @@ private val BitChordTypography = Typography(
     labelSmall = TextStyle(fontWeight = FontWeight.W600, fontSize = 11.sp),
 ).withFamily(SFProDisplay)
 
+private val MochyShapes = Shapes(
+    extraSmall = RoundedCornerShape(8.dp),
+    small = RoundedCornerShape(12.dp),
+    medium = RoundedCornerShape(18.dp),
+    large = RoundedCornerShape(24.dp),
+    extraLarge = RoundedCornerShape(28.dp),
+)
+
 private val MochyTypography = Typography(
     displayLarge = TextStyle(fontWeight = FontWeight.W700, fontSize = 34.sp, letterSpacing = (-0.5).sp),
     headlineLarge = TextStyle(fontWeight = FontWeight.W700, fontSize = 30.sp, letterSpacing = (-0.4).sp),
@@ -140,6 +151,7 @@ fun BitChordTheme(
     MaterialTheme(
         colorScheme = if (mochy) MochyColors else if (darkTheme) DarkColors else LightColors,
         typography = if (mochy) MochyTypography else BitChordTypography,
+        shapes = if (mochy) MochyShapes else Shapes(),
     ) {
         CompositionLocalProvider(LocalUiSkin provides uiSkin, content = content)
     }

@@ -111,7 +111,7 @@ fun GlassNavBar(
     // lambda, which the tab bar sees as a changed argument and recomposes on.
     val uiSkin = LocalUiSkin.current
     val pillShape = remember(uiSkin) {
-        if (uiSkin == UiSkin.MOCHY) RoundedCornerShape(28.dp) else RoundedCornerShape(percent = 50)
+        if (uiSkin == UiSkin.MOCHY) RoundedCornerShape(50.dp) else RoundedCornerShape(percent = 50)
     }
     val contentColor = glassContentColor()
     val selectedColor = contentColor
