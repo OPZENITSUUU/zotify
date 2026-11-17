@@ -15,7 +15,13 @@ import (
 
 var (
 	contactLimiter = newIPRateLimiter(time.Minute, 3, config.RateLimitMaxEntries)
-	discordWebhookClient = &http.Client{Timeout: 8 * time.Second}
+	discordWebhookClient = &http.Client{
+		Timeout: 8 * time.Second,
+		// Never forward the secret-bearing webhook URL through a redirect.
+		CheckRedirect: func(_ *http.Request, _ []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
 )
 
 type contactMessageRequest struct {
