@@ -1,6 +1,8 @@
 package com.music.bitchord.ui.components
 
 import com.music.bitchord.R
+import com.music.bitchord.data.settings.UiSkin
+import com.music.bitchord.ui.theme.LocalUiSkin
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -365,7 +367,10 @@ fun MiniPlayer(
     // height if the row's contents ever change it — which is what keeps a pill
     // a pill instead of a rounded rectangle. Same idiom as [FloatingBottomBar]
     // directly below it, so the two shapes are the same family.
-    val shape = RoundedCornerShape(percent = 50)
+    val uiSkin = LocalUiSkin.current
+    val shape = remember(uiSkin) {
+        if (uiSkin == UiSkin.MOCHY) RoundedCornerShape(22.dp) else RoundedCornerShape(percent = 50)
+    }
     Box(
         modifier = modifier
             .padding(horizontal = BAR_GUTTER)
