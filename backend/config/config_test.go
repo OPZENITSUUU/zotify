@@ -106,3 +106,32 @@ func TestIsAllowedOrigin(t *testing.T) {
 		t.Errorf("empty origin allowed")
 	}
 }
+
+
+func TestGetDiscordWebhookURL(t *testing.T) {
+	t.Setenv("DISCORD_WEBHOOK_TEST", "https://discord.com/api/webhooks/123456789012345678/abc_DEF-123")
+	if got := getDiscordWebhookURL("DISCORD_WEBHOOK_TEST"); got != "https://discord.com/api/webhooks/123456789012345678/abc_DEF-123" {
+		t.Fatalf("valid webhook rejected: %q", got)
+	}
+
+	invalid := []string{
+		"http://discord.com/api/webhooks/123/token",
+		"https://discord.com.evil.example/api/webhooks/123/token",
+		"https://example.com/api/webhooks/123/token",
+		"https://discord.com:8443/api/webhooks/123/token",
+		"https://discord.com/api/webhooks/not-numeric/token",
+		"https://discord.com/api/webhooks/123/token?wait=true",
+		"https://discord.com/api/webhooks/123",
+	}
+	for _, value := range invalid {
+		t.Setenv("DISCORD_WEBHOOK_TEST", value)
+		if got := getDiscordWebhookURL("DISCORD_WEBHOOK_TEST"); got != "" {
+			t.Errorf("invalid webhook %q was accepted", value)
+		}
+	}
+
+	t.Setenv("DISCORD_WEBHOOK_TEST", "")
+	if got := getDiscordWebhookURL("DISCORD_WEBHOOK_TEST"); got != "" {
+		t.Errorf("empty webhook = %q, want disabled", got)
+	}
+}
