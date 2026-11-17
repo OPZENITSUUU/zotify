@@ -41,8 +41,8 @@ buildscript {
  * No "v" in the name — the in-app updater reads it as a number; the "v" is the
  * release tag's alone.
  */
-extra["bitchordVersionCode"] = 1
-extra["bitchordVersionName"] = "1.0.1"
+extra["bitchordVersionCode"] = 2
+extra["bitchordVersionName"] = "1.0.2"
 
 /*
  * Bump this by hand before cutting each sideloaded test build ("beta2",
@@ -52,7 +52,7 @@ extra["bitchordVersionName"] = "1.0.1"
  * still get the update prompt once the matching tag is actually published.
  *
  * Applied to release builds as well as debug ones, and that is the whole
- * point of it. A sideloaded beta is a *release* build — signed with the real
+ * point of it. A sideloaded beta is a release build — signed with the real
  * key, installed over the real package — so leaving the marker off it is
  * exactly the case that strands a tester: their build calls itself 1.6.1,
  * the published 1.6.1 then matches it, isNewer() says no, and no prompt ever
