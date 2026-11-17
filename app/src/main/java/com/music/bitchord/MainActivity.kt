@@ -1,5 +1,7 @@
 package com.music.bitchord
 
+import com.music.zotifymusic.R
+
 import android.Manifest
 import android.content.Context
 import android.content.Intent

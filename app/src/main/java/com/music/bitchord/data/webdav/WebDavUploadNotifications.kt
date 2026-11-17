@@ -4,7 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationCompat
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 import com.music.bitchord.data.model.Song
 
 /**

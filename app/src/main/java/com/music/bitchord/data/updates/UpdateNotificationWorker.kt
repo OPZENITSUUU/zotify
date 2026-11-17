@@ -20,7 +20,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.music.bitchord.MainActivity
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 import com.music.bitchord.data.AppUpdateChecker
 import java.util.concurrent.TimeUnit
 

@@ -1,5 +1,7 @@
 package com.music.bitchord
 
+import com.music.zotifymusic.R
+
 import com.music.bitchord.ui.components.SUPPORTED_LANGUAGES
 import com.music.bitchord.ui.components.languageDisplayNameRes
 import org.junit.Assert.assertEquals

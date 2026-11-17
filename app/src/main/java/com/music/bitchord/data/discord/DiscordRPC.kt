@@ -1,7 +1,7 @@
 package com.music.bitchord.data.discord
 
 import android.content.Context
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 import com.music.bitchord.data.model.Song
 import com.music.bitchord.data.model.artworkAt
 import com.my.kizzy.rpc.KizzyRPC
