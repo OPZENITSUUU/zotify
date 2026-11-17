@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 import com.music.bitchord.data.NerdStats
 import com.music.bitchord.data.discord.DiscordRPC
 import com.music.bitchord.data.discord.SuperProperties

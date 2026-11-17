@@ -1,6 +1,6 @@
 package com.music.bitchord.ui.replay
 
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 
 import android.content.ContentValues
 import android.content.Context
