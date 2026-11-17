@@ -1850,6 +1850,21 @@ fun SettingsScreen(
                         enabled = !ownerContactSending,
                         modifier = Modifier.fillMaxWidth(),
                     )
+                    TextButton(
+                        enabled = !ownerContactSending,
+                        onClick = {
+                            clipboardManager.setText(
+                                androidx.compose.ui.text.AnnotatedString("opzenitsu_69"),
+                            )
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.owner_discord_id_copied),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                        },
+                    ) {
+                        Text(stringResource(R.string.copy_discord_id))
+                    }
                     ownerContactError?.let { error ->
                         Text(
                             text = error,
