@@ -9,6 +9,7 @@ import android.os.Build
 import android.provider.Settings
 import androidx.core.content.FileProvider
 import com.music.bitchord.BuildConfig
+import com.music.bitchord.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +26,7 @@ import java.io.FileOutputStream
 import java.security.MessageDigest
 
 /**
- * Void Music ships as a sideloaded APK off its GitHub Releases rather than through
+ * Zotify Music ships as a sideloaded APK off its GitHub Releases rather than through
  * a store, so there's nothing to push an update notice on its own — this
  * polls the repo's "latest release" once per launch and compares its tag
  * against the running build.
@@ -200,11 +201,11 @@ object AppUpdateChecker {
      * One release carries the phone app and the TV app, each as a universal
      * APK plus per-ABI splits:
      *
-     *     BitChord-v1.8.apk     BitChord-v1.8_arm64-v8a.apk     ...
-     *     BitChordTV-v1.8.apk   BitChordTV-v1.8_arm64-v8a.apk   ...
+     *     Zotify.Music.apk          Zotify.Music_arm64-v8a.apk          ...
+     *     ZotifyMusicTV-v1.8.apk  ZotifyMusicTV-v1.8_arm64-v8a.apk  ...
      *
      * so this app's APKs are the ones named with its own
-     * [BuildConfig.UPDATE_APK_PREFIX] — "BitChord-" never matches a TV file,
+     * [BuildConfig.UPDATE_APK_PREFIX] — "Zotify.Music" never matches the TV asset prefix "ZotifyMusicTV-",
      * since the prefix ends at the hyphen. The universal build (no `_ABI`
      * suffix) is taken first, as it installs anywhere; failing that, the split
      * for this device's ABI. A release with neither leaves
@@ -368,7 +369,7 @@ object AppUpdateChecker {
             }
             if (!hasMatchingInstalledCertificate(context, partial)) {
                 partial.delete()
-                error("Downloaded APK package or signing certificate does not match the installed app")
+                error(context.getString(R.string.update_incompatible_install_body))
             }
             check(partial.renameTo(target)) { "Could not finalize the verified APK" }
             _download.value = DownloadState.Ready(target)

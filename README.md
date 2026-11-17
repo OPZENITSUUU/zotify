@@ -1,6 +1,6 @@
 <div align="center">
 
-# VOID MUSIC
+# ZOTIFY MUSIC
 
 ### Find your sound. Own your listening.
 
@@ -20,15 +20,15 @@ A customizable music client with flexible sources, detailed playback controls, s
 
 <br/>
 
-<img src="Banner.png" alt="Void Music banner" width="100%" />
+<img src="Banner.png" alt="Zotify Music banner" width="100%" />
 
 </div>
 
 ---
 
-## What is Void Music?
+## What is Zotify Music?
 
-Void Music is an independent music-client distribution built around a simple idea: **your player should give you control, not hide how it works.** Discover music through supported catalogues, configure compatible sources, shape the sound, follow lyrics, manage a personal library and understand the stream the player actually receives.
+Zotify Music is an independent music-client distribution built around a simple idea: **your player should give you control, not hide how it works.** Discover music through supported catalogues, configure compatible sources, shape the sound, follow lyrics, manage a personal library and understand the stream the player actually receives.
 
 The Android app is the primary published build. The repository also contains source for additional targets, including Android TV, Wear OS, desktop and a web player with a companion browser extension. These targets have different build and release states; see [Platform availability](#-platform-availability).
 
@@ -36,7 +36,7 @@ The Android app is the primary published build. The repository also contains sou
 
 ## 🎧 Playback & audio
 
-Void Music combines a media player with a source-resolution layer. The selected source determines what can actually be played; playback settings control what the app requests and how it handles the resulting stream.
+Zotify Music combines a media player with a source-resolution layer. The selected source determines what can actually be played; playback settings control what the app requests and how it handles the resulting stream.
 
 ### Playback controls
 
@@ -61,7 +61,7 @@ Void Music combines a media player with a source-resolution layer. The selected 
 - **Bluetooth capability awareness:** the app distinguishes reported codec labels from proof that a particular route can deliver the requested fidelity.
 
 > [!IMPORTANT]
-> **Lossless, Hi-Res and Dolby Atmos are conditional capabilities, not universal promises.** Void Music cannot turn a lossy stream into genuine lossless audio. A source badge, file extension or reported bitrate alone does not prove bit-perfect output. The source must deliver the format, and the decoder, device and output route must support it.
+> **Lossless, Hi-Res and Dolby Atmos are conditional capabilities, not universal promises.** Zotify Music cannot turn a lossy stream into genuine lossless audio. A source badge, file extension or reported bitrate alone does not prove bit-perfect output. The source must deliver the format, and the decoder, device and output route must support it.
 
 ## 🔌 Sources & service integrations
 
@@ -88,7 +88,7 @@ A configured source is not automatically a verified working provider. It may req
 - **Listen Together:** party codes/invites, shared listening state and queue coordination through a reachable party server; a custom server can be configured.
 - **SMB and WebDAV:** connect compatible network shares or remote libraries.
 
-All account integrations are optional. Third-party sign-in, API access and server availability are controlled partly by the respective service, not solely by Void Music.
+All account integrations are optional. Third-party sign-in, API access and server availability are controlled partly by the respective service, not solely by Zotify Music.
 
 ## 🎼 Lyrics, Canvas & personal touches
 
@@ -124,7 +124,7 @@ The download quality preference includes these rungs:
 | **High** | Prefer the best available source rendition within the supported source path. |
 | **Lossless** | Keep a lossless source file when one is genuinely available; otherwise use the best supported fallback. |
 
-Actual file format and quality depend on the provider and the specific track. Some add-ons explicitly disable downloads; Void Music should respect the source's permission declaration.
+Actual file format and quality depend on the provider and the specific track. Some add-ons explicitly disable downloads; Zotify Music should respect the source's permission declaration.
 
 Downloads support media metadata/tagging paths for compatible formats, including lyric and FLAC-tag handling where available. Downloaded files and source caches are separate: clearing playback cache should not be confused with deleting the download library.
 
@@ -169,7 +169,7 @@ The feature depends on a compatible, reachable party server and supported accoun
 
 ## 🎨 Settings & customization
 
-Void Music exposes settings so the experience can be tuned to the device and the listener:
+Zotify Music exposes settings so the experience can be tuned to the device and the listener:
 
 - System/light/dark appearance and supported app-language preferences.
 - Home-shelf and home-content visibility options.
@@ -187,14 +187,14 @@ Setting availability can vary with app version, operating system, hardware and c
 
 ## 📱 Platform availability
 
-The repository contains more than one target, but **the current Void Music Releases page publishes the Android APK**. The presence of source code for another platform is not the same thing as a ready-to-download Void Music build.
+The repository contains more than one target, but **the current Zotify Music Releases page publishes the Android APK**. The presence of source code for another platform is not the same thing as a ready-to-download Zotify Music build.
 
 | Target | What the source includes | Current distribution note |
 | --- | --- | --- |
 | **Android phone/tablet** | Main music app, player, sources, lyrics, library, integrations and downloads. | A signed APK is not currently published. Check the Releases page for availability. |
-| **Android TV / Google TV** | Remote-first home, library, search, settings, full-screen player, synced lyrics, display-refresh-rate options, spatial audio and QR sign-in. | Source target; build instructions below. |
+| **Android TV / Google TV** | Remote-first home, library, search, settings, full-screen player, synced lyrics, display-refresh-rate options, spatial audio and QR sign-in. | Source target; the current production release workflow does not publish a TV APK. |
 | **Wear OS companion** | Watch-facing now-playing and playback components connected to the phone app. | Companion source is included; compatibility depends on the paired phone/watch builds. |
-| **Desktop** | Compose Multiplatform desktop code for Windows, Linux and macOS, with desktop playback, local music, lyrics, downloads, equalizer and desktop integrations. | Source target; desktop installers are produced separately and are not attached to Android APK releases. |
+| **Desktop** | Compose Multiplatform desktop code for Windows, Linux and macOS, with desktop playback, local music, lyrics, downloads, equalizer and desktop integrations. | Source target; the current repository release workflow does not publish desktop installers. |
 | **Web player + browser extension** | React/TypeScript web client and Chromium/Firefox extension source, with a page-to-extension bridge. | Development source is included. It is not the Android APK and should be built/deployed separately. |
 
 ## ⬇️ Download
@@ -210,13 +210,13 @@ The repository contains more than one target, but **the current Void Music Relea
 ### Install on Android
 
 1. Open the [Android APK Releases page](https://github.com/OPZENITSUUU/zotify-music/releases).
-2. When a signed release is published, download **Void.Music.apk** from its release assets.
+2. When a signed release is published, download **Zotify.Music.apk** from its release assets.
 3. Open the APK. If prompted, allow your browser or file manager to install apps from that source.
-4. Install and open Void Music, then configure the sources and optional services you use.
+4. Install and open Zotify Music, then configure the sources and optional services you use.
 
 **Minimum Android version:** Android 8.0 (API 26) or newer.
 
-**Signing-key migration:** The current v1.0.12 source is configured for a new signing key; a signed APK has not yet been published from this repository. Existing Void Music installs signed with the previous key cannot update in place: back up any data you need, uninstall the old app, then install the Zotify APK. Android may delete app-local data on uninstall. After reinstalling, future Zotify releases can be offered by the in-app updater, but Android still requires user approval to install.
+**Signing-key migration:** The current v1.0.12 source is configured for a new signing key; a signed APK has not yet been published from this repository. Existing Zotify Music installs signed with the previous key cannot update in place: back up any data you need, uninstall the old app, then install the Zotify APK. Android may delete app-local data on uninstall. After reinstalling, future Zotify releases can be offered by the in-app updater, but Android still requires user approval to install.
 
 Android only accepts an in-place update when the package identity and signing certificate are compatible. Back up important data before changing signing tracks or uninstalling an older build.
 
@@ -250,7 +250,7 @@ The desktop build uses **JDK 21**. With the required platform libraries installe
 
 <pre><code>./gradlew :desktopApp:run</code></pre>
 
-Desktop packaging uses native tooling for the platform being built. The current Void Music release page should not be assumed to contain desktop installers.
+Desktop packaging uses native tooling for the platform being built. The current Zotify Music release page should not be assumed to contain desktop installers.
 
 ### Web player and browser extension
 
@@ -310,9 +310,9 @@ Before making a pull request, read the [Contributing Guide](CONTRIBUTING.md), [C
 
 ## ⚖️ Legal, copyright & licensing
 
-Void Music is an independent community distribution. It is **not affiliated with, endorsed by or sponsored by Google, YouTube, YouTube Music, Spotify, Discord, TIDAL, Qobuz or their parent companies**. Product names and trademarks belong to their respective owners.
+Zotify Music is an independent community distribution. It is **not affiliated with, endorsed by or sponsored by Google, YouTube, YouTube Music, Spotify, Discord, TIDAL, Qobuz or their parent companies**. Product names and trademarks belong to their respective owners.
 
-Void Music does not claim ownership of third-party catalogues or user media. You are responsible for ensuring that your use of any source or content is authorized and complies with local law and the relevant service terms. Availability, stream quality and permissions may change when an external service changes.
+Zotify Music does not claim ownership of third-party catalogues or user media. You are responsible for ensuring that your use of any source or content is authorized and complies with local law and the relevant service terms. Availability, stream quality and permissions may change when an external service changes.
 
 This repository builds on the open-source BitChord project. Applicable upstream notices, copyright information and license obligations must be retained when redistributing the software. See [LICENSE](LICENSE) for the repository's **GNU General Public License v3.0 (GPL-3.0)** terms.
 
@@ -320,7 +320,7 @@ This repository builds on the open-source BitChord project. Applicable upstream 
 
 <div align="center">
 
-**Void Music** · A player built for your music, your setup and your way of listening.
+**Zotify Music** · A player built for your music, your setup and your way of listening.
 
 <sub>Browse the code · Test the source · Verify the stream · Keep the music yours. 🎧</sub>
 

@@ -1,4 +1,4 @@
-name: Void Music Android Release
+name: Zotify Music Android Release
 
 on:
   push:
@@ -15,7 +15,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: voidmusic-release-${{ inputs.release_tag || github.ref }}
+  group: zotify-release-${{ inputs.release_tag || github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -121,11 +121,11 @@ jobs:
             echo "Required Actions secret is present: $name"
           done
 
-          if ! printf '%s' "$KEYSTORE_BASE64" | base64 --decode > voidmusic-release.jks; then
+          if ! printf '%s' "$KEYSTORE_BASE64" | base64 --decode > zotify-release.jks; then
             echo "::error::KEYSTORE_BASE64 is not valid base64"
             exit 1
           fi
-          if [[ ! -s voidmusic-release.jks ]] || ! keytool -list -keystore voidmusic-release.jks \
+          if [[ ! -s zotify-release.jks ]] || ! keytool -list -keystore zotify-release.jks \
             -storepass "$KEYSTORE_PASSWORD" -alias "$KEY_ALIAS" >/dev/null 2>&1; then
             echo "::error::Decoded keystore, KEYSTORE_PASSWORD, or KEY_ALIAS is invalid"
             exit 1
@@ -135,7 +135,7 @@ jobs:
           trap 'rm -rf "$temp_dir"' EXIT
           printf 'signing validation\n' > "$temp_dir/payload.txt"
           jar cf "$temp_dir/unsigned.jar" -C "$temp_dir" payload.txt >/dev/null
-          if ! jarsigner -keystore voidmusic-release.jks -storepass "$KEYSTORE_PASSWORD" \
+          if ! jarsigner -keystore zotify-release.jks -storepass "$KEYSTORE_PASSWORD" \
             -keypass "$KEY_PASSWORD" -signedjar "$temp_dir/signed.jar" \
             "$temp_dir/unsigned.jar" "$KEY_ALIAS" >/dev/null 2>&1; then
             echo "::error::KEY_PASSWORD does not unlock the configured signing alias"
@@ -143,7 +143,7 @@ jobs:
           fi
           jarsigner -verify "$temp_dir/signed.jar" >/dev/null
 
-          keytool -exportcert -alias "$KEY_ALIAS" -keystore voidmusic-release.jks \
+          keytool -exportcert -alias "$KEY_ALIAS" -keystore zotify-release.jks \
             -storepass "$KEYSTORE_PASSWORD" -file "$temp_dir/certificate.der" >/dev/null 2>&1
           certificate_sha256="$(sha256sum "$temp_dir/certificate.der" | awk '{print toupper($1)}')"
           expected_sha256="943520093D947992BAD228AD677838C19E90880E9639DFB50C9662086B1F8BCF"
@@ -154,12 +154,12 @@ jobs:
           echo "Configured Zotify signing certificate verified."
 
           {
-            printf 'storeFile=voidmusic-release.jks\n'
+            printf 'storeFile=zotify-release.jks\n'
             printf 'storePassword=%s\n' "$KEYSTORE_PASSWORD"
             printf 'keyAlias=%s\n' "$KEY_ALIAS"
             printf 'keyPassword=%s\n' "$KEY_PASSWORD"
           } > keystore.properties
-          chmod 600 voidmusic-release.jks keystore.properties
+          chmod 600 zotify-release.jks keystore.properties
 
       - name: Build signed production APK
         run: ./gradlew :app:assembleProdRelease
@@ -183,31 +183,31 @@ jobs:
           "$build_tools/zipalign" -c -v 4 "$apk"
           "$build_tools/apksigner" verify --verbose --print-certs "$apk"
           mkdir -p dist
-          cp "$apk" dist/Void.Music.apk
-          sha256sum dist/Void.Music.apk > dist/Void.Music.apk.sha256
-          sha256sum --check dist/Void.Music.apk.sha256
+          cp "$apk" dist/Zotify.Music.apk
+          sha256sum dist/Zotify.Music.apk > dist/Zotify.Music.apk.sha256
+          sha256sum --check dist/Zotify.Music.apk.sha256
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ inputs.release_tag || github.ref_name }}
-          name: Void Music ${{ inputs.release_tag || github.ref_name }}
+          name: Zotify Music ${{ inputs.release_tag || github.ref_name }}
           draft: false
           make_latest: true
           fail_on_unmatched_files: true
           files: |
-            dist/Void.Music.apk
-            dist/Void.Music.apk.sha256
+            dist/Zotify.Music.apk
+            dist/Zotify.Music.apk.sha256
           body: |
-            ## Void Music ${{ inputs.release_tag || github.ref_name }}
+            ## Zotify Music ${{ inputs.release_tag || github.ref_name }}
 
-            Zotify release of Void Music.
+            Zotify release of Zotify Music.
             Android version code: ${{ steps.release_validation.outputs.version_code }}
 
             - Preserves the existing application ID; Android version code is ${{ steps.release_validation.outputs.version_code }}.
             - Includes the Zotify updater endpoint and verifies release asset SHA-256 before install.
             - Includes a SHA-256 checksum asset for the APK.
 
-            **Signing identity changed.** Existing Void Music installations signed with the previous key cannot update in place to this release. Users must back up any needed data, uninstall the old app, then install this APK. Android may delete app-local data on uninstall. After reinstalling, future Zotify releases can be offered by the in-app updater; Android still requires user approval to install.
+            **Signing identity changed.** Existing Zotify Music installations signed with the previous key cannot update in place to this release. Users must back up any needed data, uninstall the old app, then install this APK. Android may delete app-local data on uninstall. After reinstalling, future Zotify releases can be offered by the in-app updater; Android still requires user approval to install.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
