@@ -1,4 +1,10 @@
 <resources>
+    <string name="change_ui_skin">Oberfläche ändern</string>
+    <string name="ui_skin_zotify">Zotify Music</string>
+    <string name="ui_skin_mochy">Mochy Music</string>
+    <string name="ui_skin_zotify_selected">Originale Zotify Music-Oberfläche</string>
+    <string name="ui_skin_mochy_selected">Von Mochy Music inspirierte Oberfläche</string>
+
     <string name="app_name">Zotify Music</string>
     <string name="playback_channel_name">Wird wiedergegeben</string>
     <string name="download_channel_name">Downloads</string>

@@ -1,4 +1,10 @@
 <resources>
+    <string name="change_ui_skin">UIスキンを変更</string>
+    <string name="ui_skin_zotify">Zotify Music</string>
+    <string name="ui_skin_mochy">Mochy Music</string>
+    <string name="ui_skin_zotify_selected">Zotify Music のオリジナル画面</string>
+    <string name="ui_skin_mochy_selected">Mochy Music に着想を得た画面</string>
+
     <string name="app_name">Zotify Music</string>
     <string name="playback_channel_name">再生中</string>
     <string name="download_channel_name">ダウンロード</string>

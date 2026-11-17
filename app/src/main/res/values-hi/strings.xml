@@ -1,4 +1,10 @@
 <resources>
+    <string name="change_ui_skin">इंटरफ़ेस बदलें</string>
+    <string name="ui_skin_zotify">Zotify Music</string>
+    <string name="ui_skin_mochy">Mochy Music</string>
+    <string name="ui_skin_zotify_selected">Zotify Music का मूल इंटरफ़ेस</string>
+    <string name="ui_skin_mochy_selected">Mochy Music से प्रेरित इंटरफ़ेस</string>
+
     <string name="app_name">Zotify Music</string>
     <string name="playback_channel_name">अभी चल रहा है</string>
     <string name="download_channel_name">डाउनलोड</string>
