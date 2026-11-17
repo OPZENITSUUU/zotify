@@ -502,7 +502,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val ACTION_OPEN_UPDATE_FROM_NOTIFICATION = "com.voidmusic.player.action.OPEN_UPDATE"
+        const val ACTION_OPEN_UPDATE_FROM_NOTIFICATION = "com.zotifymusic.player.action.OPEN_UPDATE"
         internal val updateNotificationTapped = MutableStateFlow(false)
     }
 }
@@ -778,7 +778,7 @@ private fun BitChordApp(
     ) { result ->
         val ready = AppUpdateChecker.download.value as? AppUpdateChecker.DownloadState.Ready
         if (ready != null && AppUpdateChecker.installedVersionMatches(context, ready.file)) {
-            Toast.makeText(context, "Update installed. Reopen Void Music to use it.", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Update installed. Reopen Zotify Music to use it.", Toast.LENGTH_LONG).show()
             showUpdateDialog = false
         } else {
             val message = if (result.resultCode == android.app.Activity.RESULT_CANCELED) {
@@ -5268,7 +5268,7 @@ private fun BitChordApp(
                                 if (AppUpdateChecker.openInstallPermissionSettings(context)) {
                                     Toast.makeText(
                                         context,
-                                        "Allow Void Music to install updates, then return and tap Install Now.",
+                                        "Allow Zotify Music to install updates, then return and tap Install Now.",
                                         Toast.LENGTH_LONG,
                                     ).show()
                                 }
