@@ -71,7 +71,7 @@
         android:required="false" />
 
     <application
-        android:android:name="com.music.bitchord.BitChordApplication"
+        android:name="com.music.bitchord.BitChordApplication"
         android:allowBackup="true"
         android:appCategory="audio"
         android:banner="@drawable/tv_banner"
@@ -144,10 +144,10 @@
           Every entry point the phone declares is kept.
         -->
         <activity-alias
-            android:android:name="com.music.bitchord.MainActivity"
+            android:name="com.music.bitchord.MainActivity"
             android:banner="@drawable/tv_banner"
             android:exported="true"
-            android:android:targetActivity="com.music.bitchord.TvActivity">
+            android:targetActivity="com.music.bitchord.TvActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -276,7 +276,7 @@
           Landscape, TV theme, and singleTask to prevent duplicate playback tasks.
         -->
         <activity
-            android:android:name="com.music.bitchord.TvActivity"
+            android:name="com.music.bitchord.TvActivity"
             android:banner="@drawable/tv_banner"
             android:exported="false"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
@@ -287,7 +287,7 @@
             android:theme="@style/Theme.BitChord.Tv" />
 
         <service
-            android:android:name="com.music.bitchord.playback.PlaybackService"
+            android:name="com.music.bitchord.playback.PlaybackService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback">
             <intent-filter>
@@ -310,7 +310,7 @@
           cancel action, and nothing outside has any business queueing work.
         -->
         <service
-            android:android:name="com.music.bitchord.download.DownloadService"
+            android:name="com.music.bitchord.download.DownloadService"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
 
@@ -325,7 +325,7 @@
           the update broadcast reachable by anything on the device.
         -->
         <receiver
-            android:android:name="com.music.bitchord.widget.MediaWidgetSquare"
+            android:name="com.music.bitchord.widget.MediaWidgetSquare"
             android:exported="false"
             android:label="@string/widget_square_label">
             <intent-filter>
@@ -337,7 +337,7 @@
         </receiver>
 
         <receiver
-            android:android:name="com.music.bitchord.widget.MediaWidgetWide"
+            android:name="com.music.bitchord.widget.MediaWidgetWide"
             android:exported="false"
             android:label="@string/widget_wide_label">
             <intent-filter>
@@ -350,7 +350,7 @@
 
         <!-- The 4×1 capsule. Its own provider and layout; see MediaWidgetPill. -->
         <receiver
-            android:android:name="com.music.bitchord.widget.MediaWidgetPill"
+            android:name="com.music.bitchord.widget.MediaWidgetPill"
             android:exported="false"
             android:label="@string/widget_pill_label">
             <intent-filter>
@@ -363,7 +363,7 @@
 
         <!-- The transport buttons. Reached only by this app's own PendingIntents. -->
         <receiver
-            android:android:name="com.music.bitchord.widget.MediaWidgetActions"
+            android:name="com.music.bitchord.widget.MediaWidgetActions"
             android:exported="false" />
 
         <!--
