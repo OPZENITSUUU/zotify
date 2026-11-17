@@ -1,6 +1,6 @@
 package com.music.bitchord.ui.components
 
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 import com.music.bitchord.data.settings.UiSkin
 import com.music.bitchord.ui.theme.LocalUiSkin
 

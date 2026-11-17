@@ -36,7 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.halilibo.richtext.markdown.Markdown
 import com.halilibo.richtext.ui.RichTextStyle
 import com.halilibo.richtext.ui.material3.RichText
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 import com.music.bitchord.BuildConfig
 import com.music.bitchord.data.AppUpdateChecker
 import com.music.bitchord.data.settings.AppSettings
