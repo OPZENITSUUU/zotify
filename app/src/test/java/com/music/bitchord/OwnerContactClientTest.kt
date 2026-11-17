@@ -4,7 +4,9 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import org.json.JSONObject
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -38,9 +40,9 @@ class OwnerContactClientTest {
         val request = server.takeRequest()
         assertEquals("POST", request.method)
         assertEquals("/api/contact", request.path)
-        val body = JSONObject(request.body.readUtf8())
-        assertEquals("bug_report", body.getString("type"))
-        assertEquals("Playback stops after 10 seconds", body.getString("message"))
+        val body = Json.parseToJsonElement(request.body.readUtf8()).jsonObject
+        assertEquals("bug_report", body["type"]?.jsonPrimitive?.content)
+        assertEquals("Playback stops after 10 seconds", body["message"]?.jsonPrimitive?.content)
     }
 
     @Test
