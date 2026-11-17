@@ -204,7 +204,7 @@ jobs:
             Zotify release of Zotify Music.
             Android version code: ${{ steps.release_validation.outputs.version_code }}
 
-            - Preserves the existing application ID; Android version code is ${{ steps.release_validation.outputs.version_code }}.
+            - Uses the new application ID `com.zotifymusic.player`; Android version code is ${{ steps.release_validation.outputs.version_code }}.
             - Includes the Zotify updater endpoint and verifies release asset SHA-256 before install.
             - Includes a SHA-256 checksum asset for the APK.
 
