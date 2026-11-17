@@ -7,7 +7,7 @@
 A customizable music client with flexible sources, detailed playback controls, synced lyrics, an artwork-rich player and a library that stays yours.
 
 <p>
-  <a href="https://github.com/OPZENITSUUU/zotify-music/releases/latest/download/Zotify.Music.apk"><img src="https://img.shields.io/badge/GET%20VOID%20MUSIC-Latest%20Android%20APK-8B5CF6?style=for-the-badge&logo=android&logoColor=white" alt="Download the latest Android APK" /></a>
+  <a href="https://github.com/OPZENITSUUU/zotify-music/releases/latest/download/Zotify.Music.apk"><img src="https://img.shields.io/badge/GET%20ZOTIFY%20MUSIC-Latest%20Android%20APK-8B5CF6?style=for-the-badge&logo=android&logoColor=white" alt="Download the latest Android APK" /></a>
 </p>
 
 <p>
@@ -220,7 +220,7 @@ The repository contains more than one target, but **the current Zotify Music Rel
 
 **Minimum Android version:** Android 8.0 (API 26) or newer.
 
-**Signing-key migration:** The Zotify Music Android app uses package ID `com.zotifymusic.player`. Android treats it as a separate app from the previous Void Music package (`com.voidmusic.player`), so this first Zotify installation does not update or migrate the old app data. Keep the previous app installed until you have moved anything you need. Future Zotify updates can be installed in place, subject to Android approval.
+**Package identity migration:** The Zotify Music Android app uses package ID `com.zotifymusic.player`. Android treats it as a separate app from the previous Void Music package (`com.voidmusic.player`), so this first Zotify installation does not update or migrate the old app data. Keep the previous app installed until you have moved anything you need. Future Zotify updates can be installed in place, subject to Android approval.
 
 Android only accepts an in-place update when the package identity and signing certificate are compatible. Back up important data before changing signing tracks or uninstalling an older build.
 

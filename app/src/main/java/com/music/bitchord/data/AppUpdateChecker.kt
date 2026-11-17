@@ -200,11 +200,11 @@ object AppUpdateChecker {
      * One release carries the phone app and the TV app, each as a universal
      * APK plus per-ABI splits:
      *
-     *     ZotifyMusic-v1.0.1.apk     BitChord-v1.8_arm64-v8a.apk     ...
-     *     ZotifyMusicTV-v1.8.apk   BitChordTV-v1.8_arm64-v8a.apk   ...
+     *     Zotify.Music.apk     ZotifyMusicTV-v1.8_arm64-v8a.apk     ...
+     *     ZotifyMusicTV-v1.8.apk   ZotifyMusicTV-v1.8_arm64-v8a.apk   ...
      *
      * so this app's APKs are the ones named with its own
-     * [BuildConfig.UPDATE_APK_PREFIX] — "BitChord-" never matches a TV file,
+     * [BuildConfig.UPDATE_APK_PREFIX] — "Zotify.Music" never matches a TV file,
      * since the prefix ends at the hyphen. The universal build (no `_ABI`
      * suffix) is taken first, as it installs anywhere; failing that, the split
      * for this device's ABI. A release with neither leaves

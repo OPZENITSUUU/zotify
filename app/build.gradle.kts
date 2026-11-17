@@ -84,7 +84,7 @@ android {
         // Which release assets are this app's: the phone and TV APKs ship in
         // the same GitHub release, told apart by file name. See
         // AppUpdateChecker.apkAssetUrl.
-        buildConfigField("String", "UPDATE_APK_PREFIX", "\"Void.Music\"")
+        buildConfigField("String", "UPDATE_APK_PREFIX", "\"Zotify.Music\"")
     }
 
     splits {
@@ -117,7 +117,7 @@ android {
         create("dev") {
             dimension = "env"
             applicationId = "com.dev.zotifymusic.player"
-            resValue("string", "app_name", "OPZENITSU69")
+            resValue("string", "app_name", "Zotify Music Dev")
         }
         create("prod") {
             dimension = "env"

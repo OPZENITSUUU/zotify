@@ -238,7 +238,7 @@
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:label="@string/app_name"
-            android:targetActivity=".MainActivity">
+            android:targetActivity="com.music.bitchord.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -252,7 +252,7 @@
             android:icon="@mipmap/ic_launcher_purple"
             android:roundIcon="@mipmap/ic_launcher_purple"
             android:label="@string/app_name"
-            android:targetActivity=".MainActivity">
+            android:targetActivity="com.music.bitchord.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -266,7 +266,7 @@
             android:icon="@mipmap/ic_launcher_galaxy"
             android:roundIcon="@mipmap/ic_launcher_galaxy"
             android:label="@string/app_name"
-            android:targetActivity=".MainActivity">
+            android:targetActivity="com.music.bitchord.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -280,7 +280,7 @@
             android:icon="@mipmap/ic_launcher_neon"
             android:roundIcon="@mipmap/ic_launcher_neon"
             android:label="@string/app_name"
-            android:targetActivity=".MainActivity">
+            android:targetActivity="com.music.bitchord.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -294,7 +294,7 @@
             android:icon="@mipmap/ic_launcher_silver"
             android:roundIcon="@mipmap/ic_launcher_silver"
             android:label="@string/app_name"
-            android:targetActivity=".MainActivity">
+            android:targetActivity="com.music.bitchord.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
