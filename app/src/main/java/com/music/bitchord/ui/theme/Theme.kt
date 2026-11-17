@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.shape.RoundedCornerShape
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 import com.music.bitchord.data.settings.UiSkin
 
 // Apple Music's signature red. No longer the primary accent, but kept for the
