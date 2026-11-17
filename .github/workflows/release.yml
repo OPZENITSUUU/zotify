@@ -208,6 +208,6 @@ jobs:
             - Includes the Zotify updater endpoint and verifies release asset SHA-256 before install.
             - Includes a SHA-256 checksum asset for the APK.
 
-            **Signing identity changed.** Existing Zotify Music installations signed with the previous key cannot update in place to this release. Users must back up any needed data, uninstall the old app, then install this APK. Android may delete app-local data on uninstall. After reinstalling, future Zotify releases can be offered by the in-app updater; Android still requires user approval to install.
+            **Package identity changed.** This release uses `com.zotifymusic.player`, separate from the previous `com.voidmusic.player` package. Android installs it as a separate app and does not migrate the old app's private data. Keep the previous app installed until you have moved anything you need. Future Zotify updates can be installed in place, subject to Android approval.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
