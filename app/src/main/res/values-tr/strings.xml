@@ -1,4 +1,10 @@
 <resources>
+    <string name="change_ui_skin">Arayüzü değiştir</string>
+    <string name="ui_skin_zotify">Zotify Music</string>
+    <string name="ui_skin_mochy">Mochy Music</string>
+    <string name="ui_skin_zotify_selected">Orijinal Zotify Music arayüzü</string>
+    <string name="ui_skin_mochy_selected">Mochy Music'ten ilham alan arayüz</string>
+
     <string name="app_name">Zotify Music</string>
     <string name="playback_channel_name">Şu an çalıyor</string>
     <string name="download_channel_name">İndirmeler</string>

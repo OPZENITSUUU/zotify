@@ -1,4 +1,10 @@
 <resources>
+    <string name="change_ui_skin">เปลี่ยนรูปแบบหน้าตา</string>
+    <string name="ui_skin_zotify">Zotify Music</string>
+    <string name="ui_skin_mochy">Mochy Music</string>
+    <string name="ui_skin_zotify_selected">หน้าตาดั้งเดิมของ Zotify Music</string>
+    <string name="ui_skin_mochy_selected">หน้าตาที่ได้แรงบันดาลใจจาก Mochy Music</string>
+
     <string name="app_name">Zotify Music</string>
     <string name="playback_channel_name">กำลังเล่น</string>
     <string name="download_channel_name">การดาวน์โหลด</string>

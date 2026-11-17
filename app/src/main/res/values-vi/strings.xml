@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="change_ui_skin">Đổi giao diện</string>
+    <string name="ui_skin_zotify">Zotify Music</string>
+    <string name="ui_skin_mochy">Mochy Music</string>
+    <string name="ui_skin_zotify_selected">Giao diện gốc của Zotify Music</string>
+    <string name="ui_skin_mochy_selected">Giao diện lấy cảm hứng từ Mochy Music</string>
+
     <string name="app_name">Zotify Music</string>
     <string name="playback_channel_name">Đang phát</string>
     <string name="download_channel_name">Tải xuống</string>

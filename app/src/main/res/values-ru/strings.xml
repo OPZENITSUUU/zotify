@@ -1,4 +1,10 @@
 <resources>
+    <string name="change_ui_skin">Изменить интерфейс</string>
+    <string name="ui_skin_zotify">Zotify Music</string>
+    <string name="ui_skin_mochy">Mochy Music</string>
+    <string name="ui_skin_zotify_selected">Оригинальный интерфейс Zotify Music</string>
+    <string name="ui_skin_mochy_selected">Интерфейс в стиле Mochy Music</string>
+
     <string name="app_name">Zotify Music</string>
     <string name="playback_channel_name">Сейчас играет</string>
     <string name="download_channel_name">Загрузки</string>

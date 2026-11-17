@@ -1,4 +1,10 @@
 <resources>
+    <string name="change_ui_skin">更改界面外观</string>
+    <string name="ui_skin_zotify">Zotify Music</string>
+    <string name="ui_skin_mochy">Mochy Music</string>
+    <string name="ui_skin_zotify_selected">Zotify Music 原始界面</string>
+    <string name="ui_skin_mochy_selected">Mochy Music 风格界面</string>
+
     <string name="app_name">Zotify Music</string>
     <string name="playback_channel_name">正在播放</string>
     <string name="download_channel_name">下载</string>
