@@ -50,6 +50,35 @@ func getBool(key string, fallback bool) bool {
 	return parsed
 }
 
+func getDiscordWebhookURL(key string) string {
+	val := strings.TrimSpace(os.Getenv(key))
+	if val == "" {
+		return ""
+	}
+	u, err := url.Parse(val)
+	if err != nil || u.Scheme != "https" || u.User != nil || u.RawQuery != "" || u.Fragment != "" {
+		log.Printf("%s is not a valid Discord webhook URL; contact delivery disabled", key)
+		return ""
+	}
+	host := strings.ToLower(u.Hostname())
+	if host != "discord.com" && host != "discordapp.com" {
+		log.Printf("%s must use a Discord webhook host; contact delivery disabled", key)
+		return ""
+	}
+	parts := strings.Split(strings.Trim(u.Path, "/"), "/")
+	if len(parts) != 4 || parts[0] != "api" || parts[1] != "webhooks" || parts[2] == "" || parts[3] == "" {
+		log.Printf("%s must be a complete Discord webhook URL; contact delivery disabled", key)
+		return ""
+	}
+	for _, r := range parts[2] {
+		if r < '0' || r > '9' {
+			log.Printf("%s has an invalid Discord webhook ID; contact delivery disabled", key)
+			return ""
+		}
+	}
+	return val
+}
+
 func getOrigin(key string) string {
 	val := strings.TrimRight(strings.TrimSpace(os.Getenv(key)), "/")
 	if val == "" {
@@ -96,6 +125,7 @@ var (
 	AllowedOrigins       = getCSV("JAM_ALLOWED_ORIGINS", "")
 	TrustProxy           = getBool("JAM_TRUST_PROXY", false)
 	PublicOrigin         = getOrigin("JAM_PUBLIC_ORIGIN")
+	DiscordWebhookURL    = getDiscordWebhookURL("DISCORD_WEBHOOK_URL")
 	Port                 = getInt("PORT", 8000)
 )
 
