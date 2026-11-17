@@ -22,6 +22,7 @@ import (
 func setupTestServer() *httptest.Server {
 	// Each test server starts with its own party-creation allowance.
 	createLimiter = newIPRateLimiter(time.Minute, config.CreateRatePerMinute, config.RateLimitMaxEntries)
+	contactLimiter = newIPRateLimiter(time.Minute, 3, config.RateLimitMaxEntries)
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /{$}", handleRoot)
 	mux.HandleFunc("GET /healthz", handleHealthz)
@@ -31,6 +32,7 @@ func setupTestServer() *httptest.Server {
 	mux.HandleFunc("GET /api/parties/{code}", handleGetParty)
 	mux.HandleFunc("POST /api/parties/{code}/leave", handleLeaveParty)
 	mux.HandleFunc("POST /api/presence", handlePresence)
+	mux.HandleFunc("POST /api/contact", handleContact)
 	mux.HandleFunc("GET /api/stats/live", handleLiveStats)
 	mux.HandleFunc("GET /api/stats/live/badge.svg", handleLiveBadge)
 	mux.HandleFunc("GET /invite/{code}", handleInviteLanding)
