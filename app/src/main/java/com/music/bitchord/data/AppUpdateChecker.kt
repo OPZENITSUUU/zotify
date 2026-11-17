@@ -25,7 +25,7 @@ import java.io.FileOutputStream
 import java.security.MessageDigest
 
 /**
- * Void Music ships as a sideloaded APK off its GitHub Releases rather than through
+ * Zotify Music ships as a sideloaded APK off its GitHub Releases rather than through
  * a store, so there's nothing to push an update notice on its own — this
  * polls the repo's "latest release" once per launch and compares its tag
  * against the running build.
@@ -60,7 +60,7 @@ object AppUpdateChecker {
     internal const val CHECK_INTERVAL_MS = 24L * 60L * 60L * 1000L
 
     private const val LATEST_RELEASE_URL =
-        "https://api.github.com/repos/OPZENITSUUU/zotify/releases/latest"
+        "https://api.github.com/repos/OPZENITSUUU/zotify-music/releases/latest"
 
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -200,11 +200,11 @@ object AppUpdateChecker {
      * One release carries the phone app and the TV app, each as a universal
      * APK plus per-ABI splits:
      *
-     *     BitChord-v1.8.apk     BitChord-v1.8_arm64-v8a.apk     ...
-     *     BitChordTV-v1.8.apk   BitChordTV-v1.8_arm64-v8a.apk   ...
+     *     Zotify.Music.apk     ZotifyMusicTV-v1.8_arm64-v8a.apk     ...
+     *     ZotifyMusicTV-v1.8.apk   ZotifyMusicTV-v1.8_arm64-v8a.apk   ...
      *
      * so this app's APKs are the ones named with its own
-     * [BuildConfig.UPDATE_APK_PREFIX] — "BitChord-" never matches a TV file,
+     * [BuildConfig.UPDATE_APK_PREFIX] — "Zotify.Music" never matches a TV file,
      * since the prefix ends at the hyphen. The universal build (no `_ABI`
      * suffix) is taken first, as it installs anywhere; failing that, the split
      * for this device's ABI. A release with neither leaves
@@ -247,7 +247,7 @@ object AppUpdateChecker {
     private fun isOfficialReleaseUrl(value: String): Boolean {
         val url = value.toHttpUrlOrNull() ?: return false
         return url.scheme == "https" && url.host == "github.com" &&
-            url.encodedPath.startsWith("/OPZENITSUUU/zotify/releases/")
+            url.encodedPath.startsWith("/OPZENITSUUU/zotify-music/releases/")
     }
 
     internal fun verifiedApkAsset(release: JsonObject): VerifiedApkAsset? = runCatching {
@@ -261,7 +261,7 @@ object AppUpdateChecker {
                 val parsedUrl = url.toHttpUrlOrNull() ?: return@mapNotNull null
                 val safeGithubAsset = parsedUrl.scheme == "https" &&
                     parsedUrl.host == "github.com" &&
-                    parsedUrl.encodedPath.startsWith("/OPZENITSUUU/zotify/releases/download/")
+                    parsedUrl.encodedPath.startsWith("/OPZENITSUUU/zotify-music/releases/download/")
                 val isOurApk = name.startsWith(BuildConfig.UPDATE_APK_PREFIX, ignoreCase = true) &&
                     name.endsWith(".apk", ignoreCase = true) &&
                     asset["state"]?.jsonPrimitive?.contentOrNull == "uploaded"

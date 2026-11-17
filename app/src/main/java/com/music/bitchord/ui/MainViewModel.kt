@@ -3,7 +3,7 @@ package com.music.bitchord.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 import com.music.bitchord.auth.AuthStore
 import com.music.bitchord.auth.SignedIn
 import com.music.bitchord.auth.GoogleAccountSession

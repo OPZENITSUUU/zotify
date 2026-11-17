@@ -106,6 +106,11 @@ enum class DownloadQuality(
     ),
 }
 
+enum class UiSkin(val label: String) {
+    ZOTIFY("Zotify Music UI (Default)"),
+    MOCHY("Mochy Music UI"),
+}
+
 enum class ThemeMode(val label: String) {
     SYSTEM("System"), LIGHT("Light"), DARK("Dark")
 }
@@ -362,6 +367,8 @@ object AppSettings {
 
     val playbackSpeed = MutableStateFlow(1.0f)
     val themeMode = MutableStateFlow(ThemeMode.DARK)
+    /** Optional UI appearance; missing keys always keep the original Zotify interface. */
+    val uiSkin = MutableStateFlow(UiSkin.ZOTIFY)
     val launcherIcon = MutableStateFlow(LauncherIcon.DEFAULT)
 
     /** Keep playing similar music once the queue runs out. */
@@ -876,6 +883,9 @@ object AppSettings {
         themeMode.value = runCatching {
             ThemeMode.valueOf(prefs.getString(KEY_THEME, null) ?: "DARK")
         }.getOrDefault(ThemeMode.DARK)
+        uiSkin.value = runCatching {
+            UiSkin.valueOf(prefs.getString(KEY_UI_SKIN, UiSkin.ZOTIFY.name) ?: UiSkin.ZOTIFY.name)
+        }.getOrDefault(UiSkin.ZOTIFY)
         launcherIcon.value = runCatching {
             LauncherIcon.valueOf(prefs.getString(KEY_LAUNCHER_ICON, null) ?: LauncherIcon.DEFAULT.name)
         }.getOrDefault(LauncherIcon.DEFAULT)
@@ -1251,6 +1261,11 @@ object AppSettings {
     fun setThemeMode(value: ThemeMode) {
         themeMode.value = value
         prefs.edit().putString(KEY_THEME, value.name).apply()
+    }
+
+    fun setUiSkin(value: UiSkin) {
+        uiSkin.value = value
+        prefs.edit().putString(KEY_UI_SKIN, value.name).apply()
     }
 
     fun setLauncherIcon(value: LauncherIcon) {
@@ -2004,6 +2019,7 @@ object AppSettings {
      * Downloads page would read as empty while the space stayed used.
      */
     private val DEVICE_LOCAL = setOf(
+        KEY_UI_SKIN,
         "downloaded_tracks",
         "downloaded_tracks_metadata",
         "downloaded_collections",
@@ -2061,6 +2077,7 @@ object AppSettings {
     private const val KEY_EQ_BANDS = "equalizer_bands"
     private const val KEY_SPEED = "playback_speed"
     private const val KEY_THEME = "theme_mode"
+    private const val KEY_UI_SKIN = "ui_skin"
     private const val KEY_LAUNCHER_ICON = "launcher_icon"
     private const val KEY_AUTOPLAY = "autoplay"
     private const val KEY_SHUFFLE_ENABLED = "shuffle_enabled"

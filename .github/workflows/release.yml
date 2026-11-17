@@ -1,4 +1,4 @@
-name: Void Music Android Release
+name: Zotify Music Android Release
 
 on:
   push:
@@ -177,37 +177,37 @@ jobs:
           build_tools="$(find "$sdk/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)"
           expected_version="${RELEASE_TAG#v}"
           badging="$("$build_tools/aapt" dump badging "$apk")"
-          grep -F "package: name='com.voidmusic.player'" <<< "$badging"
+          grep -F "package: name='com.zotifymusic.player'" <<< "$badging"
           grep -F "versionName='$expected_version'" <<< "$badging"
           grep -F "versionCode='$EXPECTED_VERSION_CODE'" <<< "$badging"
           "$build_tools/zipalign" -c -v 4 "$apk"
           "$build_tools/apksigner" verify --verbose --print-certs "$apk"
           mkdir -p dist
-          cp "$apk" dist/Void.Music.apk
-          sha256sum dist/Void.Music.apk > dist/Void.Music.apk.sha256
-          sha256sum --check dist/Void.Music.apk.sha256
+          cp "$apk" dist/Zotify.Music.apk
+          sha256sum dist/Zotify.Music.apk > dist/Zotify.Music.apk.sha256
+          sha256sum --check dist/Zotify.Music.apk.sha256
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ inputs.release_tag || github.ref_name }}
-          name: Void Music ${{ inputs.release_tag || github.ref_name }}
+          name: Zotify Music ${{ inputs.release_tag || github.ref_name }}
           draft: false
           make_latest: true
           fail_on_unmatched_files: true
           files: |
-            dist/Void.Music.apk
-            dist/Void.Music.apk.sha256
+            dist/Zotify.Music.apk
+            dist/Zotify.Music.apk.sha256
           body: |
-            ## Void Music ${{ inputs.release_tag || github.ref_name }}
+            ## Zotify Music ${{ inputs.release_tag || github.ref_name }}
 
-            Zotify release of Void Music.
+            Zotify release of Zotify Music.
             Android version code: ${{ steps.release_validation.outputs.version_code }}
 
-            - Preserves the existing application ID; Android version code is ${{ steps.release_validation.outputs.version_code }}.
+            - Uses the new application ID `com.zotifymusic.player`; Android version code is ${{ steps.release_validation.outputs.version_code }}.
             - Includes the Zotify updater endpoint and verifies release asset SHA-256 before install.
             - Includes a SHA-256 checksum asset for the APK.
 
-            **Signing identity changed.** Existing Void Music installations signed with the previous key cannot update in place to this release. Users must back up any needed data, uninstall the old app, then install this APK. Android may delete app-local data on uninstall. After reinstalling, future Zotify releases can be offered by the in-app updater; Android still requires user approval to install.
+            **Package identity changed.** This release uses `com.zotifymusic.player`, separate from the previous `com.voidmusic.player` package. Android installs it as a separate app and does not migrate the old app's private data. Keep the previous app installed until you have moved anything you need. Future Zotify updates can be installed in place, subject to Android approval.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

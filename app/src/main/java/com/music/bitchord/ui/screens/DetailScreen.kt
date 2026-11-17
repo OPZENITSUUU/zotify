@@ -1,7 +1,7 @@
 package com.music.bitchord.ui.screens
 
 import android.os.Build
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize

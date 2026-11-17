@@ -70,7 +70,7 @@ import androidx.compose.ui.unit.max
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import kotlinx.coroutines.launch
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 import com.music.bitchord.data.model.Account
 import com.music.bitchord.data.settings.AppSettings
 import dev.chrisbanes.haze.HazeState

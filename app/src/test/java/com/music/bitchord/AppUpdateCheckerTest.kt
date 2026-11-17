@@ -22,7 +22,7 @@ class AppUpdateCheckerTest {
     @Test
     fun `direct APK selection rejects non-official or insecure asset URLs`() {
         val wrongHost = asset(url = "https://example.invalid/BitChord.apk")
-        val cleartext = asset(url = "http://github.com/OPZENITSUUU/zotify/releases/download/v2/Void.Music.apk")
+        val cleartext = asset(url = "http://github.com/OPZENITSUUU/zotify-music/releases/download/v2/Zotify.Music.apk")
 
         assertNull(AppUpdateChecker.verifiedApkAsset(release(wrongHost)))
         assertNull(AppUpdateChecker.verifiedApkAsset(release(cleartext)))
@@ -30,13 +30,13 @@ class AppUpdateCheckerTest {
 
     @Test
     fun `universal official Void Music release APK is selected with normalized digest`() {
-        val split = asset(name = "Void.Music_arm64-v8a.apk")
-        val universal = asset(name = "Void.Music.apk", digestValue = "sha256:$digest")
+        val split = asset(name = "Zotify.Music_arm64-v8a.apk")
+        val universal = asset(name = "Zotify.Music.apk", digestValue = "sha256:$digest")
 
         val selected = AppUpdateChecker.verifiedApkAsset(release(split, universal))
 
-        assertEquals("Void.Music", selected?.name)
-        assertEquals("https://github.com/OPZENITSUUU/zotify/releases/download/v2/Void.Music.apk", selected?.url)
+        assertEquals("Zotify.Music", selected?.name)
+        assertEquals("https://github.com/OPZENITSUUU/zotify-music/releases/download/v2/Zotify.Music.apk", selected?.url)
         assertEquals(digest, selected?.sha256)
     }
 
@@ -123,8 +123,8 @@ class AppUpdateCheckerTest {
     }
 
     private fun asset(
-        name: String = "Void.Music.apk",
-        url: String = "https://github.com/OPZENITSUUU/zotify/releases/download/v2/$name",
+        name: String = "Zotify.Music.apk",
+        url: String = "https://github.com/OPZENITSUUU/zotify-music/releases/download/v2/$name",
         digestValue: String? = "sha256:$digest",
     ): String {
         val digestPart = digestValue?.let { "\"digest\":\"$it\"," }.orEmpty()

@@ -15,7 +15,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "VoidMusic"
+rootProject.name = "ZotifyMusic"
 include(":shared")
 include(":sharedUi")
 include(":desktopUi")
