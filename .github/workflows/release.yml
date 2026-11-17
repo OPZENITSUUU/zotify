@@ -184,8 +184,6 @@ jobs:
           "$build_tools/apksigner" verify --verbose --print-certs "$apk"
           mkdir -p dist
           cp "$apk" dist/Zotify.Music.apk
-          sha256sum dist/Zotify.Music.apk > dist/Zotify.Music.apk.sha256
-          sha256sum --check dist/Zotify.Music.apk.sha256
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
@@ -197,7 +195,6 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             dist/Zotify.Music.apk
-            dist/Zotify.Music.apk.sha256
           body: |
             ## Zotify Music ${{ inputs.release_tag || github.ref_name }}
 
@@ -205,8 +202,7 @@ jobs:
             Android version code: ${{ steps.release_validation.outputs.version_code }}
 
             - Uses the new application ID `com.zotifymusic.player`; Android version code is ${{ steps.release_validation.outputs.version_code }}.
-            - Includes the Zotify updater endpoint and verifies release asset SHA-256 before install.
-            - Includes a SHA-256 checksum asset for the APK.
+            - Includes the Zotify updater endpoint; the updater verifies the APK using GitHub's release asset SHA-256 digest before install.
 
             **Package identity changed.** This release uses `com.zotifymusic.player`, separate from the previous `com.voidmusic.player` package. Android installs it as a separate app and does not migrate the old app's private data. Keep the previous app installed until you have moved anything you need. Future Zotify updates can be installed in place, subject to Android approval.
         env:
