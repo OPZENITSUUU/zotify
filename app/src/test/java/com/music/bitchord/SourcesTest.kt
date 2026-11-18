@@ -676,19 +676,14 @@ class SourcesTest {
     @Test
     fun `requested addon endpoints are seeded enabled and network-authorized`() {
         val requested = SourceRegistry.sourcesForInit(emptyList())
-            .filter { it.id in setOf(
-                "default-addon-nullbeat-v1",
-                "default-addon-nebula-v1",
-                "default-addon-rukia-v1",
-                "default-addon-lastwave-v1",
-            ) }
+            .filter { it.id in setOf("default-addon-rukia-v1", "default-addon-lastwave-v1") }
 
-        assertEquals(4, requested.size)
+        assertEquals(2, requested.size)
         assertTrue(requested.all { it.enabled && it.networkAccessAuthorized })
         assertTrue(requested.all { !it.allowDownloads })
-        assertEquals(4, SourceRegistry.enabledConfigs(requested).size)
+        assertEquals(2, SourceRegistry.enabledConfigs(requested).size)
         assertEquals(
-            setOf("NullBeat · Max (Auto)", "Nebula (Tidal - Torrents)", "Rukia Addon", "LastWave"),
+            setOf("Rukia Addon", "LastWave"),
             requested.map { it.label }.toSet(),
         )
     }
@@ -700,13 +695,8 @@ class SourcesTest {
             seedDefaultAddons = false,
             seedRequestedAddons = true,
         )
-        val requestedIds = setOf(
-            "default-addon-nullbeat-v1",
-            "default-addon-nebula-v1",
-            "default-addon-rukia-v1",
-            "default-addon-lastwave-v1",
-        )
-        assertEquals(4, migrated.count { it.id in requestedIds })
+        val requestedIds = setOf("default-addon-rukia-v1", "default-addon-lastwave-v1")
+        assertEquals(2, migrated.count { it.id in requestedIds })
         assertTrue(migrated.filter { it.id in requestedIds }.all { it.enabled })
 
         val optedOut = migrated.map { config ->
@@ -717,7 +707,7 @@ class SourcesTest {
             seedDefaultAddons = false,
             seedRequestedAddons = false,
         )
-        assertEquals(4, nextLaunch.count { it.id in requestedIds })
+        assertEquals(2, nextLaunch.count { it.id in requestedIds })
         assertFalse(nextLaunch.single { it.id == "default-addon-rukia-v1" }.enabled)
     }
 
@@ -737,6 +727,20 @@ class SourcesTest {
                 enabled = true,
             ),
         )
+        retired += listOf(
+            SourceConfig(
+                id = "default-addon-nullbeat-v1",
+                kind = SourceKind.ADDON,
+                baseUrl = "https://nullbeat.example",
+                enabled = true,
+            ),
+            SourceConfig(
+                id = "default-addon-nebula-v1",
+                kind = SourceKind.ADDON,
+                baseUrl = "https://nebula.example",
+                enabled = true,
+            ),
+        )
         val userEntry = SourceConfig(
             id = "user-added-qobuz",
             kind = SourceKind.ADDON,
@@ -747,7 +751,13 @@ class SourcesTest {
 
         val migrated = SourceRegistry.sourcesForInit(retired + userEntry, seedDefaultAddons = false)
 
-        assertTrue(migrated.none { it.id in setOf("default-addon-lossless-bridge-v1", "default-addon-qobuz-dl-v1") })
+        val retiredIds = setOf(
+            "default-addon-lossless-bridge-v1",
+            "default-addon-qobuz-dl-v1",
+            "default-addon-nullbeat-v1",
+            "default-addon-nebula-v1",
+        )
+        assertTrue(migrated.none { it.id in retiredIds })
         assertTrue(migrated.any { it.id == "user-added-qobuz" && it.enabled })
     }
 
