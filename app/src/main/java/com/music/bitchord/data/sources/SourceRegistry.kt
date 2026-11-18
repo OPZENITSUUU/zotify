@@ -570,6 +570,8 @@ object SourceRegistry {
     private val RETIRED_DEFAULT_ADDON_IDS = setOf(
         "default-addon-lossless-bridge-v1",
         "default-addon-qobuz-dl-v1",
+        "default-addon-nullbeat-v1",
+        "default-addon-nebula-v1",
     )
 
     private val DEFAULT_ADDONS = listOf(
@@ -594,33 +596,12 @@ object SourceRegistry {
     )
 
     /**
-     * Add-ons explicitly requested for Void Music's default configuration.
-     * These four endpoints are enabled and network-authorized because the user
-     * supplied them for this purpose. The Nebula install URL includes a
-     * provider-generated token in its path and is intentionally public in this
-     * build at the user's explicit direction; anyone who extracts the APK or
-     * reads this source can recover that URL. Downloads remain off until an
-     * add-on manifest is read and its policy recorded.
+     * Add-ons retained in the requested default configuration. The known-broken
+     * NullBeat and Nebula endpoints are retired by stable seed ID above, which
+     * removes them from existing installs as well as fresh installs. Downloads
+     * remain off until an add-on manifest is read and its policy recorded.
      */
     private val REQUESTED_DEFAULT_ADDONS = listOf(
-        SourceConfig(
-            id = "default-addon-nullbeat-v1",
-            kind = SourceKind.ADDON,
-            label = "NullBeat · Max (Auto)",
-            baseUrl = "https://nullbeat.thevolecitor.qzz.io/MzNkODM4MDEtMTNiZS00NGNkLWFjYTEtZGQ4OTNhZDkwMGMzfHx8TUFY",
-            enabled = true,
-            networkAccessAuthorized = true,
-            allowDownloads = false,
-        ),
-        SourceConfig(
-            id = "default-addon-nebula-v1",
-            kind = SourceKind.ADDON,
-            label = "Nebula (Tidal - Torrents)",
-            baseUrl = "https://nebula.eclipsemusic.app/gAAAAABq3QTpAg_Yy3A3csZUWOmUZsHwpb5V1BF7MRM7XoVP7UNKDkqv1KW0v1I_gDJmDwxtT_Lf29EGRk-Ja1S-7yYse44jYQ749PPjBFru9lLnqcyU651s8kc-GPCRkv96A4YOtbqnh12q-hNzLPUXKJfC3DVvZyhB0O31VDg0Poadv7LwWDolbfiyOCnsVJ70_Sw1w6o81BFrAaMJ0Of5abdLuozj8bwKCbHIzLAkZQ25t5kRkekXwJS3NsKVMj5gIPoTKu6mT4DC9wlMwJq5lRFstiKjhxsrNlZktnFRClPkHVaHc_zfwz8U6LGH6GxcGrULYJYg1XyvJhSomPnP7Erc8nXrFg==",
-            enabled = true,
-            networkAccessAuthorized = true,
-            allowDownloads = false,
-        ),
         SourceConfig(
             id = "default-addon-rukia-v1",
             kind = SourceKind.ADDON,
