@@ -313,25 +313,58 @@ object AppearanceSkinLibrary {
         android.graphics.Color.parseColor(value)
     }.getOrNull()
 
+    private fun resolveGithubBranchPath(
+        owner: String,
+        repo: String,
+        remainingPath: List<String>,
+    ): Pair<String, String> {
+        val fullPath = remainingPath.joinToString("/")
+        val branchNames = mutableListOf<String>()
+        try {
+            // Page through the public branch list so slash-containing refs can be
+            // distinguished from nested folder names without guessing.
+            for (page in 1..10) {
+                val branches = JSONArray(
+                    downloadHttps(
+                        "https://api.github.com/repos/$owner/$repo/branches?per_page=100&page=$page",
+                    ).toString(Charsets.UTF_8),
+                )
+                for (index in 0 until branches.length()) {
+                    val name = branches.optJSONObject(index)?.optString("name").orEmpty()
+                    if (name.isNotBlank()) branchNames += name
+                }
+                if (branches.length() < 100) break
+            }
+        } catch (failure: Exception) {
+            throw IllegalArgumentException(
+                "Could not resolve this GitHub branch. Paste a direct raw manifest/ZIP URL instead.",
+                failure,
+            )
+        }
+        val branch = branchNames
+            .filter { fullPath.startsWith("$it/") }
+            .maxByOrNull { it.length }
+            ?: error("Could not identify the branch in this GitHub URL.")
+        val relativePath = fullPath.removePrefix("$branch/")
+        require(relativePath.isNotBlank()) { "The GitHub URL must point to a manifest or ZIP file." }
+        return branch to relativePath
+    }
+
     private fun resolveGithubUrls(input: String): List<String> {
         val url = URL(input)
         if (!url.host.equals("github.com", ignoreCase = true)) return listOf(input)
-        val parts = url.path.trim('/').split('/').filter { it.isNotBlank() }
+        val parts = Uri.decode(url.path).trim('/').split('/').filter { it.isNotBlank() }
         if (parts.size < 2) return listOf(input)
         val owner = parts[0]
         val repo = parts[1].removeSuffix(".git")
         if (owner.isBlank() || repo.isBlank()) return listOf(input)
 
-        // Honour a pasted GitHub blob URL exactly, including branch and nested manifest path.
-        if (parts.size >= 5 && parts[2] == "blob") {
-            val branch = parts[3]
-            val filePath = parts.drop(4).joinToString("/")
+        // Git refs may contain slashes. Resolve the longest matching branch name
+        // from the repository's branch list before separating branch from file path.
+        if (parts.size >= 5 && (parts[2] == "blob" || parts[2] == "tree")) {
+            val (branch, relativePath) = resolveGithubBranchPath(owner, repo, parts.drop(3))
+            val filePath = if (parts[2] == "tree") "$relativePath/manifest.json" else relativePath
             return listOf("https://raw.githubusercontent.com/$owner/$repo/$branch/$filePath")
-        }
-        if (parts.size >= 5 && parts[2] == "tree") {
-            val branch = parts[3]
-            val folder = parts.drop(4).joinToString("/")
-            return listOf("https://raw.githubusercontent.com/$owner/$repo/$branch/$folder/manifest.json")
         }
         // A direct release-asset URL is already the exact file the user selected.
         if (parts.size >= 6 && parts[2] == "releases" && parts[3] == "download" &&
