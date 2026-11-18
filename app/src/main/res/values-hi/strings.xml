@@ -1416,7 +1416,7 @@
     <string name="appearance_skins_check">जाँचें</string>
     <string name="appearance_skins_cancel">रद्द करें</string>
     <string name="appearance_skins_review">स्किन की समीक्षा</string>
-    <string name="appearance_skins_no_supported_settings">इस पैक में Zotify द्वारा समर्थित कोई appearance setting नहीं है।</string>
+    <string name="appearance_skins_no_settings_supported">इस पैक में Zotify द्वारा समर्थित कोई appearance setting नहीं है।</string>
     <string name="appearance_skins_supported">समर्थित: %1$s</string>
     <string name="appearance_skins_ignored">सुरक्षा/अनुकूलता के लिए अनदेखा: %1$s</string>
     <string name="appearance_skins_installed_success">स्किन इंस्टॉल हो गई। तैयार होने पर सूची से लागू करें।</string>
