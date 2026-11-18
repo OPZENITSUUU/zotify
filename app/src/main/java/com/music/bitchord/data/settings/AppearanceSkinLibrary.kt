@@ -311,6 +311,25 @@ object AppearanceSkinLibrary {
         val owner = parts[0]
         val repo = parts[1].removeSuffix(".git")
         if (owner.isBlank() || repo.isBlank()) return input
+
+        // Honour a pasted GitHub blob URL exactly, including branch and nested manifest path.
+        if (parts.size >= 5 && parts[2] == "blob") {
+            val branch = parts[3]
+            val filePath = parts.drop(4).joinToString("/")
+            return "https://raw.githubusercontent.com/$owner/$repo/$branch/$filePath"
+        }
+        if (parts.size >= 5 && parts[2] == "tree") {
+            val branch = parts[3]
+            val folder = parts.drop(4).joinToString("/")
+            return "https://raw.githubusercontent.com/$owner/$repo/$branch/$folder/manifest.json"
+        }
+
+        // A repository URL uses GitHub's declared default branch, not an assumed "main".
+        val metadata = runCatching {
+            JSONObject(downloadHttps("https://api.github.com/repos/$owner/$repo").toString(Charsets.UTF_8))
+        }.getOrNull()
+        val defaultBranch = metadata?.optString("default_branch")?.takeIf { it.isNotBlank() } ?: "main"
+
         val api = "https://api.github.com/repos/$owner/$repo/releases/latest"
         val release = runCatching { JSONObject(downloadHttps(api).toString(Charsets.UTF_8)) }.getOrNull()
         val assets = release?.optJSONArray("assets")
@@ -322,7 +341,7 @@ object AppearanceSkinLibrary {
                 if (name.endsWith(".zip", true) && download.startsWith("https://")) return download
             }
         }
-        return "https://raw.githubusercontent.com/$owner/$repo/main/manifest.json"
+        return "https://raw.githubusercontent.com/$owner/$repo/$defaultBranch/manifest.json"
     }
 
     private fun downloadHttps(input: String): ByteArray {
