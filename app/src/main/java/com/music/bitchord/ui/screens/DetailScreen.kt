@@ -13,6 +13,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import com.music.bitchord.ui.theme.LocalArtworkCornerRadius
 import com.music.bitchord.ui.components.liquidGlassRim
 import com.music.bitchord.ui.components.longPressMenuClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -1931,6 +1932,7 @@ private fun CompactSongRow(
     isCurrent: Boolean = false,
     isPlaying: Boolean = false,
 ) {
+    val artworkCorner = LocalArtworkCornerRadius.current ?: 7.dp
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -1944,8 +1946,8 @@ private fun CompactSongRow(
                 contentDescription = null,
                 modifier = Modifier
                     .size(48.dp)
-                    .clip(RoundedCornerShape(7.dp))
-                    .thumbnailBorder(RoundedCornerShape(7.dp))
+                    .clip(RoundedCornerShape(artworkCorner))
+                    .thumbnailBorder(RoundedCornerShape(artworkCorner))
                     .background(palette.elevated),
             )
             if (isCurrent && isPlaying) SearchPlayingBars(Modifier.align(Alignment.Center))
@@ -1990,6 +1992,7 @@ private fun SuggestedSongRow(
     isCurrent: Boolean = false,
     isPlaying: Boolean = false,
 ) {
+    val artworkCorner = LocalArtworkCornerRadius.current ?: 8.dp
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -2003,8 +2006,8 @@ private fun SuggestedSongRow(
                 contentDescription = null,
                 modifier = Modifier
                     .size(52.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .thumbnailBorder(RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(artworkCorner))
+                    .thumbnailBorder(RoundedCornerShape(artworkCorner))
                     .background(palette.elevated),
             )
             if (isCurrent && isPlaying) SearchPlayingBars(Modifier.align(Alignment.Center))
