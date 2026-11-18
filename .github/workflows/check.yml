@@ -1,8 +1,11 @@
 name: Check
 
+permissions:
+  contents: read
+
 on:
   push:
-    branches: [main, fix/android-emulator-adb-2026-11-15]
+    branches: [main]
   pull_request:
 
 concurrency:
@@ -202,6 +205,7 @@ jobs:
   android-playback-emulator:
     name: Android playback · Emulator (API 30)
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -234,10 +238,11 @@ jobs:
           script: ./gradlew :app:connectedProdDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.music.bitchord.PlaybackPipelineFlacInstrumentedTest#localFlacPlaysReportsContainerFactsAndSupportsSeeking
 
       - name: Upload Android instrumentation reports
-        if: failure()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: android-playback-instrumentation-reports
+          if-no-files-found: ignore
           path: |
             app/build/reports/androidTests/
             app/build/outputs/androidTest-results/
