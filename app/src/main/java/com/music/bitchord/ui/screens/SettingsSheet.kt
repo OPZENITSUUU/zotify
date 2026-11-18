@@ -1,5 +1,6 @@
 package com.music.bitchord.ui.screens
 
+import com.music.bitchord.R
 import com.music.bitchord.wear.WatchInstaller
 import android.content.Context
 import android.content.Intent
@@ -921,12 +922,12 @@ fun SettingsScreen(
                     modifier = Modifier.padding(start = ROW_INSET, end = ROW_INSET, bottom = 14.dp),
                 )
             }
-            val appearanceSkinsTitle = "Appearance skins"
+            val appearanceSkinsTitle = stringResource(R.string.appearance_skins_title)
             row(appearanceSkinsTitle, "skins", "import", "zip", "mochy", "custom look") {
                 SettingsRow(
                     icon = Icons.Rounded.Draw,
                     title = appearanceSkinsTitle,
-                    subtitle = "Import, preview and manage custom skin packs",
+                    subtitle = stringResource(R.string.appearance_skins_settings_entry_subtitle),
                     onClick = { showAppearanceSkinLibrary = true },
                 )
             }
