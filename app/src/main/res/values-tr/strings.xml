@@ -1347,7 +1347,7 @@
     <string name="app_icon_failed">Uygulama simgesi değiştirilemedi: %1$s</string>
     <string name="appearance_skins_title">Görünüm temaları</string>
     <string name="appearance_skins_subtitle">Özel görünümleri içe aktarın, önizleyin ve değiştirin</string>
-    <string name="appearance_skins_description">Mochy Look paketleri desteklenir. Zotify vurgu rengini, tam siyah modunu ve kapak köşe yarıçapını uygular. Özel oynatıcı düzenleri, yazı tipleri, shader'lar, sayfalar ve komut dosyaları çalıştırılmaz.</string>
+    <string name="appearance_skins_description">Mochy Look paketleri desteklenir. Zotify vurgu rengini, tam siyah modunu ve kapak köşe yarıçapını uygular. Özel oynatıcı düzenleri, yazı tipleri, shader\'lar, sayfalar ve komut dosyaları çalıştırılmaz.</string>
     <string name="appearance_skins_from_file">Dosyadan</string>
     <string name="appearance_skins_from_link">Bağlantıdan</string>
     <string name="appearance_skins_checking">Tema bildirimi denetleniyor…</string>
