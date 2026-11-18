@@ -748,9 +748,6 @@ class SourcesTest {
 
     @Test
     fun `legacy enabled addons are disabled until the user grants network consent`() {
-
-    @Test
-    fun `legacy enabled addons are disabled until the user grants network consent`() {
         val legacy = SourceConfig(
             id = "legacy-addon",
             kind = SourceKind.ADDON,
