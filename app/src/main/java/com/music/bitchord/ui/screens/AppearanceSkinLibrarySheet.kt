@@ -81,7 +81,7 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
             val result = runCatching { block() }
             busy = false
             result.onSuccess { pending = it }
-                .onFailure { status = it.message ?: "Could not import this skin." }
+                .onFailure { status = context.getString(R.string.appearance_skin_import_failed) }
         }
     }
 
@@ -116,9 +116,9 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                 }
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f)) {
-                    Text("Appearance skins", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Text(context.getString(R.string.appearance_skins_title), fontSize = 24.sp, fontWeight = FontWeight.Bold)
                     Text(
-                        "Import, preview and switch custom looks",
+                        context.getString(R.string.appearance_skins_subtitle),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodySmall,
                     )
@@ -127,7 +127,7 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
 
             Spacer(Modifier.height(14.dp))
             Text(
-                "Mochy Look packs are accepted. Zotify applies accent colour, pure-black mode and cover corner radius. Custom player layouts, fonts, shaders, pages and scripts are not executed.",
+                context.getString(R.string.appearance_skins_description),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -151,7 +151,7 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                 ) {
                     Icon(Icons.Rounded.FileOpen, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(6.dp))
-                    Text("From file")
+                    Text(context.getString(R.string.appearance_skins_from_file))
                 }
                 OutlinedButton(
                     onClick = { showLinkDialog = true },
@@ -160,7 +160,7 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                 ) {
                     Icon(Icons.Rounded.Link, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(6.dp))
-                    Text("From link")
+                    Text(context.getString(R.string.appearance_skins_from_link))
                 }
             }
 
@@ -169,7 +169,7 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
                     Spacer(Modifier.width(10.dp))
-                    Text("Checking skin manifest…", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(context.getString(R.string.appearance_skins_checking), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
             status?.let {
@@ -179,18 +179,18 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
 
             Spacer(Modifier.height(22.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Installed skins", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
-                Text("${packs.size}", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelMedium)
+                Text(context.getString(R.string.appearance_skins_installed), fontSize = 18.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                Text(context.getString(R.string.appearance_skins_count, packs.size), color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelMedium)
             }
             Spacer(Modifier.height(10.dp))
             HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
 
             if (packs.isEmpty()) {
                 Spacer(Modifier.height(22.dp))
-                Text("No custom skins yet.", fontWeight = FontWeight.SemiBold)
+                Text(context.getString(R.string.appearance_skins_empty_title), fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "Add a Mochy-compatible .zip, manifest.json link or public GitHub skin repository.",
+                    context.getString(R.string.appearance_skins_empty_subtitle),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodySmall,
                 )
@@ -225,7 +225,7 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                                     if (active) {
                                         Spacer(Modifier.width(7.dp))
                                         Text(
-                                            "ACTIVE",
+                                            context.getString(R.string.appearance_skins_active),
                                             color = MaterialTheme.colorScheme.primary,
                                             style = MaterialTheme.typography.labelSmall,
                                             fontWeight = FontWeight.Bold,
@@ -233,7 +233,7 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                                     }
                                 }
                                 Text(
-                                    "v${pack.version}" + if (pack.author.isNotBlank()) " · ${pack.author}" else "",
+                                    if (pack.author.isNotBlank()) context.getString(R.string.appearance_skins_version_author, pack.version, pack.author) else context.getString(R.string.appearance_skins_version, pack.version),
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     style = MaterialTheme.typography.bodySmall,
                                 )
@@ -245,14 +245,14 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                         }
                         Spacer(Modifier.height(6.dp))
                         Text(
-                            if (pack.supportedSettings.isEmpty()) "No settings supported by this Zotify build"
-                            else "Applies: ${pack.supportedSettings.joinToString()}",
+                            if (pack.supportedSettings.isEmpty()) context.getString(R.string.appearance_skins_no_supported_settings)
+                            else context.getString(R.string.appearance_skins_applies, pack.supportedSettings.joinToString()),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.labelSmall,
                         )
                         if (pack.unsupportedSettings.isNotEmpty()) {
                             Text(
-                                "Not applied: ${pack.unsupportedSettings.joinToString()}",
+                                context.getString(R.string.appearance_skins_not_applied, pack.unsupportedSettings.joinToString()),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                                 style = MaterialTheme.typography.labelSmall,
                             )
@@ -262,36 +262,36 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                             if (active) {
                                 OutlinedButton(onClick = {
                                     runCatching { AppearanceSkinLibrary.disable(context) }
-                                        .onSuccess { refresh(); status = "Skin disabled. Your previous appearance was restored." }
-                                        .onFailure { status = it.message ?: "Could not disable skin." }
-                                }) { Text("Turn off") }
+                                        .onSuccess { refresh(); status = context.getString(R.string.appearance_skins_disabled) }
+                                        .onFailure { status = context.getString(R.string.appearance_skins_disable_failed) }
+                                }) { Text(context.getString(R.string.appearance_skins_turn_off)) }
                             } else {
                                 Button(
                                     enabled = pack.canApply,
                                     onClick = {
                                         runCatching { AppearanceSkinLibrary.enable(context, pack.id) }
-                                            .onSuccess { refresh(); status = "${pack.name} applied." }
-                                            .onFailure { status = it.message ?: "Could not apply skin." }
+                                            .onSuccess { refresh(); status = context.getString(R.string.appearance_skins_applied, pack.name) }
+                                            .onFailure { status = context.getString(R.string.appearance_skins_apply_failed) }
                                     },
-                                ) { Text("Apply") }
+                                ) { Text(context.getString(R.string.appearance_skins_apply)) }
                             }
                             TextButton(onClick = {
                                 clipboard.setText(AnnotatedString(pack.rawManifest))
-                                status = "Manifest copied."
+                                status = context.getString(R.string.appearance_skins_manifest_copied)
                             }) {
                                 Icon(Icons.Rounded.ContentCopy, contentDescription = null, modifier = Modifier.size(16.dp))
                                 Spacer(Modifier.width(4.dp))
-                                Text("Copy")
+                                Text(context.getString(R.string.appearance_skins_copy))
                             }
                             Spacer(Modifier.weight(1f))
                             TextButton(onClick = {
                                 AppearanceSkinLibrary.remove(context, pack.id)
                                 refresh()
-                                status = "Skin removed."
+                                status = context.getString(R.string.appearance_skins_removed)
                             }) {
                                 Icon(Icons.Rounded.DeleteOutline, contentDescription = null, modifier = Modifier.size(16.dp))
                                 Spacer(Modifier.width(4.dp))
-                                Text("Remove", color = MaterialTheme.colorScheme.error)
+                                Text(context.getString(R.string.appearance_skins_remove), color = MaterialTheme.colorScheme.error)
                             }
                         }
                     }
@@ -304,12 +304,12 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
     if (showLinkDialog) {
         AlertDialog(
             onDismissRequest = { showLinkDialog = false },
-            title = { Text("Add skin from link") },
+            title = { Text(context.getString(R.string.appearance_skins_add_from_link)) },
             text = {
                 OutlinedTextField(
                     value = link,
                     onValueChange = { link = it },
-                    label = { Text("HTTPS manifest, ZIP or GitHub URL") },
+                    label = { Text(context.getString(R.string.appearance_skins_link_label)) },
                     placeholder = { Text("https://…") },
                     singleLine = true,
                 )
@@ -323,10 +323,10 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                         link = ""
                         importPack { AppearanceSkinLibrary.importUrl(context, value) }
                     },
-                ) { Text("Check") }
+                ) { Text(context.getString(R.string.appearance_skins_check)) }
             },
             dismissButton = {
-                TextButton(onClick = { showLinkDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showLinkDialog = false }) { Text(context.getString(R.string.appearance_skins_cancel)) }
             },
         )
     }
@@ -334,25 +334,25 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
     pending?.let { pack ->
         AlertDialog(
             onDismissRequest = { pending = null },
-            title = { Text("Review skin") },
+            title = { Text(context.getString(R.string.appearance_skins_review)) },
             text = {
                 Column {
                     Text(pack.name, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                    Text("Version ${pack.version}" + if (pack.author.isNotBlank()) " · ${pack.author}" else "")
+                    Text(if (pack.author.isNotBlank()) context.getString(R.string.appearance_skins_version_author, pack.version, pack.author) else context.getString(R.string.appearance_skins_version, pack.version))
                     if (pack.description.isNotBlank()) {
                         Spacer(Modifier.height(8.dp))
                         Text(pack.description, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Spacer(Modifier.height(10.dp))
                     Text(
-                        if (pack.supportedSettings.isEmpty()) "This package has no appearance settings supported by Zotify."
-                        else "Supported: ${pack.supportedSettings.joinToString()}",
+                        if (pack.supportedSettings.isEmpty()) context.getString(R.string.appearance_skins_no_settings_supported)
+                        else context.getString(R.string.appearance_skins_supported, pack.supportedSettings.joinToString()),
                         style = MaterialTheme.typography.bodySmall,
                     )
                     if (pack.unsupportedSettings.isNotEmpty()) {
                         Spacer(Modifier.height(6.dp))
                         Text(
-                            "Ignored for safety/compatibility: ${pack.unsupportedSettings.joinToString()}",
+                            context.getString(R.string.appearance_skins_ignored, pack.unsupportedSettings.joinToString()),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.bodySmall,
                         )
@@ -366,12 +366,12 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                         AppearanceSkinLibrary.install(context, pack)
                         refresh()
                         pending = null
-                        status = "Skin installed. Apply it from the list when ready."
+                        status = context.getString(R.string.appearance_skins_installed_success)
                     },
-                ) { Text("Install") }
+                ) { Text(context.getString(R.string.appearance_skins_install)) }
             },
             dismissButton = {
-                TextButton(onClick = { pending = null }) { Text("Cancel") }
+                TextButton(onClick = { pending = null }) { Text(context.getString(R.string.appearance_skins_cancel)) }
             },
         )
     }
