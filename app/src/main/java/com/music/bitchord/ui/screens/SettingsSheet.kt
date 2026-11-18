@@ -306,6 +306,7 @@ fun SettingsScreen(
     var pickingDownloadQuality by remember { mutableStateOf(false) }
     var pickingAutomixPerformance by remember { mutableStateOf(false) }
     var showLauncherIconPicker by remember { mutableStateOf(false) }
+    var showAppearanceSkinLibrary by remember { mutableStateOf(false) }
     var pendingLauncherIcon by remember { mutableStateOf(selectedLauncherIcon) }
     // What the last export or import did, shown on the row that did it rather
     // than as a toast: a backup is the one action here whose outcome nobody can
@@ -918,6 +919,15 @@ fun SettingsScreen(
                         AppSettings.setUiSkin(if (selected == 1) UiSkin.MOCHY else UiSkin.ZOTIFY)
                     },
                     modifier = Modifier.padding(start = ROW_INSET, end = ROW_INSET, bottom = 14.dp),
+                )
+            }
+            val appearanceSkinsTitle = "Appearance skins"
+            row(appearanceSkinsTitle, "skins", "import", "zip", "mochy", "custom look") {
+                SettingsRow(
+                    icon = Icons.Rounded.Draw,
+                    title = appearanceSkinsTitle,
+                    subtitle = "Import, preview and manage custom skin packs",
+                    onClick = { showAppearanceSkinLibrary = true },
                 )
             }
             val reduceAnimationTitle = stringResource(R.string.reduce_animation)
@@ -2213,6 +2223,10 @@ fun SettingsScreen(
                 }
             },
         )
+    }
+
+    if (showAppearanceSkinLibrary) {
+        AppearanceSkinLibrarySheet(onDismiss = { showAppearanceSkinLibrary = false })
     }
 
     if (showLastfmLoginDialog) {
