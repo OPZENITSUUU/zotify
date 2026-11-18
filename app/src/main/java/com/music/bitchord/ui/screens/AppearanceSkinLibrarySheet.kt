@@ -50,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.music.bitchord.R
 import com.music.bitchord.data.settings.AppearanceSkinLibrary
 import com.music.bitchord.data.settings.AppearanceSkinPack
 import kotlinx.coroutines.launch
@@ -245,7 +246,7 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                         }
                         Spacer(Modifier.height(6.dp))
                         Text(
-                            if (pack.supportedSettings.isEmpty()) context.getString(R.string.appearance_skins_no_supported_settings)
+                            if (pack.supportedSettings.isEmpty()) context.getString(R.string.appearance_skins_no_settings_applied)
                             else context.getString(R.string.appearance_skins_applies, pack.supportedSettings.joinToString()),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.labelSmall,
