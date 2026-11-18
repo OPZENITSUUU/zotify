@@ -31,9 +31,9 @@ data class AppearanceLookOverrides(
 
     companion object {
         fun fromJson(value: JSONObject): AppearanceLookOverrides = AppearanceLookOverrides(
-            accentArgb = value.optNullableInt("accentArgb"),
-            pureBlack = value.optNullableBoolean("pureBlack"),
-            thumbnailCornerRadius = value.optNullableInt("thumbnailCornerRadius"),
+            accentArgb = if (value.has("accentArgb") && !value.isNull("accentArgb")) value.optInt("accentArgb") else null,
+            pureBlack = if (value.has("pureBlack") && !value.isNull("pureBlack")) value.optBoolean("pureBlack") else null,
+            thumbnailCornerRadius = if (value.has("thumbnailCornerRadius") && !value.isNull("thumbnailCornerRadius")) value.optInt("thumbnailCornerRadius") else null,
         )
     }
 }
