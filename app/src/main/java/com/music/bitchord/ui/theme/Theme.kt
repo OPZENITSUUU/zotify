@@ -8,6 +8,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.SideEffect
@@ -23,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.shape.RoundedCornerShape
 import com.music.zotifymusic.R
 import com.music.bitchord.data.settings.UiSkin
+import com.music.bitchord.data.settings.AppearanceSkinState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 // Apple Music's signature red. No longer the primary accent, but kept for the
 // spots (Replay's rank badge) that want that specific red regardless of theme.
@@ -148,10 +151,38 @@ fun BitChordTheme(
     content: @Composable () -> Unit,
 ) {
     val mochy = uiSkin == UiSkin.MOCHY
+    val skinAccentArgb by AppearanceSkinState.accentArgb.collectAsStateWithLifecycle()
+    val skinPureBlack by AppearanceSkinState.pureBlack.collectAsStateWithLifecycle()
+    val skinCornerRadius by AppearanceSkinState.thumbnailCornerRadius.collectAsStateWithLifecycle()
+    val resolvedDark = mochy || skinPureBlack == true || darkTheme
+    val baseColors = if (mochy) MochyColors else if (resolvedDark) DarkColors else LightColors
+    val skinAccent = skinAccentArgb?.let { Color(it) }
+    val resolvedColors = if (skinAccent == null) {
+        baseColors
+    } else {
+        val luminance = skinAccent.red * 0.299f + skinAccent.green * 0.587f + skinAccent.blue * 0.114f
+        val onAccent = if (luminance > 0.55f) Color.Black else Color.White
+        baseColors.copy(
+            primary = skinAccent,
+            onPrimary = onAccent,
+            primaryContainer = skinAccent.copy(alpha = 0.22f),
+            onPrimaryContainer = if (resolvedDark) Color.White else Color.Black,
+        )
+    }
+    val radius = skinCornerRadius?.toFloat()
+    val skinShapes = radius?.let {
+        Shapes(
+            extraSmall = RoundedCornerShape((it * 0.35f).dp),
+            small = RoundedCornerShape((it * 0.55f).dp),
+            medium = RoundedCornerShape(it.dp),
+            large = RoundedCornerShape((it * 1.15f).dp),
+            extraLarge = RoundedCornerShape((it * 1.25f).dp),
+        )
+    }
     MaterialTheme(
-        colorScheme = if (mochy) MochyColors else if (darkTheme) DarkColors else LightColors,
+        colorScheme = resolvedColors,
         typography = if (mochy) MochyTypography else BitChordTypography,
-        shapes = if (mochy) MochyShapes else Shapes(),
+        shapes = skinShapes ?: if (mochy) MochyShapes else Shapes(),
     ) {
         CompositionLocalProvider(LocalUiSkin provides uiSkin, content = content)
     }
