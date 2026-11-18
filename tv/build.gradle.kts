@@ -95,11 +95,11 @@ android {
             "LISTEN_TOGETHER_SERVER",
             "\"${listenTogetherServer.replace("\\", "\\\\").replace("\"", "\\\"")}\"",
         )
-        // The TV APKs share a GitHub release with the phone ones and are told
-        // apart by name (ZotifyMusicTV-v1.8.apk, ZotifyMusicTV-v1.8_x86_64.apk), so
+        // When a release includes TV APKs, they are identified separately from
+        // phone APKs by name (ZotifyMusicTV-v1.8.apk, ZotifyMusicTV-v1.8_x86_64.apk), so
         // the updater installs the TV app here, never the phone app. See
         // AppUpdateChecker.apkAssetUrl.
-        buildConfigField("String", "UPDATE_APK_PREFIX", "\"BitChordTV-\"")
+        buildConfigField("String", "UPDATE_APK_PREFIX", "\"ZotifyMusicTV-\"")
     }
 
     splits {
