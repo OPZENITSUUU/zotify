@@ -373,7 +373,7 @@ object AppearanceSkinLibrary {
 
     private fun downloadHttps(input: String): ByteArray {
         var current = URL(input)
-        repeat(5) {
+        for (redirectCount in 0 until 5) {
             require(current.protocol.equals("https", ignoreCase = true)) { "Skin links must stay on HTTPS." }
             val connection = current.openConnection() as HttpURLConnection
             connection.instanceFollowRedirects = false
@@ -381,21 +381,27 @@ object AppearanceSkinLibrary {
             connection.readTimeout = 15_000
             connection.setRequestProperty("User-Agent", "Zotify-Music-Skin-Importer")
             connection.setRequestProperty("Accept", "application/json, application/zip, */*")
-            val status = connection.responseCode
-            if (status in 300..399) {
-                val location = connection.getHeaderField("Location") ?: error("Skin host returned an invalid redirect.")
-                current = URL(current, location)
-                connection.disconnect()
-                return@repeat
-            }
-            require(status == HttpURLConnection.HTTP_OK) { "Skin download failed (HTTP $status)." }
-            val declared = connection.contentLengthLong
-            require(declared <= MAX_PACKAGE_BYTES || declared < 0) { "Skin download exceeds the 30 MB limit." }
-            return try {
-                connection.inputStream.use { readLimited(it, MAX_PACKAGE_BYTES) }
+            var redirect: URL? = null
+            try {
+                val status = connection.responseCode
+                if (status in 300..399) {
+                    val location = connection.getHeaderField("Location")
+                        ?: error("Skin host returned an invalid redirect.")
+                    redirect = URL(current, location)
+                } else {
+                    require(status == HttpURLConnection.HTTP_OK) {
+                        "Skin download failed (HTTP $status)."
+                    }
+                    val declared = connection.contentLengthLong
+                    require(declared <= MAX_PACKAGE_BYTES || declared < 0) {
+                        "Skin download exceeds the 30 MB limit."
+                    }
+                    return connection.inputStream.use { readLimited(it, MAX_PACKAGE_BYTES) }
+                }
             } finally {
                 connection.disconnect()
             }
+            current = redirect ?: error("Skin host returned an invalid redirect.")
         }
         error("Too many redirects while downloading this skin.")
     }
