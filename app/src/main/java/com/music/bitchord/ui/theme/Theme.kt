@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import androidx.compose.foundation.shape.RoundedCornerShape
 import com.music.zotifymusic.R
 import com.music.bitchord.data.settings.UiSkin
@@ -125,6 +126,9 @@ private val MochyTypography = Typography(
 
 val LocalUiSkin = compositionLocalOf { UiSkin.ZOTIFY }
 
+/** Imported look packs may change artwork clipping without changing player-bar geometry. */
+val LocalArtworkCornerRadius = compositionLocalOf<Dp?> { null }
+
 /** Applies [family] to every style in the scale, so nothing is left on Roboto. */
 private fun Typography.withFamily(family: FontFamily) = Typography(
     displayLarge = displayLarge.copy(fontFamily = family),
@@ -184,7 +188,11 @@ fun BitChordTheme(
         typography = if (mochy) MochyTypography else BitChordTypography,
         shapes = skinShapes ?: if (mochy) MochyShapes else Shapes(),
     ) {
-        CompositionLocalProvider(LocalUiSkin provides uiSkin, content = content)
+        CompositionLocalProvider(
+            LocalUiSkin provides uiSkin,
+            LocalArtworkCornerRadius provides skinCornerRadius?.dp,
+            content = content,
+        )
     }
 }
 
