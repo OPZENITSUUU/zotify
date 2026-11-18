@@ -151,9 +151,19 @@ object AppearanceSkinLibrary {
         require(cleaned.startsWith("https://", ignoreCase = true)) {
             "Only HTTPS skin links are accepted."
         }
-        val candidate = resolveGithubUrl(cleaned)
-        val bytes = downloadHttps(candidate)
-        parsePackage(bytes, candidate)
+        val candidates = resolveGithubUrls(cleaned)
+        var lastFailure: Throwable? = null
+        for (candidate in candidates) {
+            try {
+                return@withContext parsePackage(downloadHttps(candidate), candidate)
+            } catch (failure: Exception) {
+                lastFailure = failure
+            }
+        }
+        throw IllegalArgumentException(
+            "No compatible Mochy Look manifest or skin ZIP was found at this link.",
+            lastFailure,
+        )
     }
 
     fun install(context: Context, pack: AppearanceSkinPack) {
@@ -303,33 +313,46 @@ object AppearanceSkinLibrary {
         android.graphics.Color.parseColor(value)
     }.getOrNull()
 
-    private fun resolveGithubUrl(input: String): String {
+    private fun resolveGithubUrls(input: String): List<String> {
         val url = URL(input)
-        if (!url.host.equals("github.com", ignoreCase = true)) return input
+        if (!url.host.equals("github.com", ignoreCase = true)) return listOf(input)
         val parts = url.path.trim('/').split('/').filter { it.isNotBlank() }
-        if (parts.size < 2) return input
+        if (parts.size < 2) return listOf(input)
         val owner = parts[0]
         val repo = parts[1].removeSuffix(".git")
-        if (owner.isBlank() || repo.isBlank()) return input
+        if (owner.isBlank() || repo.isBlank()) return listOf(input)
 
         // Honour a pasted GitHub blob URL exactly, including branch and nested manifest path.
         if (parts.size >= 5 && parts[2] == "blob") {
             val branch = parts[3]
             val filePath = parts.drop(4).joinToString("/")
-            return "https://raw.githubusercontent.com/$owner/$repo/$branch/$filePath"
+            return listOf("https://raw.githubusercontent.com/$owner/$repo/$branch/$filePath")
         }
         if (parts.size >= 5 && parts[2] == "tree") {
             val branch = parts[3]
             val folder = parts.drop(4).joinToString("/")
-            return "https://raw.githubusercontent.com/$owner/$repo/$branch/$folder/manifest.json"
+            return listOf("https://raw.githubusercontent.com/$owner/$repo/$branch/$folder/manifest.json")
         }
+        // A direct release-asset URL is already the exact file the user selected.
+        if (parts.size >= 6 && parts[2] == "releases" && parts[3] == "download" &&
+            parts.last().endsWith(".zip", ignoreCase = true)
+        ) return listOf(input)
 
-        // A repository URL uses GitHub's declared default branch, not an assumed "main".
-        val metadata = runCatching {
+        // A repository URL uses GitHub's declared default branch, never an assumed "main".
+        val metadata = try {
             JSONObject(downloadHttps("https://api.github.com/repos/$owner/$repo").toString(Charsets.UTF_8))
-        }.getOrNull()
-        val defaultBranch = metadata?.optString("default_branch")?.takeIf { it.isNotBlank() } ?: "main"
+        } catch (failure: Exception) {
+            throw IllegalArgumentException(
+                "Could not resolve this GitHub repository's default branch. Paste a direct manifest.json or ZIP URL instead.",
+                failure,
+            )
+        }
+        val defaultBranch = metadata.optString("default_branch").takeIf { it.isNotBlank() }
+            ?: error("GitHub did not provide a default branch for this repository.")
 
+        // Try every ZIP asset, prioritising skin/look-named archives and validating each
+        // package's manifest before selecting it. Repositories often publish several ZIPs.
+        val candidates = mutableListOf<Pair<Int, String>>()
         val api = "https://api.github.com/repos/$owner/$repo/releases/latest"
         val release = runCatching { JSONObject(downloadHttps(api).toString(Charsets.UTF_8)) }.getOrNull()
         val assets = release?.optJSONArray("assets")
@@ -338,10 +361,14 @@ object AppearanceSkinLibrary {
                 val asset = assets.optJSONObject(index) ?: continue
                 val name = asset.optString("name")
                 val download = asset.optString("browser_download_url")
-                if (name.endsWith(".zip", true) && download.startsWith("https://")) return download
+                if (!name.endsWith(".zip", true) || !download.startsWith("https://")) continue
+                val lowerName = name.lowercase()
+                val priority = if ("skin" in lowerName || "look" in lowerName || "mochy" in lowerName) 0 else 1
+                candidates += priority to download
             }
         }
-        return "https://raw.githubusercontent.com/$owner/$repo/$defaultBranch/manifest.json"
+        val manifest = "https://raw.githubusercontent.com/$owner/$repo/$defaultBranch/manifest.json"
+        return candidates.sortedBy { it.first }.map { it.second }.distinct() + manifest
     }
 
     private fun downloadHttps(input: String): ByteArray {
