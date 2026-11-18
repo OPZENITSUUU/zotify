@@ -713,7 +713,7 @@ class SourcesTest {
 
     @Test
     fun `legacy retired defaults are removed but a user-created matching URL is preserved`() {
-        val retired = listOf(
+        val retired = mutableListOf(
             SourceConfig(
                 id = "default-addon-lossless-bridge-v1",
                 kind = SourceKind.ADDON,
