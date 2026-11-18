@@ -1,5 +1,8 @@
 name: Android Signed APK Artifact (Manual)
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
 
