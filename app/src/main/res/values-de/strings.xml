@@ -1416,7 +1416,7 @@
     <string name="appearance_skins_check">Prüfen</string>
     <string name="appearance_skins_cancel">Abbrechen</string>
     <string name="appearance_skins_review">Skin prüfen</string>
-    <string name="appearance_skins_no_supported_settings">Dieses Paket enthält keine von Zotify unterstützten Darstellungseinstellungen.</string>
+    <string name="appearance_skins_no_settings_supported">Dieses Paket enthält keine von Zotify unterstützten Darstellungseinstellungen.</string>
     <string name="appearance_skins_supported">Unterstützt: %1$s</string>
     <string name="appearance_skins_ignored">Aus Sicherheits-/Kompatibilitätsgründen ignoriert: %1$s</string>
     <string name="appearance_skins_installed_success">Skin installiert. Du kannst ihn später in der Liste anwenden.</string>
