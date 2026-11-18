@@ -2196,6 +2196,7 @@ private fun SectionCard(
     modifier: Modifier = Modifier.width(SHELF_CARD_WIDTH),
     onLongPress: (() -> Unit)? = null,
 ) {
+    val artworkShape = RoundedCornerShape(LocalArtworkCornerRadius.current ?: 10.dp)
     Column(
         modifier = modifier
             .longPressMenuClickable(onClick = onClick, onLongClick = onLongPress),
@@ -2206,8 +2207,8 @@ private fun SectionCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .clip(RoundedCornerShape(10.dp))
-                .thumbnailBorder(RoundedCornerShape(10.dp))
+                .clip(artworkShape)
+                .thumbnailBorder(artworkShape)
                 .background(palette.elevated),
         )
         Spacer(Modifier.height(8.dp))
