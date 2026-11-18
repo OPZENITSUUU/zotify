@@ -1340,7 +1340,7 @@
     <string name="appearance_skins_no_settings_applied">Questa versione di Zotify non supporta alcuna impostazione</string>
     <string name="appearance_skins_applies">Applicato: %1$s</string>
     <string name="appearance_skins_not_applied">Non applicato: %1$s</string>
-    <string name="appearance_skins_disabled">Tema disattivato. L'aspetto precedente è stato ripristinato.</string>
+    <string name="appearance_skins_disabled">Tema disattivato. L\'aspetto precedente è stato ripristinato.</string>
     <string name="appearance_skins_disable_failed">Impossibile disattivare il tema.</string>
     <string name="appearance_skins_turn_off">Disattiva</string>
     <string name="appearance_skins_applied">%1$s applicato.</string>
@@ -1355,10 +1355,10 @@
     <string name="appearance_skins_check">Verifica</string>
     <string name="appearance_skins_cancel">Annulla</string>
     <string name="appearance_skins_review">Rivedi tema</string>
-    <string name="appearance_skins_no_settings_supported">Questo pacchetto non contiene impostazioni dell'aspetto supportate da Zotify.</string>
+    <string name="appearance_skins_no_settings_supported">Questo pacchetto non contiene impostazioni dell\'aspetto supportate da Zotify.</string>
     <string name="appearance_skins_supported">Supportato: %1$s</string>
     <string name="appearance_skins_ignored">Ignorato per sicurezza/compatibilità: %1$s</string>
-    <string name="appearance_skins_installed_success">Tema installato. Puoi applicarlo dall'elenco quando vuoi.</string>
+    <string name="appearance_skins_installed_success">Tema installato. Puoi applicarlo dall\'elenco quando vuoi.</string>
     <string name="appearance_skins_install">Installa</string>
     <string name="appearance_skin_import_failed">Impossibile importare questo tema.</string>
     <string name="appearance_skins_count">%1$d</string>
