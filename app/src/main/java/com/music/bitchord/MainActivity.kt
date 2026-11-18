@@ -768,7 +768,7 @@ private fun BitChordApp(
     onboardingShown.targetState = !onboardingComplete
     val onboardingVisible = onboardingShown.currentState || onboardingShown.targetState
     SystemBarIcons(
-        dark = !effectiveDarkTheme && !showNowPlaying && !showReplay && replayStory == null && !onboardingVisible,
+        dark = !darkTheme && !showNowPlaying && !showReplay && replayStory == null && !onboardingVisible,
     )
 
     val homeState by viewModel.home.collectAsStateWithLifecycle()
