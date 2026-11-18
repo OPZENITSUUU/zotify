@@ -342,11 +342,10 @@ object AppearanceSkinLibrary {
             )
         }
         val branch = branchNames
-            .filter { fullPath.startsWith("$it/") }
+            .filter { fullPath == it || fullPath.startsWith("$it/") }
             .maxByOrNull { it.length }
             ?: error("Could not identify the branch in this GitHub URL.")
-        val relativePath = fullPath.removePrefix("$branch/")
-        require(relativePath.isNotBlank()) { "The GitHub URL must point to a manifest or ZIP file." }
+        val relativePath = if (fullPath == branch) "" else fullPath.removePrefix("$branch/")
         return branch to relativePath
     }
 
@@ -361,9 +360,16 @@ object AppearanceSkinLibrary {
 
         // Git refs may contain slashes. Resolve the longest matching branch name
         // from the repository's branch list before separating branch from file path.
-        if (parts.size >= 5 && (parts[2] == "blob" || parts[2] == "tree")) {
+        if ((parts.size >= 5 && parts[2] == "blob") ||
+            (parts.size >= 4 && parts[2] == "tree")
+        ) {
             val (branch, relativePath) = resolveGithubBranchPath(owner, repo, parts.drop(3))
-            val filePath = if (parts[2] == "tree") "$relativePath/manifest.json" else relativePath
+            val filePath = if (parts[2] == "tree") {
+                if (relativePath.isBlank()) "manifest.json" else "$relativePath/manifest.json"
+            } else {
+                require(relativePath.isNotBlank()) { "The GitHub blob URL must point to a file." }
+                relativePath
+            }
             return listOf("https://raw.githubusercontent.com/$owner/$repo/$branch/$filePath")
         }
         // A direct release-asset URL is already the exact file the user selected.
