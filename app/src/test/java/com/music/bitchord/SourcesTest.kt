@@ -713,53 +713,41 @@ class SourcesTest {
 
     @Test
     fun `legacy retired defaults are removed but a user-created matching URL is preserved`() {
-        val retired = mutableListOf(
-            SourceConfig(
-                id = "default-addon-lossless-bridge-v1",
-                kind = SourceKind.ADDON,
-                baseUrl = "https://losslessbridge.de.deplexo.com",
-                enabled = true,
-            ),
-            SourceConfig(
-                id = "default-addon-qobuz-dl-v1",
-                kind = SourceKind.ADDON,
-                baseUrl = "https://qobuz-addon.vercel.app/a",
-                enabled = true,
-            ),
-        )
-        retired += listOf(
-            SourceConfig(
-                id = "default-addon-nullbeat-v1",
-                kind = SourceKind.ADDON,
-                baseUrl = "https://nullbeat.example",
-                enabled = true,
-            ),
-            SourceConfig(
-                id = "default-addon-nebula-v1",
-                kind = SourceKind.ADDON,
-                baseUrl = "https://nebula.example",
-                enabled = true,
-            ),
-        )
-        val userEntry = SourceConfig(
-            id = "user-added-qobuz",
-            kind = SourceKind.ADDON,
-            baseUrl = "https://qobuz-addon.vercel.app/a",
-            enabled = true,
-            networkAccessAuthorized = true,
-        )
-
-        val migrated = SourceRegistry.sourcesForInit(retired + userEntry, seedDefaultAddons = false)
-
         val retiredIds = setOf(
             "default-addon-lossless-bridge-v1",
             "default-addon-qobuz-dl-v1",
             "default-addon-nullbeat-v1",
             "default-addon-nebula-v1",
         )
+        val retired = retiredIds.map { id ->
+            SourceConfig(
+                id = id,
+                kind = SourceKind.ADDON,
+                baseUrl = if (id == "default-addon-nullbeat-v1") {
+                    "https://nullbeat.example"
+                } else {
+                    "https://retired.example"
+                },
+                enabled = true,
+            )
+        }
+        // Matching URL alone must not cause a listener-created source to be removed.
+        val userEntry = SourceConfig(
+            id = "user-added-nullbeat",
+            kind = SourceKind.ADDON,
+            baseUrl = "https://nullbeat.example",
+            enabled = true,
+            networkAccessAuthorized = true,
+        )
+
+        val migrated = SourceRegistry.sourcesForInit(retired + userEntry, seedDefaultAddons = false)
+
         assertTrue(migrated.none { it.id in retiredIds })
-        assertTrue(migrated.any { it.id == "user-added-qobuz" && it.enabled })
+        assertTrue(migrated.any { it.id == "user-added-nullbeat" && it.enabled })
     }
+
+    @Test
+    fun `legacy enabled addons are disabled until the user grants network consent`() {
 
     @Test
     fun `legacy enabled addons are disabled until the user grants network consent`() {

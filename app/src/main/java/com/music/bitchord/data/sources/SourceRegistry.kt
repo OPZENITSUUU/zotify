@@ -566,11 +566,7 @@ object SourceRegistry {
 
     private val BUILT_IN_KINDS = listOf(SourceKind.WIKIMEDIA_COMMONS, SourceKind.YOUTUBE)
 
-    /**
-     * Seeded endpoints known to be unavailable are removed on every launch,
-     * including installs that already persisted them. User-added entries are
-     * preserved because retirement is by our stable seed IDs only.
-     */
+    /** Public endpoints requested by the user. Credential-bearing paths are never bundled in an APK. */
     private val RETIRED_DEFAULT_ADDON_IDS = setOf(
         "default-addon-lossless-bridge-v1",
         "default-addon-qobuz-dl-v1",
