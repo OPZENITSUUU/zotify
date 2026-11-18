@@ -315,7 +315,7 @@ private fun DownloadManagerRow(
                 Box(
                     modifier = Modifier
                         .size(ART_SIZE)
-                        .clip(RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(artworkCorner))
                         .background(Color.Black.copy(alpha = 0.45f)),
                     contentAlignment = Alignment.Center,
                 ) {
