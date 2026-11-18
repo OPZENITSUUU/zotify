@@ -1264,7 +1264,7 @@
     <string name="appearance_skins_empty_title">No custom skins yet.</string>
     <string name="appearance_skins_empty_subtitle">Add a Mochy-compatible .zip, manifest.json link or public GitHub skin repository.</string>
     <string name="appearance_skins_active">ACTIVE</string>
-    <string name="appearance_skins_no_supported_settings">No settings supported by this Zotify build</string>
+    <string name="appearance_skins_no_settings_applied">No settings supported by this Zotify build</string>
     <string name="appearance_skins_applies">Applies: %1$s</string>
     <string name="appearance_skins_not_applied">Not applied: %1$s</string>
     <string name="appearance_skins_disabled">Skin disabled. Your previous appearance was restored.</string>
