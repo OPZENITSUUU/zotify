@@ -45,6 +45,8 @@ object AppUpdateChecker {
         val apkSha256: String?,
         /** The release's own Markdown body, shown as this update's "what's new". */
         val notes: String?,
+        /** True only when official release metadata sets a valid supported-version floor. */
+        val mandatory: Boolean = false,
     )
 
     enum class CheckResult { UPDATE_AVAILABLE, UP_TO_DATE, NO_COMPATIBLE_APK, FAILED, THROTTLED }
@@ -58,6 +60,7 @@ object AppUpdateChecker {
     private const val KEY_PENDING_APK_URL = "pending_update_apk_url"
     private const val KEY_PENDING_APK_SHA256 = "pending_update_apk_sha256"
     private const val KEY_PENDING_NOTES = "pending_update_notes"
+    private const val KEY_PENDING_MANDATORY = "pending_update_mandatory"
     internal const val CHECK_INTERVAL_MS = 24L * 60L * 60L * 1000L
 
     private const val LATEST_RELEASE_URL =
@@ -97,8 +100,7 @@ object AppUpdateChecker {
         val now = System.currentTimeMillis()
         val lastCheck = prefs.getLong(KEY_LAST_CHECK_MS, 0L)
         if (!force && !shouldCheckNow(lastCheck, now)) return@withContext CheckResult.THROTTLED
-        val dismissedVersion = prefs
-            .getString(KEY_DISMISSED_VERSION, null)
+        val dismissedVersion = dismissedVersion(context)
         val result = runCatching {
             val request = Request.Builder().url(LATEST_RELEASE_URL).build()
             val body = Http.client.newCall(request).execute().use { response ->
@@ -113,12 +115,32 @@ object AppUpdateChecker {
                 ?: error("GitHub release has no page URL")
             check(isOfficialReleaseUrl(url)) { "GitHub release URL is not from the configured repository" }
             val releaseBody = release["body"]?.jsonPrimitive?.contentOrNull
-            val latestVersionCode = releaseVersionCode(releaseBody)
+            val isTvBuild = isTvUpdateTarget(BuildConfig.UPDATE_APK_PREFIX)
+            val latestVersionCode = (if (isTvBuild) {
+                tvReleaseVersionCode(releaseBody)
+            } else {
+                releaseVersionCode(releaseBody)
+            })
                 ?: error("GitHub release has no valid Android version code")
+            val minimumSupportedVersionCode = if (isTvBuild) null else {
+                minimumSupportedVersionCode(releaseBody)?.takeIf { it <= latestVersionCode }
+            }
+            val mandatory = !isTvBuild && isMandatoryUpdate(
+                currentVersionCode = BuildConfig.VERSION_CODE.toLong(),
+                minimumSupportedVersionCode = minimumSupportedVersionCode,
+                releaseVersionCode = latestVersionCode,
+                supportsMandatoryPolicy = BuildConfig.UPDATE_APK_PREFIX.equals("Zotify.Music", ignoreCase = true),
+            )
             prefs.edit().putLong(KEY_LAST_CHECK_MS, now).apply()
             val apk = verifiedApkAsset(release)
             val notes = conciseReleaseNotes(releaseBody)
-            val latest = tag.removePrefix("v")
+            val latest = if (isTvBuild) {
+                tvReleaseVersionName(releaseBody)
+                    ?: error("GitHub release has no valid Android TV version name")
+            } else {
+                tag.removePrefix("v")
+            }
+            val update = updateInfoForRelease(latest, url, apk, notes, mandatory)
             val dismissedVersionForCheck = if (ignoreDismissed) null else dismissedVersion
             if (!shouldNotifyUpdate(
                     latest,
@@ -126,13 +148,14 @@ object AppUpdateChecker {
                     BuildConfig.VERSION_NAME,
                     BuildConfig.VERSION_CODE.toLong(),
                     dismissedVersionForCheck,
+                    mandatory,
                 )
             ) {
                 CheckResult.UP_TO_DATE
-            } else if (apk == null) {
+            } else if (update == null) {
                 CheckResult.NO_COMPATIBLE_APK
             } else {
-                UpdateInfo(latest, url, apk.url, apk.sha256, notes).also {
+                update.also {
                     persistPending(context, it)
                     _available.value = it
                 }
@@ -151,20 +174,30 @@ object AppUpdateChecker {
         val prefs = context.getSharedPreferences(UPDATE_PREFS, Context.MODE_PRIVATE)
         val version = prefs.getString(KEY_PENDING_VERSION, null) ?: run { _available.value = null; return null }
         val releaseUrl = prefs.getString(KEY_PENDING_RELEASE_URL, null) ?: run { _available.value = null; return null }
-        val apkUrl = prefs.getString(KEY_PENDING_APK_URL, null) ?: run { _available.value = null; return null }
-        val digest = prefs.getString(KEY_PENDING_APK_SHA256, null) ?: run { _available.value = null; return null }
-        val update = UpdateInfo(version, releaseUrl, apkUrl, digest, conciseReleaseNotes(prefs.getString(KEY_PENDING_NOTES, null)))
+        val update = pendingUpdateInfo(
+            version = version,
+            releaseUrl = releaseUrl,
+            apkUrl = prefs.getString(KEY_PENDING_APK_URL, null),
+            apkSha256 = prefs.getString(KEY_PENDING_APK_SHA256, null),
+            notes = conciseReleaseNotes(prefs.getString(KEY_PENDING_NOTES, null)),
+            mandatory = prefs.getBoolean(KEY_PENDING_MANDATORY, false),
+        )
         _available.value = update
         return update
     }
 
-    private fun persistPending(context: Context, update: UpdateInfo) {
+    internal fun dismissedVersion(context: Context): String? =
+        context.getSharedPreferences(UPDATE_PREFS, Context.MODE_PRIVATE)
+            .getString(KEY_DISMISSED_VERSION, null)
+
+    internal fun persistPending(context: Context, update: UpdateInfo) {
         context.getSharedPreferences(UPDATE_PREFS, Context.MODE_PRIVATE).edit()
             .putString(KEY_PENDING_VERSION, update.version)
             .putString(KEY_PENDING_RELEASE_URL, update.releaseUrl)
             .putString(KEY_PENDING_APK_URL, update.apkUrl)
             .putString(KEY_PENDING_APK_SHA256, update.apkSha256)
             .putString(KEY_PENDING_NOTES, update.notes)
+            .putBoolean(KEY_PENDING_MANDATORY, update.mandatory)
             .apply()
     }
 
@@ -175,13 +208,15 @@ object AppUpdateChecker {
             .remove(KEY_PENDING_APK_URL)
             .remove(KEY_PENDING_APK_SHA256)
             .remove(KEY_PENDING_NOTES)
+            .remove(KEY_PENDING_MANDATORY)
             .apply()
         _available.value = null
     }
 
     fun dismiss(context: Context, version: String) {
-        context.getSharedPreferences(UPDATE_PREFS, Context.MODE_PRIVATE)
-            .edit()
+        val preferences = context.getSharedPreferences(UPDATE_PREFS, Context.MODE_PRIVATE)
+        if (preferences.getBoolean(KEY_PENDING_MANDATORY, false)) return
+        preferences.edit()
             .putString(KEY_DISMISSED_VERSION, version)
             .apply()
         clearPending(context)
@@ -214,6 +249,28 @@ object AppUpdateChecker {
      */
     internal data class VerifiedApkAsset(val name: String, val url: String, val sha256: String)
 
+    /** Keep mandatory releases actionable even when no compatible verified APK exists. */
+    internal fun updateInfoForRelease(
+        version: String,
+        releaseUrl: String,
+        apk: VerifiedApkAsset?,
+        notes: String?,
+        mandatory: Boolean,
+    ): UpdateInfo? {
+        if (apk == null && !mandatory) return null
+        return UpdateInfo(version, releaseUrl, apk?.url, apk?.sha256, notes, mandatory)
+    }
+
+    /** Map persisted pending fields without treating nullable APK/digest as missing state. */
+    internal fun pendingUpdateInfo(
+        version: String,
+        releaseUrl: String,
+        apkUrl: String?,
+        apkSha256: String?,
+        notes: String?,
+        mandatory: Boolean,
+    ): UpdateInfo = UpdateInfo(version, releaseUrl, apkUrl, apkSha256, notes, mandatory)
+
     internal fun normalizeSha256Digest(raw: String?): String? {
         val digest = raw?.let {
             if (it.startsWith("sha256:", ignoreCase = true)) it.substringAfter(':') else it
@@ -229,6 +286,55 @@ object AppUpdateChecker {
         return match.groupValues[1].toLongOrNull()?.takeIf { it > 0L }
     }
 
+    /** TV release metadata is separate so phone builds continue using the original code/tag fields. */
+    internal fun tvReleaseVersionCode(body: String?): Long? {
+        val lines = body?.lineSequence()
+            ?.filter { it.contains("Android TV version code:", ignoreCase = true) }
+            ?.toList()
+            .orEmpty()
+        if (lines.size != 1) return null
+        val match = Regex("^\\s*Android TV version code:\\s*(\\d+)\\s*$", RegexOption.IGNORE_CASE)
+            .matchEntire(lines.single()) ?: return null
+        return match.groupValues[1].toLongOrNull()?.takeIf { it > 0L }
+    }
+
+    internal fun tvReleaseVersionName(body: String?): String? {
+        val lines = body?.lineSequence()
+            ?.filter { it.contains("Android TV version name:", ignoreCase = true) }
+            ?.toList()
+            .orEmpty()
+        if (lines.size != 1) return null
+        val match = Regex("^\\s*Android TV version name:\\s*(.+?)\\s*$", RegexOption.IGNORE_CASE)
+            .matchEntire(lines.single()) ?: return null
+        return match.groupValues[1].trim().takeIf { it.isNotEmpty() }
+    }
+
+    internal fun isTvUpdateTarget(apkPrefix: String): Boolean =
+        apkPrefix.startsWith("ZotifyMusicTV-v", ignoreCase = true)
+
+    /** Optional release-body policy line; invalid or impossible values never make an update mandatory. */
+    internal fun minimumSupportedVersionCode(body: String?): Long? {
+        val lines = body?.lineSequence()
+            ?.filter { it.contains("Minimum supported Android phone version code:", ignoreCase = true) }
+            ?.toList()
+            .orEmpty()
+        if (lines.size != 1) return null
+        val match = Regex(
+            "^\\s*Minimum supported Android phone version code:\\s*(\\d+)\\s*$",
+            RegexOption.IGNORE_CASE,
+        ).matchEntire(lines.single()) ?: return null
+        return match.groupValues[1].toLongOrNull()?.takeIf { it > 0L }
+    }
+
+    internal fun isMandatoryUpdate(
+        currentVersionCode: Long,
+        minimumSupportedVersionCode: Long?,
+        releaseVersionCode: Long,
+        supportsMandatoryPolicy: Boolean = true,
+    ): Boolean = supportsMandatoryPolicy && minimumSupportedVersionCode != null &&
+        minimumSupportedVersionCode <= releaseVersionCode &&
+        currentVersionCode < minimumSupportedVersionCode
+
     internal fun isNewerVersionCode(candidate: Long, installed: Long): Boolean = candidate > installed
 
     internal fun shouldNotifyUpdate(
@@ -237,7 +343,8 @@ object AppUpdateChecker {
         current: String,
         currentVersionCode: Long,
         dismissed: String?,
-    ): Boolean = latest != dismissed && (
+        mandatory: Boolean = false,
+    ): Boolean = (mandatory || latest != dismissed) && (
         latestVersionCode > currentVersionCode ||
             (latestVersionCode == currentVersionCode && isNewer(latest, current))
         )
@@ -263,8 +370,14 @@ object AppUpdateChecker {
                 val safeGithubAsset = parsedUrl.scheme == "https" &&
                     parsedUrl.host == "github.com" &&
                     parsedUrl.encodedPath.startsWith("/OPZENITSUUU/zotify-music/releases/download/")
-                val isOurApk = name.startsWith(BuildConfig.UPDATE_APK_PREFIX, ignoreCase = true) &&
-                    name.endsWith(".apk", ignoreCase = true) &&
+                val prefix = BuildConfig.UPDATE_APK_PREFIX
+                val matchesPrefix = if (prefix.equals("Zotify.Music", ignoreCase = true)) {
+                    name.equals("$prefix.apk", ignoreCase = true) ||
+                        name.startsWith("${prefix}_", ignoreCase = true)
+                } else {
+                    name.startsWith(prefix, ignoreCase = true)
+                }
+                val isOurApk = matchesPrefix && name.endsWith(".apk", ignoreCase = true) &&
                     asset["state"]?.jsonPrimitive?.contentOrNull == "uploaded"
                 if (safeGithubAsset && isOurApk) {
                     VerifiedApkAsset(name.substringBeforeLast('.'), url, digest)
@@ -464,6 +577,12 @@ object AppUpdateChecker {
         _download.value = DownloadState.Idle
     }
 
+    /** Clear the prompt and cached install action only after installed package metadata matches the APK. */
+    fun completeInstalledUpdate(context: Context) {
+        clearPending(context)
+        resetDownload()
+    }
+
     /**
      * Hands a downloaded APK to the system installer.
      *
@@ -508,8 +627,25 @@ object AppUpdateChecker {
             @Suppress("DEPRECATION")
             candidate.versionCode.toLong()
         }
-        installedCode == candidateCode
+        val installedName = installed.versionName
+        val candidateName = candidate.versionName
+        val packageAndSigningCompatible = hasMatchingInstalledCertificate(context, file)
+        installedVersionMetadataMatches(
+            installedCode = installedCode,
+            installedName = installedName,
+            candidateCode = candidateCode,
+            candidateName = candidateName,
+            packageAndSigningCompatible = packageAndSigningCompatible,
+        )
     }.getOrDefault(false)
+
+    internal fun installedVersionMetadataMatches(
+        installedCode: Long,
+        installedName: String?,
+        candidateCode: Long,
+        candidateName: String?,
+        packageAndSigningCompatible: Boolean,
+    ): Boolean = packageAndSigningCompatible && installedCode == candidateCode && installedName == candidateName
 
     fun openInstallPermissionSettings(context: Context): Boolean = runCatching {
         context.startActivity(

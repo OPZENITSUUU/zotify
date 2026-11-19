@@ -1,6 +1,6 @@
 package com.music.bitchord.ui.components
 
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 
 import android.net.Uri
 import androidx.compose.foundation.background

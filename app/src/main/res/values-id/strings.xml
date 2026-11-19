@@ -1360,4 +1360,15 @@
     <string name="app_icon_apply">Terapkan</string>
     <string name="app_icon_changed">Ikon aplikasi diubah. Peluncur mungkin perlu waktu untuk memperbarui.</string>
     <string name="app_icon_failed">Ikon aplikasi tidak dapat diubah: %1$s</string>
+    <string name="change_ui_skin">Ubah tampilan</string>
+
+    <string name="ui_skin_zotify">Zotify Music</string>
+
+    <string name="ui_skin_mochy">Mochy Music</string>
+
+    <string name="ui_skin_zotify_selected">Tampilan asli Zotify Music</string>
+
+    <string name="ui_skin_mochy_selected">Tampilan terinspirasi Mochy Music</string>
+
+
 </resources>

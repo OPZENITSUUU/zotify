@@ -37,6 +37,9 @@ fi
 echo "== build"
 id bitchord >/dev/null 2>&1 || useradd --system --no-create-home --shell /usr/sbin/nologin bitchord
 install -d -o bitchord -g bitchord /opt/bitchord-jam
+# Optional owner-contact secret; never place the webhook URL in the repository or APK.
+if [ ! -f /etc/zotify-contact.env ]; then install -m 600 /dev/null /etc/zotify-contact.env; fi
+chmod 600 /etc/zotify-contact.env
 (cd "$BACKEND_DIR" && /usr/local/go/bin/go build -o /opt/bitchord-jam/server .)
 chown bitchord:bitchord /opt/bitchord-jam/server
 

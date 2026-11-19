@@ -13,7 +13,7 @@ import android.os.SystemClock
 import android.view.View
 import android.widget.RemoteViews
 import com.music.bitchord.MainActivity
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 import com.music.bitchord.playback.PlayerDeepLink
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

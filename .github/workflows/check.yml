@@ -44,7 +44,8 @@ jobs:
 
       - name: The analyser is in the jar
         run: |
-          jar=$(find "desktopApp/build/compose/binaries/main/app/Zotify Music/lib/app" -maxdepth 1 -name "desktopApp*.jar" -print -quit)
+          jar=$(find desktopApp/build/compose/binaries/main/app -type f -name 'desktopApp*.jar' -print -quit)
+          test -n "$jar"
           jar tf "$jar" | grep -q 'native/libbitchord_analysis.so'
           jar tf "$jar" | grep -q 'models/.*\.onnx'
 
@@ -93,7 +94,8 @@ jobs:
       - name: The analyser is in the jar
         shell: bash
         run: |
-          jar=$(find "desktopApp/build/compose/binaries/main/app/Zotify Music/app" -maxdepth 1 -name "desktopApp*.jar" -print -quit)
+          jar=$(find desktopApp/build/compose/binaries/main/app -type f -name 'desktopApp*.jar' -print -quit)
+          test -n "$jar"
           jar tf "$jar" | grep -q 'native/bitchord_analysis.dll'
           jar tf "$jar" | grep -q 'models/.*\.onnx'
           # WinRT, so only MSVC can build it and only this job ever does.
@@ -142,7 +144,8 @@ jobs:
 
       - name: The analyser and models are in the jar
         run: |
-          jar=$(find "desktopApp/build/compose/binaries/main/app/Zotify Music.app/Contents/app" -maxdepth 1 -name "desktopApp*.jar" -print -quit)
+          jar=$(find desktopApp/build/compose/binaries/main/app -type f -name 'desktopApp*.jar' -print -quit)
+          test -n "$jar"
           jar tf "$jar" | grep -q 'models/.*\.onnx'
 
       - name: Upload test reports
@@ -231,7 +234,9 @@ jobs:
           # The runner's optional ADB settings writes failed with Broken pipe after boot on API 30.
           # Keep the emulator's default -no-boot-anim option and skip those extra settings calls.
           disable-animations: false
-          script: ./gradlew :app:connectedProdDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.music.bitchord.PlaybackPipelineFlacInstrumentedTest#localFlacPlaysReportsContainerFactsAndSupportsSeeking
+          script: |
+            ./gradlew :app:connectedProdDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.music.bitchord.PlaybackPipelineFlacInstrumentedTest#localFlacPlaysReportsContainerFactsAndSupportsSeeking
+            ./gradlew :app:connectedProdDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.music.bitchord.data.AppUpdatePersistenceInstrumentedTest
 
       - name: Upload Android instrumentation reports
         if: failure()

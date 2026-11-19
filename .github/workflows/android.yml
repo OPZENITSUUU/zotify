@@ -63,7 +63,7 @@ jobs:
         keytool -exportcert -alias "$KEY_ALIAS" -keystore zotify-release.jks \
           -storepass "$KEYSTORE_PASSWORD" -file "$temp_dir/certificate.der" >/dev/null 2>&1
         certificate_sha256="$(sha256sum "$temp_dir/certificate.der" | awk '{print toupper($1)}')"
-        expected_sha256="943520093D947992BAD228AD677838C19E90880E9639DFB50C9662086B1F8BCF"
+        expected_sha256="EAD01DEB09889B57D7C9E16E52811CE02E85754BD6C19A483AAF772A59C7EE30"
         if [[ "$certificate_sha256" != "$expected_sha256" ]]; then
           echo "::error::Signing certificate fingerprint mismatch: $certificate_sha256"
           exit 1

@@ -9,6 +9,9 @@
 
 package com.music.bitchord.ui.components
 
+import com.music.bitchord.data.settings.UiSkin
+import com.music.bitchord.ui.theme.LocalUiSkin
+
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -51,7 +54,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 import com.music.bitchord.data.model.ROW_ART_PX
 import com.music.bitchord.data.model.Song
 import com.music.bitchord.data.model.artworkAt
@@ -106,7 +109,10 @@ fun GlassNavBar(
     // Held for the same reason [tabs] is. The glass factory below closes over
     // this shape, and a fresh RoundedCornerShape each pass means a fresh factory
     // lambda, which the tab bar sees as a changed argument and recomposes on.
-    val pillShape = remember { RoundedCornerShape(percent = 50) }
+    val uiSkin = LocalUiSkin.current
+    val pillShape = remember(uiSkin) {
+        if (uiSkin == UiSkin.MOCHY) RoundedCornerShape(50.dp) else RoundedCornerShape(percent = 50)
+    }
     val contentColor = glassContentColor()
     val selectedColor = contentColor
     val unselectedColor = contentColor.copy(alpha = 0.65f)

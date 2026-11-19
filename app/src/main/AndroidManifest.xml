@@ -48,7 +48,7 @@
         android:maxSdkVersion="28" />
 
     <application
-        android:name=".BitChordApplication"
+        android:name="com.music.bitchord.BitChordApplication"
         android:allowBackup="true"
         android:appCategory="audio"
         android:usesCleartextTraffic="false"
@@ -105,7 +105,7 @@
           still recreate the Activity so the theme is rebuilt from resources.
         -->
         <activity
-            android:name=".MainActivity"
+            android:name="com.music.bitchord.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
@@ -117,7 +117,7 @@
                   the assistant, Android Auto's media list and the OEM pickers
                   that put up "Complete action using" all ask for
                   MAIN/APP_MUSIC by name and list whoever answers — a launcher
-                  entry alone is not enough, which is why BitChord was missing
+                  entry alone is not enough, which is why Zotify Music was missing
                   from that dialog while every other player on the device was in
                   it.
                 -->
@@ -154,7 +154,7 @@
               which BitChord doesn't — and on Android 12+ an app that has
               verified them (the YouTube Music app itself) takes the link
               without a dialog either way. Declaring the filter is what puts
-              BitChord in the "Open with" list once the user turns YT Music's
+              Zotify Music in the "Open with" list once the user turns YT Music's
               "Open supported links" off; the SEND filter below is the path
               that always works, because sharing asks rather than routing.
 
@@ -195,7 +195,7 @@
             </intent-filter>
 
             <!-- Public Listen Together invites. autoVerify makes a tap open
-                 BitChord directly once the domain publishes its assetlinks
+                 Zotify Music directly once the domain publishes its assetlinks
                  association for the production signing certificate. -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -218,7 +218,7 @@
             </intent-filter>
 
             <!--
-              Share → BitChord, from YT Music's own share sheet or from
+              Share → Zotify Music, from YT Music's own share sheet or from
               anywhere a link can be sent. The text is whatever the sending app
               wrote around the URL, so the URL is picked out of it rather than
               parsed whole.
@@ -232,13 +232,13 @@
 
         <!-- The default launcher icon and optional custom aliases are switched by Settings. -->
         <activity-alias
-            android:name=".LauncherDefault"
+            android:name="com.music.bitchord.LauncherDefault"
             android:enabled="true"
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:label="@string/app_name"
-            android:targetActivity=".MainActivity">
+            android:targetActivity="com.music.bitchord.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -246,13 +246,13 @@
         </activity-alias>
 
         <activity-alias
-            android:name=".LauncherPurple"
+            android:name="com.music.bitchord.LauncherPurple"
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_purple"
             android:roundIcon="@mipmap/ic_launcher_purple"
             android:label="@string/app_name"
-            android:targetActivity=".MainActivity">
+            android:targetActivity="com.music.bitchord.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -260,13 +260,13 @@
         </activity-alias>
 
         <activity-alias
-            android:name=".LauncherGalaxy"
+            android:name="com.music.bitchord.LauncherGalaxy"
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_galaxy"
             android:roundIcon="@mipmap/ic_launcher_galaxy"
             android:label="@string/app_name"
-            android:targetActivity=".MainActivity">
+            android:targetActivity="com.music.bitchord.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -274,13 +274,13 @@
         </activity-alias>
 
         <activity-alias
-            android:name=".LauncherNeon"
+            android:name="com.music.bitchord.LauncherNeon"
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_neon"
             android:roundIcon="@mipmap/ic_launcher_neon"
             android:label="@string/app_name"
-            android:targetActivity=".MainActivity">
+            android:targetActivity="com.music.bitchord.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -288,13 +288,13 @@
         </activity-alias>
 
         <activity-alias
-            android:name=".LauncherSilver"
+            android:name="com.music.bitchord.LauncherSilver"
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_silver"
             android:roundIcon="@mipmap/ic_launcher_silver"
             android:label="@string/app_name"
-            android:targetActivity=".MainActivity">
+            android:targetActivity="com.music.bitchord.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -302,7 +302,7 @@
         </activity-alias>
 
         <service
-            android:name=".playback.PlaybackService"
+            android:name="com.music.bitchord.playback.PlaybackService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback">
             <intent-filter>
@@ -313,12 +313,12 @@
         </service>
 
         <!--
-          Commands from the BitChord watch app (wearos/). Exported because Play
+          Commands from the Zotify Music watch app (wearos/). Exported because Play
           services binds it; only messages from the same package and signing key
           on a paired watch are ever delivered, and only under this path.
         -->
         <service
-            android:name=".wear.WearCommandService"
+            android:name="com.music.bitchord.wear.WearCommandService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
@@ -350,7 +350,7 @@
           cancel action, and nothing outside has any business queueing work.
         -->
         <service
-            android:name=".download.DownloadService"
+            android:name="com.music.bitchord.download.DownloadService"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
 
@@ -365,7 +365,7 @@
           the update broadcast reachable by anything on the device.
         -->
         <receiver
-            android:name=".widget.MediaWidgetSquare"
+            android:name="com.music.bitchord.widget.MediaWidgetSquare"
             android:exported="false"
             android:label="@string/widget_square_label">
             <intent-filter>
@@ -377,7 +377,7 @@
         </receiver>
 
         <receiver
-            android:name=".widget.MediaWidgetWide"
+            android:name="com.music.bitchord.widget.MediaWidgetWide"
             android:exported="false"
             android:label="@string/widget_wide_label">
             <intent-filter>
@@ -390,7 +390,7 @@
 
         <!-- The 4×1 capsule. Its own provider and layout; see MediaWidgetPill. -->
         <receiver
-            android:name=".widget.MediaWidgetPill"
+            android:name="com.music.bitchord.widget.MediaWidgetPill"
             android:exported="false"
             android:label="@string/widget_pill_label">
             <intent-filter>
@@ -403,7 +403,7 @@
 
         <!-- The transport buttons. Reached only by this app's own PendingIntents. -->
         <receiver
-            android:name=".widget.MediaWidgetActions"
+            android:name="com.music.bitchord.widget.MediaWidgetActions"
             android:exported="false" />
 
         <!--

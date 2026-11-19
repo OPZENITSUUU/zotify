@@ -1366,4 +1366,15 @@
     <string name="app_icon_apply">ใช้</string>
     <string name="app_icon_changed">เปลี่ยนไอคอนแอปแล้ว Launcher อาจใช้เวลาสักครู่ในการรีเฟรช</string>
     <string name="app_icon_failed">เปลี่ยนไอคอนแอปไม่ได้: %1$s</string>
+    <string name="change_ui_skin">เปลี่ยนรูปแบบหน้าตา</string>
+
+    <string name="ui_skin_zotify">Zotify Music</string>
+
+    <string name="ui_skin_mochy">Mochy Music</string>
+
+    <string name="ui_skin_zotify_selected">หน้าตาดั้งเดิมของ Zotify Music</string>
+
+    <string name="ui_skin_mochy_selected">หน้าตาที่ได้แรงบันดาลใจจาก Mochy Music</string>
+
+
 </resources>

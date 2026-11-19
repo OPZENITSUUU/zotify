@@ -142,6 +142,9 @@
     <string name="dolby_atmos_open_failed">Couldn’t open Dolby Atmos settings</string>
     <string name="update_available">Update available: v%1$s</string>
     <string name="software_update">Software Update</string>
+    <string name="new_update_available">New Update Available</string>
+    <string name="update_required">Required Update</string>
+    <string name="update_mandatory_body">This release sets a minimum supported app version. Download and installation still require your approval in Android.</string>
     <string name="check_for_updates">Check for Updates</string>
     <string name="update_later">Update Later</string>
     <string name="update_versions" translatable="false">Current: %1$s · Available: %2$s</string>
@@ -154,6 +157,8 @@
     <string name="update_notification_channel_description" translatable="false">Alerts when a verified Zotify Music update is available.</string>
     <string name="update_notification_title" translatable="false">Zotify Music update available: v%1$s</string>
     <string name="update_notification_body" translatable="false">Tap to review the update and choose whether to download it.</string>
+    <string name="update_notification_required_title" translatable="false">Required Zotify Music update: v%1$s</string>
+    <string name="update_notification_required_body" translatable="false">This version is below the release’s minimum supported Android version. Tap to review and download the update.</string>
     <string name="update_available_body">Zotify Music %1$s is available to download.</string>
     <string name="update_downloading_body">Downloading Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s is ready to install.</string>
@@ -1250,4 +1255,14 @@
     <string name="refresh_song_complete">Song refreshed.</string>
     <string name="refresh_song_not_supported">Refresh is available only for streaming tracks.</string>
     <string name="refresh_song_failed">Couldn’t refresh this song. Try again.</string>
+    <string name="change_ui_skin">Change UI Skin</string>
+
+    <string name="ui_skin_zotify">Zotify Music</string>
+
+    <string name="ui_skin_mochy">Mochy Music</string>
+
+    <string name="ui_skin_zotify_selected">Original Zotify Music interface</string>
+
+    <string name="ui_skin_mochy_selected">Mochy Music-inspired interface</string>
+
 </resources>

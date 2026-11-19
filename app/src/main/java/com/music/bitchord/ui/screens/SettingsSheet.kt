@@ -148,6 +148,7 @@ import com.music.bitchord.ui.performance.supportedPerformanceRefreshRates
 import com.music.bitchord.data.model.Account
 import com.music.bitchord.data.LocalMediaRepository
 import com.music.bitchord.data.NerdStats
+import com.music.bitchord.data.OwnerContactClient
 import com.music.bitchord.data.scrobbling.LastFM
 import com.music.bitchord.data.listentogether.ListenTogether
 import com.music.bitchord.data.settings.AppSettings
@@ -157,11 +158,12 @@ import com.music.bitchord.data.settings.LauncherIconManager
 import com.music.bitchord.data.settings.OutputPcmMode
 import com.music.bitchord.playback.AudioOutputStatus
 import com.music.bitchord.data.settings.AutomixPerformanceMode
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 import com.music.bitchord.data.sources.DeviceCodecs
 import com.music.bitchord.data.settings.AudioQuality
 import com.music.bitchord.data.settings.DownloadQuality
 import com.music.bitchord.data.settings.ThemeMode
+import com.music.bitchord.data.settings.UiSkin
 import com.music.bitchord.data.stats.Backup
 import com.music.bitchord.playback.AudioCache
 import com.music.bitchord.ui.player.fullBleedArtworkAvailable
@@ -234,6 +236,7 @@ fun SettingsScreen(
     val lyricsSources by AppSettings.lyricsSources.collectAsStateWithLifecycle()
     val translationLanguage by AppSettings.translationLanguage.collectAsStateWithLifecycle()
     val theme by AppSettings.themeMode.collectAsStateWithLifecycle()
+    val uiSkin by AppSettings.uiSkin.collectAsStateWithLifecycle()
     val selectedLauncherIcon by AppSettings.launcherIcon.collectAsStateWithLifecycle()
     val sessionId by AppSettings.audioSessionId.collectAsStateWithLifecycle()
     val outputPcmMode by AppSettings.outputPcmMode.collectAsStateWithLifecycle()
@@ -399,6 +402,10 @@ fun SettingsScreen(
     var showOwnerContactDialog by rememberSaveable { mutableStateOf(false) }
     var ownerContactType by rememberSaveable { mutableStateOf(0) }
     var ownerContactMessage by rememberSaveable { mutableStateOf("") }
+    var ownerContactSending by remember { mutableStateOf(false) }
+    var ownerContactError by remember { mutableStateOf<String?>(null) }
+    val ownerContactClient = remember { OwnerContactClient() }
+    val ownerContactScope = rememberCoroutineScope()
     val clipboardManager = LocalClipboardManager.current
     val scrobbleScope = rememberCoroutineScope()
 
@@ -885,6 +892,31 @@ fun SettingsScreen(
                     options = ThemeMode.entries.map { it.localizedLabel() },
                     selectedIndex = ThemeMode.entries.indexOf(theme),
                     onSelect = { AppSettings.setThemeMode(ThemeMode.entries[it]) },
+                    modifier = Modifier.padding(start = ROW_INSET, end = ROW_INSET, bottom = 14.dp),
+                )
+            }
+            val uiSkinTitle = stringResource(R.string.change_ui_skin)
+            row(uiSkinTitle, "interface", "appearance", "zotify", "mochy") {
+                SettingsRow(
+                    icon = Icons.Rounded.Apps,
+                    title = uiSkinTitle,
+                    subtitle = stringResource(
+                        if (uiSkin == UiSkin.MOCHY) {
+                            R.string.ui_skin_mochy_selected
+                        } else {
+                            R.string.ui_skin_zotify_selected
+                        },
+                    ),
+                )
+                SegmentedControl(
+                    options = listOf(
+                        stringResource(R.string.ui_skin_zotify),
+                        stringResource(R.string.ui_skin_mochy),
+                    ),
+                    selectedIndex = if (uiSkin == UiSkin.MOCHY) 1 else 0,
+                    onSelect = { selected ->
+                        AppSettings.setUiSkin(if (selected == 1) UiSkin.MOCHY else UiSkin.ZOTIFY)
+                    },
                     modifier = Modifier.padding(start = ROW_INSET, end = ROW_INSET, bottom = 14.dp),
                 )
             }
@@ -1451,6 +1483,7 @@ fun SettingsScreen(
                     onClick = {
                         ownerContactType = 0
                         ownerContactMessage = ""
+                        ownerContactError = null
                         showOwnerContactDialog = true
                     },
                 )
@@ -1779,7 +1812,9 @@ fun SettingsScreen(
             stringResource(R.string.owner_contact_feature),
         )
         AlertDialog(
-            onDismissRequest = { showOwnerContactDialog = false },
+            onDismissRequest = {
+                if (!ownerContactSending) showOwnerContactDialog = false
+            },
             title = { Text(stringResource(R.string.contact_owner)) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -1789,7 +1824,13 @@ fun SettingsScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     contactTypes.forEachIndexed { index, label ->
-                        TextButton(onClick = { ownerContactType = index }) {
+                        TextButton(
+                            enabled = !ownerContactSending,
+                            onClick = {
+                                ownerContactType = index
+                                ownerContactError = null
+                            },
+                        ) {
                             Text(
                                 text = if (ownerContactType == index) "✓  $label" else label,
                                 color = if (ownerContactType == index) MaterialTheme.colorScheme.primary
@@ -1799,36 +1840,93 @@ fun SettingsScreen(
                     }
                     OutlinedTextField(
                         value = ownerContactMessage,
-                        onValueChange = { ownerContactMessage = it },
+                        onValueChange = {
+                            ownerContactMessage = it
+                            ownerContactError = null
+                        },
                         label = { Text(stringResource(R.string.owner_contact_message_hint)) },
                         minLines = 3,
                         maxLines = 5,
+                        enabled = !ownerContactSending,
                         modifier = Modifier.fillMaxWidth(),
                     )
-                    TextButton(onClick = {
-                        clipboardManager.setText(androidx.compose.ui.text.AnnotatedString("opzenitsu_69"))
-                        Toast.makeText(context, context.getString(R.string.owner_discord_id_copied), Toast.LENGTH_SHORT).show()
-                    }) {
+                    TextButton(
+                        enabled = !ownerContactSending,
+                        onClick = {
+                            clipboardManager.setText(
+                                androidx.compose.ui.text.AnnotatedString("opzenitsu_69"),
+                            )
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.owner_discord_id_copied),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                        },
+                    ) {
                         Text(stringResource(R.string.copy_discord_id))
+                    }
+                    ownerContactError?.let { error ->
+                        Text(
+                            text = error,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                        )
                     }
                 }
             },
             confirmButton = {
-                TextButton(onClick = {
-                    val category = contactTypes.getOrElse(ownerContactType) { contactTypes.first() }
-                    val message = ownerContactMessage.trim()
-                    if (message.isNotEmpty()) {
-                        clipboardManager.setText(androidx.compose.ui.text.AnnotatedString("[$category] $message"))
-                        Toast.makeText(context, context.getString(R.string.owner_message_copied), Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(context, context.getString(R.string.owner_enter_message), Toast.LENGTH_SHORT).show()
-                    }
-                }) {
-                    Text(stringResource(R.string.copy_message))
+                TextButton(
+                    enabled = !ownerContactSending,
+                    onClick = {
+                        val message = ownerContactMessage.trim()
+                        if (message.isEmpty()) {
+                            ownerContactError = context.getString(R.string.owner_enter_message)
+                        } else {
+                            ownerContactSending = true
+                            ownerContactError = null
+                            val type = when (ownerContactType) {
+                                1 -> "feedback"
+                                2 -> "feature_request"
+                                else -> "bug_report"
+                            }
+                            ownerContactScope.launch {
+                                val result = ownerContactClient.send(type, message)
+                                ownerContactSending = false
+                                if (result.delivered) {
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.owner_message_sent),
+                                        Toast.LENGTH_LONG,
+                                    ).show()
+                                    ownerContactMessage = ""
+                                    showOwnerContactDialog = false
+                                } else {
+                                    ownerContactError = context.getString(
+                                        when (result.failure) {
+                                            OwnerContactClient.Failure.NOT_CONFIGURED -> R.string.owner_contact_not_configured
+                                            OwnerContactClient.Failure.RATE_LIMITED -> R.string.owner_contact_rate_limited
+                                            OwnerContactClient.Failure.NETWORK -> R.string.owner_contact_network_error
+                                            else -> R.string.owner_contact_send_failed
+                                        },
+                                    )
+                                }
+                            }
+                        }
+                    },
+                ) {
+                    Text(
+                        stringResource(
+                            if (ownerContactSending) R.string.owner_contact_sending
+                            else R.string.send_to_discord,
+                        ),
+                    )
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showOwnerContactDialog = false }) {
+                TextButton(
+                    enabled = !ownerContactSending,
+                    onClick = { showOwnerContactDialog = false },
+                ) {
                     Text(stringResource(R.string.cancel))
                 }
             },

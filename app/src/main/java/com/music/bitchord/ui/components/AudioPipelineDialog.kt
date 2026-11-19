@@ -61,7 +61,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 import com.music.bitchord.data.NerdStats
 import com.music.bitchord.data.TelemetryProvenance
 import com.music.bitchord.data.settings.AppSettings

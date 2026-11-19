@@ -6,7 +6,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.Typography
+import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
@@ -16,7 +19,10 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.music.bitchord.R
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.shape.RoundedCornerShape
+import com.music.zotifymusic.R
+import com.music.bitchord.data.settings.UiSkin
 
 // Apple Music's signature red. No longer the primary accent, but kept for the
 // spots (Replay's rank badge) that want that specific red regardless of theme.
@@ -46,6 +52,28 @@ private val LightColors = lightColorScheme(
     outline = Color(0xFFE5E5EA),
 )
 
+// Mochy Music's reference is intentionally dark-only: a near-black canvas,
+// quiet grey surfaces and restrained monochrome contrast. This is an
+// independent Material 3 palette, not imported reference-app code.
+private val MochyColors = darkColorScheme(
+    primary = Color(0xFFE0E0E0),
+    onPrimary = Color.Black,
+    primaryContainer = Color(0xFF333333),
+    onPrimaryContainer = Color.White,
+    secondary = Color(0xFFB0B0B0),
+    onSecondary = Color.Black,
+    secondaryContainer = Color(0xFF2C2C2C),
+    onSecondaryContainer = Color.White,
+    background = Color.Black,
+    onBackground = Color.White,
+    surface = Color(0xFF080808),
+    onSurface = Color.White,
+    surfaceVariant = Color(0xFF1A1A1A),
+    onSurfaceVariant = Color(0xFFE0E0E0),
+    outline = Color(0xFF3A3A3A),
+    surfaceTint = Color.Black,
+)
+
 /**
  * SF Pro Display, the face Apple Music itself is set in. Only the weights the
  * type scale actually asks for are bundled; Compose synthesises nothing, so a
@@ -59,7 +87,7 @@ val SFProDisplay = FontFamily(
     Font(R.font.sf_pro_display_heavy, FontWeight.W800),
 )
 
-// Heavy, tight typography — the backbone of the Apple Music look.
+// Heavy, tight typography — the backbone of the original Zotify interface.
 private val BitChordTypography = Typography(
     displayLarge = TextStyle(fontWeight = FontWeight.W800, fontSize = 34.sp, letterSpacing = (-0.8).sp),
     headlineLarge = TextStyle(fontWeight = FontWeight.W800, fontSize = 30.sp, letterSpacing = (-0.7).sp),
@@ -71,6 +99,28 @@ private val BitChordTypography = Typography(
     labelMedium = TextStyle(fontWeight = FontWeight.W600, fontSize = 12.sp),
     labelSmall = TextStyle(fontWeight = FontWeight.W600, fontSize = 11.sp),
 ).withFamily(SFProDisplay)
+
+private val MochyShapes = Shapes(
+    extraSmall = RoundedCornerShape(8.dp),
+    small = RoundedCornerShape(12.dp),
+    medium = RoundedCornerShape(18.dp),
+    large = RoundedCornerShape(24.dp),
+    extraLarge = RoundedCornerShape(28.dp),
+)
+
+private val MochyTypography = Typography(
+    displayLarge = TextStyle(fontWeight = FontWeight.W700, fontSize = 34.sp, letterSpacing = (-0.5).sp),
+    headlineLarge = TextStyle(fontWeight = FontWeight.W700, fontSize = 30.sp, letterSpacing = (-0.4).sp),
+    headlineMedium = TextStyle(fontWeight = FontWeight.W600, fontSize = 22.sp),
+    titleLarge = TextStyle(fontWeight = FontWeight.W600, fontSize = 20.sp),
+    titleMedium = TextStyle(fontWeight = FontWeight.W600, fontSize = 16.sp),
+    bodyLarge = TextStyle(fontWeight = FontWeight.W400, fontSize = 16.sp),
+    bodyMedium = TextStyle(fontWeight = FontWeight.W400, fontSize = 14.sp),
+    labelMedium = TextStyle(fontWeight = FontWeight.W500, fontSize = 12.sp),
+    labelSmall = TextStyle(fontWeight = FontWeight.W500, fontSize = 11.sp),
+).withFamily(FontFamily.SansSerif)
+
+val LocalUiSkin = compositionLocalOf { UiSkin.ZOTIFY }
 
 /** Applies [family] to every style in the scale, so nothing is left on Roboto. */
 private fun Typography.withFamily(family: FontFamily) = Typography(
@@ -94,13 +144,17 @@ private fun Typography.withFamily(family: FontFamily) = Typography(
 @Composable
 fun BitChordTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    uiSkin: UiSkin = UiSkin.ZOTIFY,
     content: @Composable () -> Unit,
 ) {
+    val mochy = uiSkin == UiSkin.MOCHY
     MaterialTheme(
-        colorScheme = if (darkTheme) DarkColors else LightColors,
-        typography = BitChordTypography,
-        content = content,
-    )
+        colorScheme = if (mochy) MochyColors else if (darkTheme) DarkColors else LightColors,
+        typography = if (mochy) MochyTypography else BitChordTypography,
+        shapes = if (mochy) MochyShapes else Shapes(),
+    ) {
+        CompositionLocalProvider(LocalUiSkin provides uiSkin, content = content)
+    }
 }
 
 /**

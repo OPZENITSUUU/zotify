@@ -65,6 +65,7 @@ func main() {
 
 	// Open-app counter
 	mux.HandleFunc("POST /api/presence", handlePresence)
+	mux.HandleFunc("POST /api/contact", handleContact)
 	mux.HandleFunc("GET /api/stats/live", handleLiveStats)
 	mux.HandleFunc("GET /api/stats/live/badge.svg", handleLiveBadge)
 

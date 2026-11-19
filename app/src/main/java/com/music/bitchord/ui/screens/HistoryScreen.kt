@@ -1,6 +1,6 @@
 package com.music.bitchord.ui.screens
 
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize

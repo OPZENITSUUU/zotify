@@ -244,6 +244,34 @@ To keep memory, bandwidth, and latency strictly bounded:
   entirely such tracks succeeds without changing the queue. Hand-queued tracks
   are never filtered.
 
+## Owner contact messages via Discord
+
+The Android app sends bug reports, feedback and feature requests to
+`POST /api/contact`. The server forwards them to a private Discord support
+channel through a webhook. The webhook URL is a server-only secret; it must
+never be put in app source, GitHub commits, logs, or APKs.
+
+1. Create a webhook for a **private** Discord channel such as
+   `#zotify-feedback`.
+2. On the backend VM, add the complete webhook URL to
+   `/etc/zotify-contact.env`:
+
+   ```sh
+   sudo nano /etc/zotify-contact.env
+   # Add: DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
+   sudo chmod 600 /etc/zotify-contact.env
+   sudo systemctl restart bitchord-jam
+   ```
+
+3. Check `https://api.bitchord.kushagrasingh.in/healthz`, then submit a
+   test message from Settings → More settings → Contact Owner.
+
+Until the server secret is configured, the endpoint returns a clear
+`503` and the app keeps the typed message visible so it can be retried.
+Submissions are limited to three per source IP per minute. Browser-origin
+requests are rejected, message length is capped, and Discord mentions are
+disabled to prevent notification abuse.
+
 ## Deploying to Oracle Cloud (Always Free)
 
 This is what runs `https://api.bitchord.kushagrasingh.in`: one Always Free

@@ -275,7 +275,7 @@ private fun DesktopSelectorAction(
 /** What [DesktopSignInDialog]'s `busy` holds while the in-app sign-in window is open. */
 internal const val WEB_SIGN_IN = "Google"
 
-/** Signing in: Google's own page in a BitChord window, a browser to take the session from, or the cookie by hand. */
+/** Signing in: Google's own page in a Zotify Music window, a browser to take the session from, or the cookie by hand. */
 @Composable
 internal fun DesktopSignInDialog(
     /** Whether the in-app sign-in window can be shown; see [DesktopWebSignIn]. */
@@ -337,12 +337,12 @@ internal fun DesktopSignInDialog(
             }
             Text(
                 if (webSignIn) {
-                    "Sign in with Google in a BitChord window, then choose \"Use this profile\"."
+                    "Sign in with Google in a Zotify Music window, then choose \"Use this profile\"."
                 } else {
                     DesktopStrings[
                         "d_google_signs_in_inside_a_browser",
                         "Google signs in inside a browser and hands back a session. Pick a browser " +
-                            "here that is already signed in and BitChord will use its session.",
+                            "here that is already signed in and Zotify Music will use its session.",
                     ]
                 },
                 style = MaterialTheme.typography.bodySmall,
@@ -418,7 +418,7 @@ internal fun DesktopSignInDialog(
                                         if (busy == WEB_SIGN_IN) {
                                             "Finish in the sign-in window, then choose \"Use this profile\""
                                         } else {
-                                            "Opens Google's sign-in page in a BitChord window"
+                                            "Opens Google's sign-in page in a Zotify Music window"
                                         },
                                         style = MaterialTheme.typography.bodySmall,
                                         color = DesktopSecondary,

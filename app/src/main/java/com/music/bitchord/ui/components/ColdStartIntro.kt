@@ -42,7 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 
 internal const val STARTUP_INTRO_DURATION_MS = 3_200L
 

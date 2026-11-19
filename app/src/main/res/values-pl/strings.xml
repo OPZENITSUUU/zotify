@@ -1423,4 +1423,15 @@
     <string name="app_icon_apply">Zastosuj</string>
     <string name="app_icon_changed">Ikona została zmieniona. Launcher może potrzebować chwili na odświeżenie.</string>
     <string name="app_icon_failed">Nie można zmienić ikony aplikacji: %1$s</string>
+    <string name="change_ui_skin">Zmień wygląd interfejsu</string>
+
+    <string name="ui_skin_zotify">Zotify Music</string>
+
+    <string name="ui_skin_mochy">Mochy Music</string>
+
+    <string name="ui_skin_zotify_selected">Oryginalny interfejs Zotify Music</string>
+
+    <string name="ui_skin_mochy_selected">Interfejs inspirowany Mochy Music</string>
+
+
 </resources>

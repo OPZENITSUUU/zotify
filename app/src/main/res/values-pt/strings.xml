@@ -1388,4 +1388,15 @@
     <string name="app_icon_apply">Aplicar</string>
     <string name="app_icon_changed">Ícone alterado. O launcher pode demorar um pouco a atualizar.</string>
     <string name="app_icon_failed">Não foi possível alterar o ícone: %1$s</string>
+    <string name="change_ui_skin">Alterar interface</string>
+
+    <string name="ui_skin_zotify">Zotify Music</string>
+
+    <string name="ui_skin_mochy">Mochy Music</string>
+
+    <string name="ui_skin_zotify_selected">Interface original do Zotify Music</string>
+
+    <string name="ui_skin_mochy_selected">Interface inspirada no Mochy Music</string>
+
+
 </resources>

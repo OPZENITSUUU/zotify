@@ -63,7 +63,7 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.voidmusic.player"
+        applicationId = "com.zotifymusic.player"
         // 26 keeps reach wide; real-time blur (RenderEffect) kicks in on API 31+,
         // Haze falls back to a translucent scrim below that.
         minSdk = 26
@@ -116,7 +116,7 @@ android {
     productFlavors {
         create("dev") {
             dimension = "env"
-            applicationId = "com.dev.voidmusic.player"
+            applicationId = "com.dev.zotifymusic.player"
             resValue("string", "app_name", "Zotify Music Dev")
         }
         create("prod") {
@@ -126,7 +126,7 @@ android {
         create("personal") {
             dimension = "env"
             // Same package identity as prod; the flavor only changes the personal brand/resources.
-            applicationId = "com.voidmusic.player"
+            applicationId = "com.zotifymusic.player"
             resValue("string", "app_name", personalAppName)
         }
     }

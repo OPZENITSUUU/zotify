@@ -29,14 +29,14 @@ val signing = Properties().apply {
 }
 
 val betaSuffix = rootProject.extra["bitchordBetaSuffix"] as String
-val personalAppName = providers.gradleProperty("bitchordAppName").orElse("BitChord Personal").get()
+val personalAppName = providers.gradleProperty("bitchordAppName").orElse("Zotify Music Personal").get()
 
 android {
     namespace = "com.music.bitchord.wear"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.voidmusic.player"
+        applicationId = "com.zotifymusic.player"
         // Wear OS 3, the oldest a Galaxy Watch 4 ever shipped with.
         minSdk = 30
         targetSdk = 36
@@ -54,16 +54,16 @@ android {
     productFlavors {
         create("dev") {
             dimension = "env"
-            applicationId = "com.dev.voidmusic.player"
-            resValue("string", "app_name", "BitChord Dev")
+            applicationId = "com.dev.zotifymusic.player"
+            resValue("string", "app_name", "Zotify Music Dev")
         }
         create("prod") {
             dimension = "env"
-            resValue("string", "app_name", "BitChord")
+            resValue("string", "app_name", "Zotify Music")
         }
         create("personal") {
             dimension = "env"
-            applicationId = "com.voidmusic.player"
+            applicationId = "com.zotifymusic.player"
             resValue("string", "app_name", personalAppName)
         }
     }

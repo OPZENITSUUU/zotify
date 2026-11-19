@@ -20,7 +20,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.music.bitchord.MainActivity
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 import com.music.bitchord.data.AppUpdateChecker
 import java.util.concurrent.TimeUnit
 
@@ -58,7 +58,7 @@ class UpdateNotificationWorker(
                 val update = AppUpdateChecker.available.value
                     ?: AppUpdateChecker.restorePending(applicationContext)
                     ?: return Result.retry()
-                postNotificationIfNeeded(update.version)
+                postNotificationIfNeeded(update.version, update.mandatory)
                 Result.success()
             }
             AppUpdateChecker.CheckResult.FAILED -> Result.retry()
@@ -68,7 +68,7 @@ class UpdateNotificationWorker(
         }
     }
 
-    private fun postNotificationIfNeeded(version: String) {
+    private fun postNotificationIfNeeded(version: String, mandatory: Boolean) {
         val notificationManager = NotificationManagerCompat.from(applicationContext)
         if (!notificationManager.areNotificationsEnabled()) return
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
@@ -77,7 +77,8 @@ class UpdateNotificationWorker(
         ) return
 
         val prefs = applicationContext.getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE)
-        if (!shouldNotifyVersion(version, prefs.getString(KEY_NOTIFIED_VERSION, null))) return
+        val notificationKey = if (mandatory) "$version:mandatory" else version
+        if (!shouldNotifyVersion(notificationKey, prefs.getString(KEY_NOTIFIED_VERSION, null))) return
         ensureChannel()
         val openApp = Intent(applicationContext, MainActivity::class.java).apply {
             action = MainActivity.ACTION_OPEN_UPDATE_FROM_NOTIFICATION
@@ -89,13 +90,20 @@ class UpdateNotificationWorker(
             openApp,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
+        val title = applicationContext.getString(
+            if (mandatory) R.string.update_notification_required_title else R.string.update_notification_title,
+            version,
+        )
+        val body = applicationContext.getString(
+            if (mandatory) R.string.update_notification_required_body else R.string.update_notification_body,
+        )
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_logo)
-            .setContentTitle(applicationContext.getString(R.string.update_notification_title, version))
-            .setContentText(applicationContext.getString(R.string.update_notification_body))
+            .setContentTitle(title)
+            .setContentText(body)
             .setStyle(
                 NotificationCompat.BigTextStyle()
-                    .bigText(applicationContext.getString(R.string.update_notification_body)),
+                    .bigText(body),
             )
             .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -104,7 +112,7 @@ class UpdateNotificationWorker(
             .build()
         runCatching { notificationManager.notify(NOTIFICATION_ID, notification) }
             .onSuccess {
-                prefs.edit().putString(KEY_NOTIFIED_VERSION, version).apply()
+                prefs.edit().putString(KEY_NOTIFIED_VERSION, notificationKey).apply()
             }
     }
 

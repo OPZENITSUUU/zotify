@@ -34,10 +34,15 @@ jobs:
         shell: bash
         env:
           RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
+          RELEASES_ENABLED: ${{ vars.RELEASES_ENABLED }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORCE_PUSHED_TAG: ${{ github.event.forced }}
         run: |
           set -euo pipefail
+          if [[ "$RELEASES_ENABLED" != "true" ]]; then
+            echo "::error::Release publishing is disabled; set the RELEASES_ENABLED repository variable to exactly 'true' after release approval."
+            exit 1
+          fi
           if [[ "$FORCE_PUSHED_TAG" == "true" ]]; then
             echo "::error::A force-updated release tag cannot be published."
             exit 1
@@ -46,6 +51,7 @@ jobs:
           python3 .github/scripts/validate_release.py \
             --tag "$RELEASE_TAG" \
             --gradle-file build.gradle.kts \
+            --tv-gradle-file tv/build.gradle.kts \
             --repository .
 
           api="$GITHUB_API_URL/repos/$GITHUB_REPOSITORY"
@@ -86,10 +92,38 @@ jobs:
           version_code="$(python3 .github/scripts/validate_release.py \
             --tag "$RELEASE_TAG" \
             --gradle-file build.gradle.kts \
+            --tv-gradle-file tv/build.gradle.kts \
             --repository . \
             --latest-release-tag "$latest_tag" \
             --print-version-code)"
           echo "version_code=$version_code" >> "$GITHUB_OUTPUT"
+
+          minimum_supported_version_code="$(python3 .github/scripts/validate_release.py \
+            --tag "$RELEASE_TAG" \
+            --gradle-file build.gradle.kts \
+            --tv-gradle-file tv/build.gradle.kts \
+            --repository . \
+            --latest-release-tag "$latest_tag" \
+            --print-minimum-supported-version-code)"
+          echo "minimum_supported_version_code=$minimum_supported_version_code" >> "$GITHUB_OUTPUT"
+
+          tv_version_code="$(python3 .github/scripts/validate_release.py \
+            --tag "$RELEASE_TAG" \
+            --gradle-file build.gradle.kts \
+            --tv-gradle-file tv/build.gradle.kts \
+            --repository . \
+            --latest-release-tag "$latest_tag" \
+            --print-tv-version-code)"
+          echo "tv_version_code=$tv_version_code" >> "$GITHUB_OUTPUT"
+
+          tv_version_name="$(python3 .github/scripts/validate_release.py \
+            --tag "$RELEASE_TAG" \
+            --gradle-file build.gradle.kts \
+            --tv-gradle-file tv/build.gradle.kts \
+            --repository . \
+            --latest-release-tag "$latest_tag" \
+            --print-tv-version-name)"
+          echo "tv_version_name=$tv_version_name" >> "$GITHUB_OUTPUT"
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -146,7 +180,7 @@ jobs:
           keytool -exportcert -alias "$KEY_ALIAS" -keystore zotify-release.jks \
             -storepass "$KEYSTORE_PASSWORD" -file "$temp_dir/certificate.der" >/dev/null 2>&1
           certificate_sha256="$(sha256sum "$temp_dir/certificate.der" | awk '{print toupper($1)}')"
-          expected_sha256="943520093D947992BAD228AD677838C19E90880E9639DFB50C9662086B1F8BCF"
+          expected_sha256="EAD01DEB09889B57D7C9E16E52811CE02E85754BD6C19A483AAF772A59C7EE30"
           if [[ "$certificate_sha256" != "$expected_sha256" ]]; then
             echo "::error::Signing certificate fingerprint mismatch"
             exit 1
@@ -161,8 +195,8 @@ jobs:
           } > keystore.properties
           chmod 600 zotify-release.jks keystore.properties
 
-      - name: Build signed production APK
-        run: ./gradlew :app:assembleProdRelease
+      - name: Build signed production phone and TV APKs
+        run: ./gradlew :app:assembleProdRelease :tv:assembleProdRelease
 
       - name: Verify package, version, alignment, and signature
         shell: bash
@@ -177,7 +211,7 @@ jobs:
           build_tools="$(find "$sdk/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)"
           expected_version="${RELEASE_TAG#v}"
           badging="$("$build_tools/aapt" dump badging "$apk")"
-          grep -F "package: name='com.voidmusic.player'" <<< "$badging"
+          grep -F "package: name='com.zotifymusic.player'" <<< "$badging"
           grep -F "versionName='$expected_version'" <<< "$badging"
           grep -F "versionCode='$EXPECTED_VERSION_CODE'" <<< "$badging"
           "$build_tools/zipalign" -c -v 4 "$apk"
@@ -186,6 +220,60 @@ jobs:
           cp "$apk" dist/Zotify.Music.apk
           sha256sum dist/Zotify.Music.apk > dist/Zotify.Music.apk.sha256
           sha256sum --check dist/Zotify.Music.apk.sha256
+
+      - name: Verify production TV APK and prepare TV release assets
+        shell: bash
+        env:
+          TV_VERSION_NAME: ${{ steps.release_validation.outputs.tv_version_name }}
+          TV_VERSION_CODE: ${{ steps.release_validation.outputs.tv_version_code }}
+        run: |
+          set -euo pipefail
+          mapfile -t tv_apks < <(find tv/build/outputs/apk/prod/release -maxdepth 1 -type f -name '*universal*.apk' -print)
+          if [[ "${#tv_apks[@]}" -ne 1 ]]; then
+            echo "::error::Expected exactly one production universal TV APK, found ${#tv_apks[@]}"
+            exit 1
+          fi
+          apk="${tv_apks[0]}"
+          test -s "$apk"
+          sdk="${ANDROID_HOME:-${ANDROID_SDK_ROOT:?Android SDK path is unavailable}}"
+          build_tools="$(find "$sdk/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)"
+          badging="$("$build_tools/aapt" dump badging "$apk")"
+          grep -F "package: name='com.zotifymusic.player.tv'" <<< "$badging"
+          grep -F "versionName='$TV_VERSION_NAME'" <<< "$badging"
+          grep -F "versionCode='$TV_VERSION_CODE'" <<< "$badging"
+          "$build_tools/zipalign" -c -v 4 "$apk"
+          "$build_tools/apksigner" verify --verbose --print-certs "$apk"
+          mkdir -p dist
+          tv_asset="dist/ZotifyMusicTV-v${TV_VERSION_NAME}.apk"
+          cp "$apk" "$tv_asset"
+          sha256sum "$tv_asset" > "${tv_asset}.sha256"
+          sha256sum --check "${tv_asset}.sha256"
+
+      - name: Prepare release notes
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
+          RELEASE_VERSION_CODE: ${{ steps.release_validation.outputs.version_code }}
+          MINIMUM_SUPPORTED_VERSION_CODE: ${{ steps.release_validation.outputs.minimum_supported_version_code }}
+          TV_VERSION_NAME: ${{ steps.release_validation.outputs.tv_version_name }}
+          TV_VERSION_CODE: ${{ steps.release_validation.outputs.tv_version_code }}
+        run: |
+          set -euo pipefail
+          {
+            printf '## Zotify Music %s\n\n' "$RELEASE_TAG"
+            printf 'Zotify release of Zotify Music.\n'
+            printf 'Android version code: %s\n' "$RELEASE_VERSION_CODE"
+            printf 'Android TV version name: %s\n' "$TV_VERSION_NAME"
+            printf 'Android TV version code: %s\n' "$TV_VERSION_CODE"
+            if [[ "$MINIMUM_SUPPORTED_VERSION_CODE" -gt 0 ]]; then
+              printf 'Minimum supported Android phone version code: %s\n' "$MINIMUM_SUPPORTED_VERSION_CODE"
+            fi
+            printf '\n- Preserves the existing application ID; Android version code is %s.\n' "$RELEASE_VERSION_CODE"
+            printf '%s\n' '- Includes the Zotify updater endpoint and verifies release asset SHA-256 before install.'
+            printf '%s\n' '- Includes a SHA-256 checksum asset for the APK.'
+            printf '%s\n' '- Production APK signing is verified against the existing pinned signing identity.'
+            printf '%s\n' '- Android still requires user approval to install APKs from the in-app updater.'
+          } > dist/release-notes.md
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
@@ -198,16 +286,8 @@ jobs:
           files: |
             dist/Zotify.Music.apk
             dist/Zotify.Music.apk.sha256
-          body: |
-            ## Zotify Music ${{ inputs.release_tag || github.ref_name }}
-
-            Zotify release of Zotify Music.
-            Android version code: ${{ steps.release_validation.outputs.version_code }}
-
-            - Preserves the existing application ID; Android version code is ${{ steps.release_validation.outputs.version_code }}.
-            - Includes the Zotify updater endpoint and verifies release asset SHA-256 before install.
-            - Includes a SHA-256 checksum asset for the APK.
-
-            **Signing identity changed.** Existing Zotify Music installations signed with the previous key cannot update in place to this release. Users must back up any needed data, uninstall the old app, then install this APK. Android may delete app-local data on uninstall. After reinstalling, future Zotify releases can be offered by the in-app updater; Android still requires user approval to install.
+            dist/ZotifyMusicTV-v${{ steps.release_validation.outputs.tv_version_name }}.apk
+            dist/ZotifyMusicTV-v${{ steps.release_validation.outputs.tv_version_name }}.apk.sha256
+          body_path: dist/release-notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1286,4 +1286,15 @@
     <string name="app_icon_apply">套用</string>
     <string name="app_icon_changed">應用程式圖示已變更。啟動器可能需要一點時間才會更新。</string>
     <string name="app_icon_failed">無法變更應用程式圖示：%1$s</string>
+    <string name="change_ui_skin">更改介面外觀</string>
+
+    <string name="ui_skin_zotify">Zotify Music</string>
+
+    <string name="ui_skin_mochy">Mochy Music</string>
+
+    <string name="ui_skin_zotify_selected">Zotify Music 原始介面</string>
+
+    <string name="ui_skin_mochy_selected">Mochy Music 風格介面</string>
+
+
 </resources>

@@ -1300,4 +1300,15 @@
     <string name="app_icon_apply">Áp dụng</string>
     <string name="app_icon_changed">Đã đổi biểu tượng. Trình khởi chạy có thể cần một lúc để cập nhật.</string>
     <string name="app_icon_failed">Không thể đổi biểu tượng ứng dụng: %1$s</string>
+    <string name="change_ui_skin">Đổi giao diện</string>
+
+    <string name="ui_skin_zotify">Zotify Music</string>
+
+    <string name="ui_skin_mochy">Mochy Music</string>
+
+    <string name="ui_skin_zotify_selected">Giao diện gốc của Zotify Music</string>
+
+    <string name="ui_skin_mochy_selected">Giao diện lấy cảm hứng từ Mochy Music</string>
+
+
 </resources>

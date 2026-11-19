@@ -77,13 +77,13 @@ android {
     defaultConfig {
         // Its own id, so the TV app is a separate install from the phone app
         // rather than an upgrade over it (or under it).
-        applicationId = "com.voidmusic.player.tv"
+        applicationId = "com.zotifymusic.player.tv"
         // 26 keeps reach wide; real-time blur (RenderEffect) kicks in on API 31+,
         // Haze falls back to a translucent scrim below that.
         minSdk = 26
         targetSdk = 36
-        versionCode = 26
-        versionName = "1.8"
+        versionCode = 27
+        versionName = "1.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -96,10 +96,10 @@ android {
             "\"${listenTogetherServer.replace("\\", "\\\\").replace("\"", "\\\"")}\"",
         )
         // The TV APKs share a GitHub release with the phone ones and are told
-        // apart by name (ZotifyMusicTV-v1.8.apk, ZotifyMusicTV-v1.8_x86_64.apk), so
+        // apart by name (ZotifyMusicTV-v<version>.apk), so
         // the updater installs the TV app here, never the phone app. See
         // AppUpdateChecker.apkAssetUrl.
-        buildConfigField("String", "UPDATE_APK_PREFIX", "\"BitChordTV-\"")
+        buildConfigField("String", "UPDATE_APK_PREFIX", "\"ZotifyMusicTV-v\"")
     }
 
     splits {
@@ -147,7 +147,7 @@ android {
     productFlavors {
         create("dev") {
             dimension = "env"
-            applicationId = "com.dev.voidmusic.player.tv"
+            applicationId = "com.dev.zotifymusic.player.tv"
             resValue("string", "app_name", "Zotify Music TV")
         }
         create("prod") {

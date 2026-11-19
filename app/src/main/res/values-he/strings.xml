@@ -1388,4 +1388,15 @@
     <string name="app_icon_apply">החלה</string>
     <string name="app_icon_changed">סמל האפליקציה שונה. ייתכן שיידרש רגע עד שהמשגר יתרענן.</string>
     <string name="app_icon_failed">לא ניתן לשנות את סמל האפליקציה: %1$s</string>
+    <string name="change_ui_skin">שינוי ממשק משתמש</string>
+
+    <string name="ui_skin_zotify">Zotify Music</string>
+
+    <string name="ui_skin_mochy">Mochy Music</string>
+
+    <string name="ui_skin_zotify_selected">הממשק המקורי של Zotify Music</string>
+
+    <string name="ui_skin_mochy_selected">ממשק בהשראת Mochy Music</string>
+
+
 </resources>

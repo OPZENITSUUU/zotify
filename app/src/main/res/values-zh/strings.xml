@@ -1360,4 +1360,15 @@
     <string name="app_icon_apply">应用</string>
     <string name="app_icon_changed">应用图标已更改。启动器可能需要一些时间才能刷新。</string>
     <string name="app_icon_failed">无法更改应用图标：%1$s</string>
+    <string name="change_ui_skin">更改界面外观</string>
+
+    <string name="ui_skin_zotify">Zotify Music</string>
+
+    <string name="ui_skin_mochy">Mochy Music</string>
+
+    <string name="ui_skin_zotify_selected">Zotify Music 原始界面</string>
+
+    <string name="ui_skin_mochy_selected">Mochy Music 风格界面</string>
+
+
 </resources>

@@ -18,4 +18,10 @@ class UpdateNotificationWorkerTest {
         assertFalse(UpdateNotificationWorker.shouldNotifyVersion("", null))
         assertFalse(UpdateNotificationWorker.shouldNotifyVersion("   ", null))
     }
+
+    @Test
+    fun `mandatory policy change can notify once after an optional notice for the same release`() {
+        assertTrue(UpdateNotificationWorker.shouldNotifyVersion("1.8.1:mandatory", "1.8.1"))
+        assertFalse(UpdateNotificationWorker.shouldNotifyVersion("1.8.1:mandatory", "1.8.1:mandatory"))
+    }
 }

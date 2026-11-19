@@ -1,5 +1,7 @@
 package com.music.bitchord
 
+import com.music.zotifymusic.R
+
 import android.Manifest
 import android.content.Context
 import android.content.Intent
@@ -160,6 +162,7 @@ import com.music.bitchord.data.scrobbling.LastFM
 import com.music.bitchord.data.settings.AppSettings
 import com.music.bitchord.data.settings.LibrarySort
 import com.music.bitchord.data.settings.ThemeMode
+import com.music.bitchord.data.settings.UiSkin
 import com.music.bitchord.ui.components.AccountProfileSelector
 import com.music.bitchord.ui.components.SpotifyImportAlert
 import com.music.bitchord.ui.screens.WearOsScreen
@@ -378,6 +381,7 @@ class MainActivity : AppCompatActivity() {
         MusicLink.consume(intent)
         setContent {
             val theme by AppSettings.themeMode.collectAsStateWithLifecycle()
+            val uiSkin by AppSettings.uiSkin.collectAsStateWithLifecycle()
             val highPerformance by AppSettings.highPerformanceMode.collectAsStateWithLifecycle()
             val liquidGlassEnabled by AppSettings.liquidGlass.collectAsStateWithLifecycle()
             val reduceAnimation by AppSettings.reduceAnimation.collectAsStateWithLifecycle()
@@ -410,7 +414,11 @@ class MainActivity : AppCompatActivity() {
                 ThemeMode.LIGHT -> false
                 ThemeMode.DARK -> true
             }
-            BitChordTheme(darkTheme = darkTheme) {
+            // Mochy follows its reference's dark-only visual system. The selected
+            // skin is observed from the existing preference flow, so switching
+            // updates the whole Compose tree without touching playback state.
+            val effectiveDarkTheme = darkTheme || uiSkin == UiSkin.MOCHY
+            BitChordTheme(darkTheme = effectiveDarkTheme, uiSkin = uiSkin) {
                 // The glass surfaces sample this layer, and a layer records only
                 // what is drawn into it — which, for BitChord, is a page that
                 // paints no background of its own. Everywhere a page is not
@@ -447,7 +455,7 @@ class MainActivity : AppCompatActivity() {
                 Box(Modifier.fillMaxSize()) {
                     BoxWithConstraints(Modifier.fillMaxSize()) {
                         BitChordApp(
-                            darkTheme = darkTheme,
+                            darkTheme = effectiveDarkTheme,
                             windowWidth = maxWidth,
                             windowHeight = maxHeight,
                             appBackdrop = appBackdrop,
@@ -502,7 +510,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val ACTION_OPEN_UPDATE_FROM_NOTIFICATION = "com.voidmusic.player.action.OPEN_UPDATE"
+        const val ACTION_OPEN_UPDATE_FROM_NOTIFICATION = BuildConfig.APPLICATION_ID + ".action.OPEN_UPDATE"
         internal val updateNotificationTapped = MutableStateFlow(false)
     }
 }
@@ -778,7 +786,8 @@ private fun BitChordApp(
     ) { result ->
         val ready = AppUpdateChecker.download.value as? AppUpdateChecker.DownloadState.Ready
         if (ready != null && AppUpdateChecker.installedVersionMatches(context, ready.file)) {
-            Toast.makeText(context, "Update installed. Reopen Void Music to use it.", Toast.LENGTH_LONG).show()
+            AppUpdateChecker.completeInstalledUpdate(context)
+            Toast.makeText(context, "Update installed. Reopen Zotify Music to use it.", Toast.LENGTH_LONG).show()
             showUpdateDialog = false
         } else {
             val message = if (result.resultCode == android.app.Activity.RESULT_CANCELED) {
@@ -796,6 +805,13 @@ private fun BitChordApp(
      * them made the top bar look like it had caught something the app hadn't.
      */
     val updateNotice = updateAvailable
+    val dismissOptionalUpdate = {
+        val update = updateNotice
+        if (update?.mandatory != true) {
+            update?.let { AppUpdateChecker.dismiss(context, it.version) }
+            showUpdateDialog = false
+        }
+    }
 
     LaunchedEffect(updateNotice) {
         if (updateNotice != null && !updateDialogShown) {
@@ -2668,7 +2684,7 @@ private fun BitChordApp(
         ) {
             selectedTab = TAB_HOME
         }
-        BackHandler(enabled = showUpdateDialog) { showUpdateDialog = false }
+        BackHandler(enabled = showUpdateDialog) { dismissOptionalUpdate() }
         BackHandler(enabled = showListenBrainzLogin) { showListenBrainzLogin = false }
         BackHandler(enabled = showLastfmLogin) { showLastfmLogin = false }
         BackHandler(enabled = discordDialog != null) { discordDialog = null }
@@ -5237,25 +5253,30 @@ private fun BitChordApp(
         // ---- Update available (once per launch; held until the welcome is done) ----
         if (showUpdateDialog && onboardingComplete) {
             updateNotice?.let { update ->
+                val openReleasePage = {
+                    val opened = runCatching {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(update.releaseUrl)))
+                    }.isSuccess
+                    if (!opened) {
+                        Toast.makeText(context, "Could not open the release page.", Toast.LENGTH_LONG).show()
+                    }
+                }
                 UpdateAvailableDialog(
                     version = update.version,
                     notes = update.notes,
+                    mandatory = update.mandatory,
                     canDownload = update.apkUrl != null,
                     hazeState = hazeState,
                     // A download in progress keeps running behind the closed
                     // sheet — only the sheet itself goes away. The top-bar
                     // update icon reopens it onto whatever state it reached.
-                    onDismiss = {
-                        // "Update Later" hides this launch's prompt but keeps
-                        // the pending release for the top bar and next launch.
-                        showUpdateDialog = false
-                    },
+                    onDismiss = dismissOptionalUpdate,
+                    onOpenRelease = openReleasePage,
                     onDownload = {
                         if (update.apkUrl != null) {
                             scope.launch { AppUpdateChecker.downloadApk(context) }
                         } else {
-                            Toast.makeText(context, "No compatible verified APK is attached to this release.", Toast.LENGTH_LONG).show()
-                            showUpdateDialog = false
+                            openReleasePage()
                         }
                     },
                     onCancelDownload = {
@@ -5268,7 +5289,7 @@ private fun BitChordApp(
                                 if (AppUpdateChecker.openInstallPermissionSettings(context)) {
                                     Toast.makeText(
                                         context,
-                                        "Allow Void Music to install updates, then return and tap Install Now.",
+                                        "Allow Zotify Music to install updates, then return and tap Install Now.",
                                         Toast.LENGTH_LONG,
                                     ).show()
                                 }

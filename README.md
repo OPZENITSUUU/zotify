@@ -187,12 +187,12 @@ Setting availability can vary with app version, operating system, hardware and c
 
 ## 📱 Platform availability
 
-The repository contains more than one target, but **the current Zotify Music Releases page publishes the Android APK**. The presence of source code for another platform is not the same thing as a ready-to-download Zotify Music build.
+The repository contains more than one target. The presence of source code for another platform is not the same thing as a ready-to-download Zotify Music build; check the Releases page for currently published artifacts.
 
 | Target | What the source includes | Current distribution note |
 | --- | --- | --- |
-| **Android phone/tablet** | Main music app, player, sources, lyrics, library, integrations and downloads. | A signed APK is not currently published. Check the Releases page for availability. |
-| **Android TV / Google TV** | Remote-first home, library, search, settings, full-screen player, synced lyrics, display-refresh-rate options, spatial audio and QR sign-in. | Source target; the current production release workflow does not publish a TV APK. |
+| **Android phone/tablet** | Main music app, player, sources, lyrics, library, integrations and downloads. | Signed phone APKs are published on the Releases page. |
+| **Android TV / Google TV** | Remote-first home, library, search, settings, full-screen player, synced lyrics, display-refresh-rate options, spatial audio and QR sign-in. | TV source target; no TV APK is attached to the latest published phone release. |
 | **Wear OS companion** | Watch-facing now-playing and playback components connected to the phone app. | Companion source is included; compatibility depends on the paired phone/watch builds. |
 | **Desktop** | Compose Multiplatform desktop code for Windows, Linux and macOS, with desktop playback, local music, lyrics, downloads, equalizer and desktop integrations. | Source target; the current repository release workflow does not publish desktop installers. |
 | **Web player + browser extension** | React/TypeScript web client and Chromium/Firefox extension source, with a page-to-extension bridge. | Development source is included. It is not the Android APK and should be built/deployed separately. |
@@ -210,13 +210,13 @@ The repository contains more than one target, but **the current Zotify Music Rel
 ### Install on Android
 
 1. Open the [Android APK Releases page](https://github.com/OPZENITSUUU/zotify-music/releases).
-2. When a signed release is published, download **Zotify.Music.apk** from its release assets.
+2. Download **Zotify.Music.apk** from the latest release's assets.
 3. Open the APK. If prompted, allow your browser or file manager to install apps from that source.
 4. Install and open Zotify Music, then configure the sources and optional services you use.
 
 **Minimum Android version:** Android 8.0 (API 26) or newer.
 
-**Signing-key migration:** The current v1.0.12 source is configured for a new signing key; a signed APK has not yet been published from this repository. Existing Zotify Music installs signed with the previous key cannot update in place: back up any data you need, uninstall the old app, then install the Zotify APK. Android may delete app-local data on uninstall. After reinstalling, future Zotify releases can be offered by the in-app updater, but Android still requires user approval to install.
+**Compatibility:** Published phone releases use the established `com.zotifymusic.player` application ID and production signing identity. Install only releases signed for that same app identity; do not uninstall an existing installation or sideload a build from a stale branch using a different ID or key. The finalization changes retain the published package IDs and certificate pin. Do not publish another release until the final PR's required CI checks pass and release approval is given.
 
 Android only accepts an in-place update when the package identity and signing certificate are compatible. Back up important data before changing signing tracks or uninstalling an older build.
 
