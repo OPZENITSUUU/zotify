@@ -1,6 +1,6 @@
-# BitChord Web
+# Zotify Music Web
 
-The web player and its companion browser extension. The plan, and the decisions behind it, are in [`docs/web-app-build-prompt.md`](../docs/web-app-build-prompt.md).
+The Zotify Music web player and its companion browser extension. The plan, and the decisions behind it, are in [`docs/web-app-build-prompt.md`](../docs/web-app-build-prompt.md).
 
 | Package | What it is |
 |---|---|

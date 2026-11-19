@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="web/app/public/favicon.svg" alt="Zotify Music app icon" width="112" />
+
 # ZOTIFY MUSIC
 
 ### Find your sound. Own your listening.
