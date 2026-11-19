@@ -313,40 +313,69 @@ object AppearanceSkinLibrary {
         android.graphics.Color.parseColor(value)
     }.getOrNull()
 
-    private fun resolveGithubBranchPath(
+    private fun fetchGithubRefNames(owner: String, repo: String, collection: String): List<String> {
+        require(collection == "branches" || collection == "tags")
+        val names = mutableListOf<String>()
+        for (page in 1..10) {
+            val refs = JSONArray(
+                downloadHttps(
+                    "https://api.github.com/repos/$owner/$repo/$collection?per_page=100&page=$page",
+                ).toString(Charsets.UTF_8),
+            )
+            for (index in 0 until refs.length()) {
+                val name = refs.optJSONObject(index)?.optString("name").orEmpty()
+                if (name.isNotBlank()) names += name
+            }
+            if (refs.length() < 100) break
+        }
+        return names
+    }
+
+    private fun resolveGithubRefPath(
         owner: String,
         repo: String,
         remainingPath: List<String>,
     ): Pair<String, String> {
         val fullPath = remainingPath.joinToString("/")
-        val branchNames = mutableListOf<String>()
-        try {
-            // Page through the public branch list so slash-containing refs can be
-            // distinguished from nested folder names without guessing.
-            for (page in 1..10) {
-                val branches = JSONArray(
-                    downloadHttps(
-                        "https://api.github.com/repos/$owner/$repo/branches?per_page=100&page=$page",
-                    ).toString(Charsets.UTF_8),
-                )
-                for (index in 0 until branches.length()) {
-                    val name = branches.optJSONObject(index)?.optString("name").orEmpty()
-                    if (name.isNotBlank()) branchNames += name
-                }
-                if (branches.length() < 100) break
-            }
-        } catch (failure: Exception) {
-            throw IllegalArgumentException(
-                "Could not resolve this GitHub branch. Paste a direct raw manifest/ZIP URL instead.",
-                failure,
-            )
+        fun matchRef(names: List<String>): Pair<String, String>? {
+            val ref = names
+                .filter { fullPath == it || fullPath.startsWith("$it/") }
+                .maxByOrNull { it.length }
+                ?: return null
+            val relativePath = if (fullPath == ref) "" else fullPath.removePrefix("$ref/")
+            return ref to relativePath
         }
-        val branch = branchNames
-            .filter { fullPath == it || fullPath.startsWith("$it/") }
-            .maxByOrNull { it.length }
-            ?: error("Could not identify the branch in this GitHub URL.")
-        val relativePath = if (fullPath == branch) "" else fullPath.removePrefix("$branch/")
-        return branch to relativePath
+
+        // Branch and tag names may contain slashes. Match the longest known ref
+        // before interpreting the remaining segments as a repository file path.
+        val branch = runCatching {
+            matchRef(fetchGithubRefNames(owner, repo, "branches"))
+        }.getOrNull()
+        if (branch != null) return branch
+
+        val tag = runCatching {
+            matchRef(fetchGithubRefNames(owner, repo, "tags"))
+        }.getOrNull()
+        if (tag != null) return tag
+
+        // GitHub blob/tree links may also point directly to a full or abbreviated
+        // commit SHA. Resolve it through the API so raw URLs use the canonical SHA.
+        val possibleSha = fullPath.substringBefore('/')
+        if (possibleSha.matches(Regex("[0-9a-fA-F]{7,40}"))) {
+            val canonicalSha = runCatching {
+                JSONObject(
+                    downloadHttps(
+                        "https://api.github.com/repos/$owner/$repo/commits/$possibleSha",
+                    ).toString(Charsets.UTF_8),
+                ).optString("sha")
+            }.getOrNull().orEmpty()
+            if (canonicalSha.matches(Regex("[0-9a-fA-F]{40}"))) {
+                val relativePath = if (fullPath == possibleSha) "" else fullPath.removePrefix("$possibleSha/")
+                return canonicalSha to relativePath
+            }
+        }
+
+        error("Could not identify a branch, tag, or commit in this GitHub URL.")
     }
 
     private fun resolveGithubUrls(input: String): List<String> {
@@ -358,12 +387,12 @@ object AppearanceSkinLibrary {
         val repo = parts[1].removeSuffix(".git")
         if (owner.isBlank() || repo.isBlank()) return listOf(input)
 
-        // Git refs may contain slashes. Resolve the longest matching branch name
-        // from the repository's branch list before separating branch from file path.
+        // Git refs may contain slashes. Resolve a branch, tag, or commit SHA before
+        // separating the ref from the file path.
         if ((parts.size >= 5 && parts[2] == "blob") ||
             (parts.size >= 4 && parts[2] == "tree")
         ) {
-            val (branch, relativePath) = resolveGithubBranchPath(owner, repo, parts.drop(3))
+            val (branch, relativePath) = resolveGithubRefPath(owner, repo, parts.drop(3))
             val filePath = if (parts[2] == "tree") {
                 if (relativePath.isBlank()) "manifest.json" else "$relativePath/manifest.json"
             } else {
