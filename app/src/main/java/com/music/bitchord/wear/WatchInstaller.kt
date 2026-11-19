@@ -50,7 +50,7 @@ internal object WatchInstallerAssetNames {
 }
 
 /**
- * Settings → "BitChord for Wear OS": which watches have BitChord, whether it is
+ * Settings → "Zotify Music for Wear OS": which watches have Zotify Music, whether it is
  * this phone's build, and putting it there without a computer.
  *
  * The phone APK carries the watch APK of the same flavor and signing key

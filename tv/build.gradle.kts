@@ -96,9 +96,8 @@ android {
             "\"${listenTogetherServer.replace("\\", "\\\\").replace("\"", "\\\"")}\"",
         )
         // The TV APKs share a GitHub release with the phone ones and are told
-        // apart by name (ZotifyMusicTV-v<version>.apk), so
-        // the updater installs the TV app here, never the phone app. See
-        // AppUpdateChecker.apkAssetUrl.
+        // apart by name (ZotifyMusicTV-v<version>.apk), so the TV updater
+        // selects these assets rather than the phone APKs.
         buildConfigField("String", "UPDATE_APK_PREFIX", "\"ZotifyMusicTV-v\"")
     }
 

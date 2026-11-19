@@ -239,6 +239,7 @@ jobs:
           # Keep the emulator's default -no-boot-anim option and skip those extra settings calls.
           disable-animations: false
           script: |
+            set -euo pipefail
             ./gradlew :app:connectedProdDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.music.bitchord.PlaybackPipelineFlacInstrumentedTest#localFlacPlaysReportsContainerFactsAndSupportsSeeking
             ./gradlew :app:connectedProdDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.music.bitchord.data.AppUpdatePersistenceInstrumentedTest
 

@@ -2,6 +2,7 @@ package com.music.bitchord
 
 import android.content.ComponentName
 import android.net.Uri
+import android.os.Looper
 import android.os.SystemClock
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
@@ -55,7 +56,9 @@ class PlaybackPipelineFlacInstrumentedTest {
         val result = AtomicReference<MediaBrowser?>()
 
         instrumentation.runOnMainSync {
-            val future = MediaBrowser.Builder(context, token).buildAsync()
+            val future = MediaBrowser.Builder(context, token)
+                .setApplicationLooper(Looper.getMainLooper())
+                .buildAsync()
             future.addListener(
                 {
                     runCatching { future.get() }.onSuccess(result::set)
