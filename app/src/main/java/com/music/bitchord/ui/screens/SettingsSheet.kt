@@ -1,5 +1,6 @@
 package com.music.bitchord.ui.screens
 
+import com.music.zotifymusic.R
 import com.music.bitchord.wear.WatchInstaller
 import android.content.Context
 import android.content.Intent
@@ -158,7 +159,6 @@ import com.music.bitchord.data.settings.LauncherIconManager
 import com.music.bitchord.data.settings.OutputPcmMode
 import com.music.bitchord.playback.AudioOutputStatus
 import com.music.bitchord.data.settings.AutomixPerformanceMode
-import com.music.zotifymusic.R
 import com.music.bitchord.data.sources.DeviceCodecs
 import com.music.bitchord.data.settings.AudioQuality
 import com.music.bitchord.data.settings.DownloadQuality
@@ -306,6 +306,7 @@ fun SettingsScreen(
     var pickingDownloadQuality by remember { mutableStateOf(false) }
     var pickingAutomixPerformance by remember { mutableStateOf(false) }
     var showLauncherIconPicker by remember { mutableStateOf(false) }
+    var showAppearanceSkinLibrary by remember { mutableStateOf(false) }
     var pendingLauncherIcon by remember { mutableStateOf(selectedLauncherIcon) }
     // What the last export or import did, shown on the row that did it rather
     // than as a toast: a backup is the one action here whose outcome nobody can
@@ -918,6 +919,15 @@ fun SettingsScreen(
                         AppSettings.setUiSkin(if (selected == 1) UiSkin.MOCHY else UiSkin.ZOTIFY)
                     },
                     modifier = Modifier.padding(start = ROW_INSET, end = ROW_INSET, bottom = 14.dp),
+                )
+            }
+            val appearanceSkinsTitle = stringResource(R.string.appearance_skins_title)
+            row(appearanceSkinsTitle, "skins", "import", "zip", "mochy", "custom look") {
+                SettingsRow(
+                    icon = Icons.Rounded.Draw,
+                    title = appearanceSkinsTitle,
+                    subtitle = stringResource(R.string.appearance_skins_settings_entry_subtitle),
+                    onClick = { showAppearanceSkinLibrary = true },
                 )
             }
             val reduceAnimationTitle = stringResource(R.string.reduce_animation)
@@ -2213,6 +2223,10 @@ fun SettingsScreen(
                 }
             },
         )
+    }
+
+    if (showAppearanceSkinLibrary) {
+        AppearanceSkinLibrarySheet(onDismiss = { showAppearanceSkinLibrary = false })
     }
 
     if (showLastfmLoginDialog) {
