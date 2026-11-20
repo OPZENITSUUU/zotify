@@ -9,7 +9,7 @@ import android.os.Build
 import android.provider.Settings
 import androidx.core.content.FileProvider
 import com.music.bitchord.BuildConfig
-import com.music.bitchord.R
+import com.music.zotifymusic.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
