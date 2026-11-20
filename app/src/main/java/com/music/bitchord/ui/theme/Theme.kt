@@ -173,20 +173,12 @@ fun BitChordTheme(
             onPrimaryContainer = if (resolvedDark) Color.White else Color.Black,
         )
     }
-    val radius = skinCornerRadius?.toFloat()
-    val skinShapes = radius?.let {
-        Shapes(
-            extraSmall = RoundedCornerShape((it * 0.35f).dp),
-            small = RoundedCornerShape((it * 0.55f).dp),
-            medium = RoundedCornerShape(it.dp),
-            large = RoundedCornerShape((it * 1.15f).dp),
-            extraLarge = RoundedCornerShape((it * 1.25f).dp),
-        )
-    }
     MaterialTheme(
         colorScheme = resolvedColors,
         typography = if (mochy) MochyTypography else BitChordTypography,
-        shapes = skinShapes ?: if (mochy) MochyShapes else Shapes(),
+        // Thumbnail radius is intentionally scoped to artwork via LocalArtworkCornerRadius.
+        // Material surfaces (dialogs, menus, cards) keep the app's normal shape scale.
+        shapes = if (mochy) MochyShapes else Shapes(),
     ) {
         CompositionLocalProvider(
             LocalUiSkin provides uiSkin,
