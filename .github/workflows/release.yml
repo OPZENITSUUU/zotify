@@ -198,12 +198,26 @@ jobs:
           body: |
             ## Zotify Music ${{ inputs.release_tag || github.ref_name }}
 
-            Zotify release of Zotify Music.
             Android version code: ${{ steps.release_validation.outputs.version_code }}
 
-            - Uses the new application ID `com.zotifymusic.player`; Android version code is ${{ steps.release_validation.outputs.version_code }}.
-            - Includes the Zotify updater endpoint; the updater verifies the APK using GitHub's release asset SHA-256 digest before install.
+            ### New in this release
+            - **Mochy-compatible Appearance Skin Manager:** import Look skins from ZIP/JSON files, HTTPS links, and public GitHub repositories or releases.
+            - **Review before installing:** inspect skin metadata and supported/unsupported settings before applying a pack.
+            - **Native appearance controls:** customise accent colour, pure-black mode, and artwork corner radius.
+            - **Skin management:** keep one skin active, disable or remove it to restore the previous appearance, and retain the selection across app restarts.
+            - **Localised interface:** skin manager labels and messages use the app's translated Android resources.
+            - **Addon defaults cleaned up:** unavailable bundled NullBeat and Nebula entries are retired from defaults. Existing user-created addon entries are preserved; Rukia and LastWave remain in the default set.
 
-            **Package identity changed.** This release uses `com.zotifymusic.player`, separate from the previous `com.voidmusic.player` package. Android installs it as a separate app and does not migrate the old app's private data. Keep the previous app installed until you have moved anything you need. Future Zotify updates can be installed in place, subject to Android approval.
+            ### Compatibility and security
+            - Zotify applies only appearance settings its own UI supports. Imported scripts, custom player layouts, fonts, pages, and GPU shaders are not executed or loaded.
+            - Remote skin imports require HTTPS. ZIP packages are checked for unsafe paths and size limits.
+            - Core playback, queue controls, crossfade, Automix (Beta), synced lyrics, audio diagnostics, and the verified in-app updater remain part of Zotify Music.
+
+            ### App and update details
+            - Application ID: `com.zotifymusic.player`.
+            - The signed APK is verified for package identity, version, ZIP alignment, and signing certificate before publication.
+            - The in-app updater checks the GitHub release asset SHA-256 digest before installation. Android still requires user approval for app installation.
+
+            **Package identity:** Zotify Music uses `com.zotifymusic.player`, separate from the previous `com.voidmusic.player` package. Android installs it as a separate app and does not migrate the old app's private data. Keep the previous app installed until you have moved anything you need. Future Zotify updates can be installed in place, subject to Android approval.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
