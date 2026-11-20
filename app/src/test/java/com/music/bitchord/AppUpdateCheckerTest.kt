@@ -21,15 +21,17 @@ class AppUpdateCheckerTest {
 
     @Test
     fun `direct APK selection rejects non-official or insecure asset URLs`() {
-        val wrongHost = asset(url = "https://example.invalid/BitChord.apk")
+        val wrongHost = asset(url = "https://example.invalid/Zotify.Music.apk")
         val cleartext = asset(url = "http://github.com/OPZENITSUUU/zotify-music/releases/download/v2/Zotify.Music.apk")
+        val staleRepository = asset(url = "https://github.com/OPZENITSUUU/zotify/releases/download/v2/Zotify.Music.apk")
 
         assertNull(AppUpdateChecker.verifiedApkAsset(release(wrongHost)))
         assertNull(AppUpdateChecker.verifiedApkAsset(release(cleartext)))
+        assertNull(AppUpdateChecker.verifiedApkAsset(release(staleRepository)))
     }
 
     @Test
-    fun `universal official Void Music release APK is selected with normalized digest`() {
+    fun `universal official Zotify Music release APK is selected with normalized digest`() {
         val split = asset(name = "Zotify.Music_arm64-v8a.apk")
         val universal = asset(name = "Zotify.Music.apk", digestValue = "sha256:$digest")
 
@@ -38,6 +40,15 @@ class AppUpdateCheckerTest {
         assertEquals("Zotify.Music", selected?.name)
         assertEquals("https://github.com/OPZENITSUUU/zotify-music/releases/download/v2/Zotify.Music.apk", selected?.url)
         assertEquals(digest, selected?.sha256)
+    }
+
+    @Test
+    fun `phone updater ignores Android TV release APK assets`() {
+        val tv = asset(name = "ZotifyMusicTV-v1.8.apk")
+        val similarlyPrefixedTv = asset(name = "Zotify.MusicTV-v1.8.apk")
+
+        assertNull(AppUpdateChecker.verifiedApkAsset(release(tv)))
+        assertNull(AppUpdateChecker.verifiedApkAsset(release(similarlyPrefixedTv)))
     }
 
     @Test
@@ -55,6 +66,90 @@ class AppUpdateCheckerTest {
     }
 
     @Test
+    fun `TV release metadata stays separate from phone code and tag semantics`() {
+        val body = """Android version code: 43
+            |Android TV version code: 27
+            |Android TV version name: 1.9
+        """.trimMargin()
+
+        assertEquals(43L, AppUpdateChecker.releaseVersionCode(body))
+        assertEquals(27L, AppUpdateChecker.tvReleaseVersionCode(body))
+        assertEquals("1.9", AppUpdateChecker.tvReleaseVersionName(body))
+        assertNull(AppUpdateChecker.tvReleaseVersionCode("Android version code: 43"))
+        assertNull(AppUpdateChecker.tvReleaseVersionName("Android TV version name:   "))
+        assertTrue(AppUpdateChecker.isTvUpdateTarget("ZotifyMusicTV-v"))
+        assertFalse(AppUpdateChecker.isTvUpdateTarget("Zotify.Music"))
+        assertFalse(AppUpdateChecker.isMandatoryUpdate(26L, 27L, 27L, supportsMandatoryPolicy = false))
+    }
+
+    @Test
+    fun `minimum supported version metadata accepts only one positive integer line`() {
+        assertEquals(
+            42L,
+            AppUpdateChecker.minimumSupportedVersionCode("Release notes\nMinimum supported Android phone version code: 42"),
+        )
+        assertNull(AppUpdateChecker.minimumSupportedVersionCode("Release notes without a support floor"))
+        assertNull(AppUpdateChecker.minimumSupportedVersionCode("Minimum supported Android phone version code: 0"))
+        assertNull(AppUpdateChecker.minimumSupportedVersionCode("Minimum supported Android phone version code: 50x"))
+        assertNull(
+            AppUpdateChecker.minimumSupportedVersionCode(
+                "Minimum supported Android phone version code: 41\nMinimum supported Android phone version code: 42",
+            ),
+        )
+    }
+
+    @Test
+    fun `mandatory update applies only below a valid released minimum version code`() {
+        assertTrue(AppUpdateChecker.isMandatoryUpdate(41L, 42L, 43L))
+        assertFalse(AppUpdateChecker.isMandatoryUpdate(42L, 42L, 43L))
+        assertFalse(AppUpdateChecker.isMandatoryUpdate(41L, null, 43L))
+        assertFalse(AppUpdateChecker.isMandatoryUpdate(41L, 44L, 43L))
+        assertFalse(AppUpdateChecker.isMandatoryUpdate(41L, 42L, 43L, supportsMandatoryPolicy = false))
+    }
+
+    @Test
+    fun `mandatory release remains available without a compatible verified APK`() {
+        val update = AppUpdateChecker.updateInfoForRelease(
+            version = "1.8.2",
+            releaseUrl = "https://github.com/OPZENITSUUU/zotify-music/releases/tag/v1.8.2",
+            apk = null,
+            notes = "- Critical fix",
+            mandatory = true,
+        )
+
+        assertEquals("1.8.2", update?.version)
+        assertTrue(update?.mandatory == true)
+        assertNull(update?.apkUrl)
+        assertNull(update?.apkSha256)
+        assertNull(
+            AppUpdateChecker.updateInfoForRelease(
+                version = "1.8.2",
+                releaseUrl = "https://github.com/OPZENITSUUU/zotify-music/releases/tag/v1.8.2",
+                apk = null,
+                notes = null,
+                mandatory = false,
+            ),
+        )
+    }
+
+    @Test
+    fun `pending mandatory update state supports missing APK URL and digest`() {
+        val pending = AppUpdateChecker.pendingUpdateInfo(
+            version = "1.8.2",
+            releaseUrl = "https://github.com/OPZENITSUUU/zotify-music/releases/tag/v1.8.2",
+            apkUrl = null,
+            apkSha256 = null,
+            notes = "- Critical fix",
+            mandatory = true,
+        )
+
+        assertTrue(pending.mandatory)
+        assertNull(pending.apkUrl)
+        assertNull(pending.apkSha256)
+        assertEquals("- Critical fix", pending.notes)
+    }
+
+    @Test
     fun `version code comparison detects only strictly higher codes`() {
         assertTrue(AppUpdateChecker.isNewerVersionCode(candidate = 44L, installed = 43L))
         assertFalse(AppUpdateChecker.isNewerVersionCode(candidate = 43L, installed = 43L))
@@ -69,6 +164,7 @@ class AppUpdateCheckerTest {
         assertTrue(AppUpdateChecker.shouldNotifyUpdate("1.8.1-beta4", 43L, "1.8.1-beta1", 43L, null))
         assertFalse(AppUpdateChecker.shouldNotifyUpdate("1.8.1-beta2", 43L, "1.8.1-beta4", 43L, null))
         assertFalse(AppUpdateChecker.shouldNotifyUpdate("1.8.2", 44L, "1.8.1", 43L, "1.8.2"))
+        assertTrue(AppUpdateChecker.shouldNotifyUpdate("1.8.2", 44L, "1.8.1", 43L, "1.8.2", mandatory = true))
     }
 
     @Test
@@ -120,6 +216,14 @@ class AppUpdateCheckerTest {
                 candidateSigningHistory = setOf("a", "b"),
             ),
         )
+    }
+
+    @Test
+    fun `installed match requires exact code name and compatible package signing identity`() {
+        assertTrue(AppUpdateChecker.installedVersionMetadataMatches(43L, "1.8.1", 43L, "1.8.1", true))
+        assertFalse(AppUpdateChecker.installedVersionMetadataMatches(43L, "1.8.1-beta4", 43L, "1.8.1", true))
+        assertFalse(AppUpdateChecker.installedVersionMetadataMatches(43L, "1.8.1", 43L, "1.8.1", false))
+        assertFalse(AppUpdateChecker.installedVersionMetadataMatches(43L, "1.8.1", 44L, "1.8.2", true))
     }
 
     private fun asset(

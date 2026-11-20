@@ -1,10 +1,4 @@
 <resources>
-    <string name="change_ui_skin">更改介面外觀</string>
-    <string name="ui_skin_zotify">Zotify Music</string>
-    <string name="ui_skin_mochy">Mochy Music</string>
-    <string name="ui_skin_zotify_selected">Zotify Music 原始介面</string>
-    <string name="ui_skin_mochy_selected">Mochy Music 風格介面</string>
-
     <string name="app_name">Zotify Music</string>
     <string name="playback_channel_name">正在播放</string>
     <string name="download_channel_name">下載</string>
@@ -105,10 +99,14 @@
     <string name="dolby_atmos_open_failed">無法開啟杜比全景聲設定</string>
     <string name="update_available">有可用更新：v%1$s</string>
     <string name="software_update">軟體更新</string>
+    <string name="new_update_available">有新版本可用</string>
+    <string name="update_required">必須更新</string>
+    <string name="update_mandatory_body">此版本設定了受支援的最低應用程式版本。在 Android 中下載和安裝仍需取得您的核准。</string>
     <string name="update_available_body">Zotify Music %1$s 現已可供下載。</string>
     <string name="update_downloading_body">正在下載 Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s 已準備好安裝。</string>
     <string name="update_failed_body">無法下載 Zotify Music %1$s。</string>
+    <string name="update_incompatible_install_body">此 APK 無法更新目前安裝的應用程式，因為套件名稱或簽章憑證不同。若要移轉簽章金鑰，請先備份重要資料，解除安裝舊版應用程式，再從官方 Releases 頁面安裝新版 APK。解除安裝可能會刪除應用程式的本機資料。</string>
     <string name="download_now">立即下載</string>
     <string name="install_now">立即安裝</string>
     <string name="later">以後再說</string>
@@ -1365,4 +1363,15 @@
     <string name="app_icon_apply">套用</string>
     <string name="app_icon_changed">應用程式圖示已變更。啟動器可能需要一些時間才會更新。</string>
     <string name="app_icon_failed">無法變更應用程式圖示：%1$s</string>
+    <string name="change_ui_skin">更改介面外觀</string>
+
+    <string name="ui_skin_zotify">Zotify Music</string>
+
+    <string name="ui_skin_mochy">Mochy Music</string>
+
+    <string name="ui_skin_zotify_selected">Zotify Music 原始介面</string>
+
+    <string name="ui_skin_mochy_selected">Mochy Music 風格介面</string>
+
+
 </resources>

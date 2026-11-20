@@ -18,7 +18,7 @@
     <string name="settings_category_more_subtitle">Queue behavior and advanced options</string>
     <string name="settings_made_by">Made by OPZENITSU69</string>
     <string name="owner_contact">Owner Contact</string>
-    <string name="void_music_owner">Void Music Owner</string>
+    <string name="void_music_owner">Zotify Music Owner</string>
     <string name="owner_nickname">OPZENITSU69</string>
     <string name="owner_discord_id">Discord ID</string>
     <string name="owner_discord_handle">opzenitsu_69</string>
@@ -56,7 +56,7 @@
     <string name="csv_import_succeeded">Imported %1$s monthly records from CSV</string>
     <string name="csv_export_succeeded">Exported %1$s monthly records to CSV</string>
     <string name="import_listening_csv">Import listening history from CSV</string>
-    <string name="import_listening_csv_subtitle">Restore monthly listening totals from an Void Music CSV export</string>
+    <string name="import_listening_csv_subtitle">Restore monthly listening totals from a Zotify Music CSV export</string>
     <string name="csv_import_warning">This replaces listening history on this device. Settings are not included in a CSV file.</string>
     <string name="csv_choose_file">Choose CSV file</string>
 </resources>

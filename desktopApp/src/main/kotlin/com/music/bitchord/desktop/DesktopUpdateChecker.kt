@@ -13,11 +13,12 @@ import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import java.net.URI
 
 /**
  * Looks at the repo's "latest release" on GitHub once per launch and says whether it is newer
- * than the running build. The installer is not run from here: the dialog opens the asset in the
- * browser, so the user installs it the way they installed the first one.
+ * than the running build. The installer is not run from here: the dialog opens the matching platform
+ * asset in the browser, so the user installs it the way they installed the first one.
  *
  * GitHub's "latest" skips pre-releases and drafts, so a `-beta` desktop build is only ever
  * nudged toward a published release.
@@ -27,13 +28,13 @@ internal object DesktopUpdateChecker {
     data class UpdateInfo(
         val version: String,
         val releaseUrl: String,
-        /** The installer for this platform, or null when the release has none. */
-        val downloadUrl: String?,
+        /** The verified-by-repository installer asset for this platform. */
+        val downloadUrl: String,
         val notes: String?,
     )
 
     private const val LATEST_RELEASE_URL =
-        "https://api.github.com/repos/kushagrasinghx/BitChord/releases/latest"
+        "https://api.github.com/repos/OPZENITSUUU/zotify-music/releases/latest"
 
     val currentVersion: String = System.getProperty("bitchord.version") ?: "1.8-beta1"
 
@@ -57,20 +58,20 @@ internal object DesktopUpdateChecker {
         val url = release["html_url"]?.jsonPrimitive?.contentOrNull ?: return@runCatching null
         val latest = tag.removePrefix("v")
         if (!isNewer(latest, currentVersion)) return@runCatching null
+        val downloadUrl = installerUrl(release) ?: return@runCatching null
         UpdateInfo(
             version = latest,
             releaseUrl = url,
-            downloadUrl = installerUrl(release),
+            downloadUrl = downloadUrl,
             notes = release["body"]?.jsonPrimitive?.contentOrNull,
         )
     }.getOrNull()
 
     /**
-     * The release names its files `BitChord-<version>-windows-x64-setup.exe` and
-     * `BitChord-<version>-linux-x86_64.AppImage` (see .github/workflows/release.yml); match on the
-     * platform part so a version change does not matter.
+     * Only releases with a matching platform installer can produce an update. The
+     * current Android release pipeline does not publish desktop installers.
      */
-    private fun installerUrl(release: JsonObject): String? {
+    internal fun installerUrl(release: JsonObject): String? {
         val suffixes = when {
             DesktopPlatform.isWindows -> listOf("-windows-x64-setup.exe")
             DesktopPlatform.isLinux -> listOf(".AppImage", "-linux-amd64.deb")
@@ -79,13 +80,28 @@ internal object DesktopUpdateChecker {
         val assets = release["assets"]?.jsonArray?.mapNotNull { it as? JsonObject }.orEmpty()
         for (suffix in suffixes) {
             val hit = assets.firstOrNull { asset ->
-                asset["name"]?.jsonPrimitive?.contentOrNull?.endsWith(suffix, ignoreCase = true) == true &&
-                    asset["state"]?.jsonPrimitive?.contentOrNull == "uploaded"
+                val name = asset["name"]?.jsonPrimitive?.contentOrNull ?: return@firstOrNull false
+                val url = asset["browser_download_url"]?.jsonPrimitive?.contentOrNull
+                    ?: return@firstOrNull false
+                name.endsWith(suffix, ignoreCase = true) &&
+                    asset["state"]?.jsonPrimitive?.contentOrNull == "uploaded" &&
+                    isOfficialInstallerUrl(url)
             }
             hit?.get("browser_download_url")?.jsonPrimitive?.contentOrNull?.let { return it }
         }
         return null
     }
+
+    /** Only open HTTPS installer assets hosted by this repository's GitHub Releases. */
+    internal fun isOfficialInstallerUrl(value: String): Boolean = runCatching {
+        val uri = URI(value)
+        val path = uri.path ?: return@runCatching false
+        uri.scheme.equals("https", ignoreCase = true) &&
+            uri.host.equals("github.com", ignoreCase = true) &&
+            uri.userInfo == null &&
+            (uri.port == -1 || uri.port == 443) &&
+            path.startsWith("/OPZENITSUUU/zotify-music/releases/download/")
+    }.getOrDefault(false)
 
     private class Parsed(val parts: List<Int>, val preRelease: Boolean)
 

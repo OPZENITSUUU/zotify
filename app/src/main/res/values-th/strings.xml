@@ -1,10 +1,4 @@
 <resources>
-    <string name="change_ui_skin">เปลี่ยนรูปแบบหน้าตา</string>
-    <string name="ui_skin_zotify">Zotify Music</string>
-    <string name="ui_skin_mochy">Mochy Music</string>
-    <string name="ui_skin_zotify_selected">หน้าตาดั้งเดิมของ Zotify Music</string>
-    <string name="ui_skin_mochy_selected">หน้าตาที่ได้แรงบันดาลใจจาก Mochy Music</string>
-
     <string name="app_name">Zotify Music</string>
     <string name="playback_channel_name">กำลังเล่น</string>
     <string name="download_channel_name">การดาวน์โหลด</string>
@@ -109,10 +103,14 @@
     <string name="dolby_atmos_open_failed">เปิดการตั้งค่า Dolby Atmos ไม่ได้</string>
     <string name="update_available">มีอัปเดต: v%1$s</string>
     <string name="software_update">การอัปเดตซอฟต์แวร์</string>
+    <string name="new_update_available">มีอัปเดตใหม่</string>
+    <string name="update_required">ต้องอัปเดต</string>
+    <string name="update_mandatory_body">รุ่นนี้กำหนดเวอร์ชันแอปขั้นต่ำที่รองรับ การดาวน์โหลดและติดตั้งยังคงต้องได้รับอนุมัติจากคุณใน Android</string>
     <string name="update_available_body">Zotify Music %1$s พร้อมให้ดาวน์โหลดแล้ว</string>
     <string name="update_downloading_body">กำลังดาวน์โหลด Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s พร้อมติดตั้งแล้ว</string>
     <string name="update_failed_body">ดาวน์โหลด Zotify Music %1$s ไม่สำเร็จ</string>
+    <string name="update_incompatible_install_body">APK นี้ไม่สามารถอัปเดตแอปที่ติดตั้งอยู่ได้ เนื่องจากชื่อแพ็กเกจหรือใบรับรองการลงลายเซ็นแตกต่างกัน หากต้องเปลี่ยนไปใช้คีย์ลงลายเซ็นใหม่ ให้สำรองข้อมูลสำคัญ ถอนการติดตั้งแอปเวอร์ชันเก่า แล้วติดตั้ง APK ใหม่จากหน้า Releases อย่างเป็นทางการ การถอนการติดตั้งอาจลบข้อมูลในแอปที่เก็บไว้ในเครื่อง</string>
     <string name="download_now">ดาวน์โหลดตอนนี้</string>
     <string name="install_now">ติดตั้งตอนนี้</string>
     <string name="later">ภายหลัง</string>
@@ -1371,4 +1369,15 @@
     <string name="app_icon_apply">ใช้</string>
     <string name="app_icon_changed">เปลี่ยนไอคอนแอปแล้ว Launcher อาจใช้เวลาสักครู่ในการรีเฟรช</string>
     <string name="app_icon_failed">เปลี่ยนไอคอนแอปไม่ได้: %1$s</string>
+    <string name="change_ui_skin">เปลี่ยนรูปแบบหน้าตา</string>
+
+    <string name="ui_skin_zotify">Zotify Music</string>
+
+    <string name="ui_skin_mochy">Mochy Music</string>
+
+    <string name="ui_skin_zotify_selected">หน้าตาดั้งเดิมของ Zotify Music</string>
+
+    <string name="ui_skin_mochy_selected">หน้าตาที่ได้แรงบันดาลใจจาก Mochy Music</string>
+
+
 </resources>

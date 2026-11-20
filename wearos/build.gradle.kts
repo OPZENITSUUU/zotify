@@ -16,8 +16,8 @@ plugins {
  *
  * It has to share the phone app's application id *and* signing key, because the
  * Wearable Data Layer only delivers between apps that match on both. So:
- *   dev  -> com.dev.bitchord   pairs only with the phone's dev build
- *   prod/personal -> com.music.bitchord pairs only with the phone's prod/personal build
+ *   dev  -> com.dev.zotifymusic.player pairs only with the phone's dev build
+ *   prod/personal -> com.zotifymusic.player pairs only with its phone build
  * and each build type is signed exactly the way the phone's is (debug key for
  * debug, the release keystore for release), so a watch build pairs with the
  * phone build of the same variant.

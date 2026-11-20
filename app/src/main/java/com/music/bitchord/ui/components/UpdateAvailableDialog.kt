@@ -98,9 +98,11 @@ private fun formatByteSize(bytes: Long): String {
 fun UpdateAvailableDialog(
     version: String,
     notes: String?,
+    mandatory: Boolean = false,
     canDownload: Boolean,
     hazeState: HazeState,
     onDismiss: () -> Unit,
+    onOpenRelease: () -> Unit,
     onDownload: () -> Unit,
     onCancelDownload: () -> Unit,
     onInstall: () -> Unit,
@@ -114,14 +116,14 @@ fun UpdateAvailableDialog(
         modifier = modifier
             .fillMaxSize()
             .background(SCRIM_COLOR)
-            // Tapping the scrim reads the same as Remind Me Later — nothing
-            // about this update is mandatory, so backing out of it should be as
-            // easy as getting into it. Mid-download it only closes the sheet;
-            // the download keeps going and the top-bar icon reopens this.
+            // Keep the scrim clickable even for a mandatory update: disabled
+            // clickable modifiers do not consume input, which lets taps leak
+            // through to the controls underneath. Mandatory taps are consumed
+            // here but intentionally do nothing.
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },
-                onClick = onDismiss,
+                onClick = { if (!mandatory) onDismiss() },
             ),
         contentAlignment = Alignment.Center,
     ) {
@@ -154,7 +156,9 @@ fun UpdateAvailableDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = stringResource(R.string.software_update),
+                    text = stringResource(
+                        if (mandatory) R.string.update_required else R.string.new_update_available,
+                    ),
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontSize = 17.sp,
                         fontWeight = FontWeight.W600,
@@ -169,6 +173,15 @@ fun UpdateAvailableDialog(
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f),
                     textAlign = TextAlign.Center,
                 )
+                if (mandatory) {
+                    Text(
+                        text = stringResource(R.string.update_mandatory_body),
+                        modifier = Modifier.padding(top = 8.dp),
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp, lineHeight = 16.sp),
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center,
+                    )
+                }
                 val baseMessage = when (state) {
                         is AppUpdateChecker.DownloadState.Downloading ->
                             stringResource(R.string.update_downloading_body, version)
@@ -280,28 +293,44 @@ fun UpdateAvailableDialog(
             }
 
             AlertRule()
-            when (state) {
+            if (!canDownload) {
+                AlertAction(
+                    label = stringResource(R.string.update_unavailable),
+                    emphasised = true,
+                    onClick = onOpenRelease,
+                )
+                if (!mandatory) {
+                    AlertRule()
+                    AlertAction(label = stringResource(R.string.update_later), emphasised = false, onClick = onDismiss)
+                }
+            } else when (state) {
                 is AppUpdateChecker.DownloadState.Downloading -> {
                     AlertAction(label = stringResource(R.string.cancel), emphasised = false, onClick = onCancelDownload)
                 }
                 is AppUpdateChecker.DownloadState.Ready -> {
                     AlertAction(label = stringResource(R.string.install_now), emphasised = true, onClick = onInstall)
-                    AlertRule()
-                    AlertAction(label = stringResource(R.string.update_later), emphasised = false, onClick = onDismiss)
+                    if (!mandatory) {
+                        AlertRule()
+                        AlertAction(label = stringResource(R.string.update_later), emphasised = false, onClick = onDismiss)
+                    }
                 }
                 is AppUpdateChecker.DownloadState.Failed -> {
                     AlertAction(label = stringResource(R.string.try_again), emphasised = true, onClick = onDownload)
-                    AlertRule()
-                    AlertAction(label = stringResource(R.string.update_later), emphasised = false, onClick = onDismiss)
+                    if (!mandatory) {
+                        AlertRule()
+                        AlertAction(label = stringResource(R.string.update_later), emphasised = false, onClick = onDismiss)
+                    }
                 }
                 else -> {
                     AlertAction(
-                        label = stringResource(if (canDownload) R.string.download_now else R.string.update_unavailable),
+                        label = stringResource(R.string.download_now),
                         emphasised = true,
-                        onClick = if (canDownload) onDownload else onDismiss,
+                        onClick = onDownload,
                     )
-                    AlertRule()
-                    AlertAction(label = stringResource(R.string.update_later), emphasised = false, onClick = onDismiss)
+                    if (!mandatory) {
+                        AlertRule()
+                        AlertAction(label = stringResource(R.string.update_later), emphasised = false, onClick = onDismiss)
+                    }
                 }
             }
         }

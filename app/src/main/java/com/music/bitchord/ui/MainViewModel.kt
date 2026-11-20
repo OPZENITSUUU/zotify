@@ -1518,12 +1518,12 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         }
         viewModelScope.launch {
             // A leftover APK only means "Install Now" for the session that
-            // downloaded it — see AppUpdateChecker.clearCache. Check on every
-            // fresh launch, then recheck at most once every 24 hours while open.
+            // downloaded it — see AppUpdateChecker.clearCache. Check on fresh
+            // launch, respecting the 24-hour cache window and daily worker.
             AppUpdateChecker.clearCache(getApplication())
-            AppUpdateChecker.check(getApplication(), force = true, ignoreDismissed = true)
+            AppUpdateChecker.check(getApplication())
             while (true) {
-                AppUpdateChecker.check(getApplication(), ignoreDismissed = true)
+                AppUpdateChecker.check(getApplication())
                 delay(AppUpdateChecker.CHECK_INTERVAL_MS)
             }
         }

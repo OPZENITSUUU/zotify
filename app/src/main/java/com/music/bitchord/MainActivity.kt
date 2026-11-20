@@ -786,6 +786,7 @@ private fun BitChordApp(
     ) { result ->
         val ready = AppUpdateChecker.download.value as? AppUpdateChecker.DownloadState.Ready
         if (ready != null && AppUpdateChecker.installedVersionMatches(context, ready.file)) {
+            AppUpdateChecker.completeInstalledUpdate(context)
             Toast.makeText(context, "Update installed. Reopen Zotify Music to use it.", Toast.LENGTH_LONG).show()
             showUpdateDialog = false
         } else {
@@ -804,6 +805,13 @@ private fun BitChordApp(
      * them made the top bar look like it had caught something the app hadn't.
      */
     val updateNotice = updateAvailable
+    val dismissOptionalUpdate = {
+        val update = updateNotice
+        if (update?.mandatory != true) {
+            update?.let { AppUpdateChecker.dismiss(context, it.version) }
+            showUpdateDialog = false
+        }
+    }
 
     LaunchedEffect(updateNotice) {
         if (updateNotice != null && !updateDialogShown) {
@@ -2676,7 +2684,7 @@ private fun BitChordApp(
         ) {
             selectedTab = TAB_HOME
         }
-        BackHandler(enabled = showUpdateDialog) { showUpdateDialog = false }
+        BackHandler(enabled = showUpdateDialog) { dismissOptionalUpdate() }
         BackHandler(enabled = showListenBrainzLogin) { showListenBrainzLogin = false }
         BackHandler(enabled = showLastfmLogin) { showLastfmLogin = false }
         BackHandler(enabled = discordDialog != null) { discordDialog = null }
@@ -5245,25 +5253,30 @@ private fun BitChordApp(
         // ---- Update available (once per launch; held until the welcome is done) ----
         if (showUpdateDialog && onboardingComplete) {
             updateNotice?.let { update ->
+                val openReleasePage = {
+                    val opened = runCatching {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(update.releaseUrl)))
+                    }.isSuccess
+                    if (!opened) {
+                        Toast.makeText(context, "Could not open the release page.", Toast.LENGTH_LONG).show()
+                    }
+                }
                 UpdateAvailableDialog(
                     version = update.version,
                     notes = update.notes,
+                    mandatory = update.mandatory,
                     canDownload = update.apkUrl != null,
                     hazeState = hazeState,
                     // A download in progress keeps running behind the closed
                     // sheet — only the sheet itself goes away. The top-bar
                     // update icon reopens it onto whatever state it reached.
-                    onDismiss = {
-                        // "Update Later" hides this launch's prompt but keeps
-                        // the pending release for the top bar and next launch.
-                        showUpdateDialog = false
-                    },
+                    onDismiss = dismissOptionalUpdate,
+                    onOpenRelease = openReleasePage,
                     onDownload = {
                         if (update.apkUrl != null) {
                             scope.launch { AppUpdateChecker.downloadApk(context) }
                         } else {
-                            Toast.makeText(context, "No compatible verified APK is attached to this release.", Toast.LENGTH_LONG).show()
-                            showUpdateDialog = false
+                            openReleasePage()
                         }
                     },
                     onCancelDownload = {

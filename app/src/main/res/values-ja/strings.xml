@@ -1,10 +1,4 @@
 <resources>
-    <string name="change_ui_skin">UIスキンを変更</string>
-    <string name="ui_skin_zotify">Zotify Music</string>
-    <string name="ui_skin_mochy">Mochy Music</string>
-    <string name="ui_skin_zotify_selected">Zotify Music のオリジナル画面</string>
-    <string name="ui_skin_mochy_selected">Mochy Music に着想を得た画面</string>
-
     <string name="app_name">Zotify Music</string>
     <string name="playback_channel_name">再生中</string>
     <string name="download_channel_name">ダウンロード</string>
@@ -105,10 +99,14 @@
     <string name="dolby_atmos_open_failed">Dolby Atmosの設定を開けませんでした</string>
     <string name="update_available">アップデートが利用可能です：v%1$s</string>
     <string name="software_update">ソフトウェアアップデート</string>
+    <string name="new_update_available">新しいアップデートがあります</string>
+    <string name="update_required">必須のアップデート</string>
+    <string name="update_mandatory_body">このリリースでは、サポートされるアプリの最低バージョンが設定されます。Androidでのダウンロードとインストールには、引き続きあなたの承認が必要です。</string>
     <string name="update_available_body">Zotify Music %1$s がダウンロード可能です。</string>
     <string name="update_downloading_body">Zotify Music %1$s をダウンロード中…</string>
     <string name="update_ready_body">Zotify Music %1$s のインストール準備ができました。</string>
     <string name="update_failed_body">Zotify Music %1$s をダウンロードできませんでした。</string>
+    <string name="update_incompatible_install_body">パッケージ名または署名証明書が異なるため、この APK ではインストール済みアプリを更新できません。署名キーを移行するには、重要なデータをバックアップし、古いアプリをアンインストールしてから、公式リリースページで新しい APK をインストールしてください。アンインストールするとアプリ内のローカルデータが削除される場合があります。</string>
     <string name="download_now">今すぐダウンロード</string>
     <string name="install_now">今すぐインストール</string>
     <string name="later">後で</string>
@@ -1366,4 +1364,15 @@
     <string name="app_icon_apply">適用</string>
     <string name="app_icon_changed">アプリアイコンを変更しました。ランチャーの更新には少し時間がかかる場合があります。</string>
     <string name="app_icon_failed">アプリアイコンを変更できませんでした：%1$s</string>
+    <string name="change_ui_skin">UIスキンを変更</string>
+
+    <string name="ui_skin_zotify">Zotify Music</string>
+
+    <string name="ui_skin_mochy">Mochy Music</string>
+
+    <string name="ui_skin_zotify_selected">Zotify Music のオリジナル画面</string>
+
+    <string name="ui_skin_mochy_selected">Mochy Music に着想を得た画面</string>
+
+
 </resources>

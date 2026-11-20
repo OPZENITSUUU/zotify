@@ -1,10 +1,4 @@
 <resources>
-    <string name="change_ui_skin">Ubah tampilan</string>
-    <string name="ui_skin_zotify">Zotify Music</string>
-    <string name="ui_skin_mochy">Mochy Music</string>
-    <string name="ui_skin_zotify_selected">Tampilan asli Zotify Music</string>
-    <string name="ui_skin_mochy_selected">Tampilan terinspirasi Mochy Music</string>
-
     <string name="app_name">Zotify Music</string>
     <string name="playback_channel_name">Sedang diputar</string>
     <string name="download_channel_name">Unduhan</string>
@@ -105,10 +99,14 @@
     <string name="dolby_atmos_open_failed">Tidak dapat membuka pengaturan Dolby Atmos</string>
     <string name="update_available">Pembaruan tersedia: v%1$s</string>
     <string name="software_update">Pembaruan Perangkat Lunak</string>
+    <string name="new_update_available">Pembaruan Baru Tersedia</string>
+    <string name="update_required">Pembaruan Wajib</string>
+    <string name="update_mandatory_body">Rilis ini menetapkan versi minimum aplikasi yang didukung. Pengunduhan dan pemasangan tetap memerlukan persetujuan Anda di Android.</string>
     <string name="update_available_body">Zotify Music %1$s tersedia untuk diunduh.</string>
     <string name="update_downloading_body">Mengunduh Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s siap dipasang.</string>
     <string name="update_failed_body">Gagal mengunduh Zotify Music %1$s.</string>
+    <string name="update_incompatible_install_body">APK ini tidak dapat memperbarui aplikasi yang terpasang karena nama paket atau sertifikat penandatanganannya berbeda. Untuk beralih ke kunci penandatanganan baru, cadangkan data penting, hapus instalasi aplikasi lama, lalu instal APK baru dari halaman Releases resmi. Menghapus instalasi dapat menghapus data lokal aplikasi.</string>
     <string name="download_now">Unduh Sekarang</string>
     <string name="install_now">Pasang Sekarang</string>
     <string name="later">Nanti</string>
@@ -1365,4 +1363,15 @@
     <string name="app_icon_apply">Terapkan</string>
     <string name="app_icon_changed">Ikon aplikasi diubah. Peluncur mungkin perlu waktu untuk memperbarui.</string>
     <string name="app_icon_failed">Ikon aplikasi tidak dapat diubah: %1$s</string>
+    <string name="change_ui_skin">Ubah tampilan</string>
+
+    <string name="ui_skin_zotify">Zotify Music</string>
+
+    <string name="ui_skin_mochy">Mochy Music</string>
+
+    <string name="ui_skin_zotify_selected">Tampilan asli Zotify Music</string>
+
+    <string name="ui_skin_mochy_selected">Tampilan terinspirasi Mochy Music</string>
+
+
 </resources>

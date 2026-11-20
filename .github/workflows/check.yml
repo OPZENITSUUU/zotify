@@ -1,5 +1,8 @@
 name: Check
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main]
@@ -25,9 +28,14 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Write local.properties
+        shell: bash
+        env:
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+          LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
         run: |
-          echo "LASTFM_API_KEY=${{ secrets.LASTFM_API_KEY }}" > local.properties
-          echo "LASTFM_SECRET=${{ secrets.LASTFM_SECRET }}" >> local.properties
+          set -euo pipefail
+          umask 077
+          printf '%s\n' "LASTFM_API_KEY=$LASTFM_API_KEY" "LASTFM_SECRET=$LASTFM_SECRET" > local.properties
 
       - run: chmod +x gradlew
 
@@ -39,7 +47,8 @@ jobs:
 
       - name: The analyser is in the jar
         run: |
-          jar=$(ls desktopApp/build/compose/binaries/main/app/BitChord/lib/app/desktopApp*.jar)
+          jar=$(find desktopApp/build/compose/binaries/main/app -type f -name 'desktopApp*.jar' -print -quit)
+          test -n "$jar"
           jar tf "$jar" | grep -q 'native/libbitchord_analysis.so'
           jar tf "$jar" | grep -q 'models/.*\.onnx'
 
@@ -68,9 +77,13 @@ jobs:
 
       - name: Write local.properties
         shell: bash
+        env:
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+          LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
         run: |
-          echo "LASTFM_API_KEY=${{ secrets.LASTFM_API_KEY }}" > local.properties
-          echo "LASTFM_SECRET=${{ secrets.LASTFM_SECRET }}" >> local.properties
+          set -euo pipefail
+          umask 077
+          printf '%s\n' "LASTFM_API_KEY=$LASTFM_API_KEY" "LASTFM_SECRET=$LASTFM_SECRET" > local.properties
 
       - name: CMake version
         run: cmake --version
@@ -84,7 +97,8 @@ jobs:
       - name: The analyser is in the jar
         shell: bash
         run: |
-          jar=$(ls desktopApp/build/compose/binaries/main/app/BitChord/app/desktopApp*.jar)
+          jar=$(find desktopApp/build/compose/binaries/main/app -type f -name 'desktopApp*.jar' -print -quit)
+          test -n "$jar"
           jar tf "$jar" | grep -q 'native/bitchord_analysis.dll'
           jar tf "$jar" | grep -q 'models/.*\.onnx'
           # WinRT, so only MSVC can build it and only this job ever does.
@@ -114,9 +128,14 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Write local.properties
+        shell: bash
+        env:
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+          LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
         run: |
-          echo "LASTFM_API_KEY=${{ secrets.LASTFM_API_KEY }}" > local.properties
-          echo "LASTFM_SECRET=${{ secrets.LASTFM_SECRET }}" >> local.properties
+          set -euo pipefail
+          umask 077
+          printf '%s\n' "LASTFM_API_KEY=$LASTFM_API_KEY" "LASTFM_SECRET=$LASTFM_SECRET" > local.properties
 
       - run: chmod +x gradlew
 
@@ -128,7 +147,8 @@ jobs:
 
       - name: The analyser and models are in the jar
         run: |
-          jar=$(ls desktopApp/build/compose/binaries/main/app/BitChord.app/Contents/app/desktopApp*.jar)
+          jar=$(find desktopApp/build/compose/binaries/main/app -type f -name 'desktopApp*.jar' -print -quit)
+          test -n "$jar"
           jar tf "$jar" | grep -q 'models/.*\.onnx'
 
       - name: Upload test reports
@@ -155,9 +175,14 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Write local.properties
+        shell: bash
+        env:
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+          LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
         run: |
-          echo "LASTFM_API_KEY=${{ secrets.LASTFM_API_KEY }}" > local.properties
-          echo "LASTFM_SECRET=${{ secrets.LASTFM_SECRET }}" >> local.properties
+          set -euo pipefail
+          umask 077
+          printf '%s\n' "LASTFM_API_KEY=$LASTFM_API_KEY" "LASTFM_SECRET=$LASTFM_SECRET" > local.properties
 
       - run: chmod +x gradlew
 
@@ -165,12 +190,12 @@ jobs:
         run: ./gradlew testDevDebugUnitTest
 
       - name: Build the dev APK
-        run: ./gradlew assembleDevDebug
+        run: ./gradlew assembleDevDebug --stacktrace
 
       - name: Upload the dev APK
         uses: actions/upload-artifact@v4
         with:
-          name: zotify-dev-debug
+          name: zotify-music-dev-debug
           path: app/build/outputs/apk/dev/debug/*.apk
 
       - name: Upload test reports
@@ -180,6 +205,53 @@ jobs:
           name: android-test-reports
           path: app/build/reports/tests/
 
+  android-playback-emulator:
+    name: Android playback · Emulator (API 30)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable KVM for the Android emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          test -e /dev/kvm
+          ls -l /dev/kvm
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Run the local 24-bit/96 kHz FLAC playback regression test
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          # The runner's optional ADB settings writes failed with Broken pipe after boot on API 30.
+          # Keep the emulator's default -no-boot-anim option and skip those extra settings calls.
+          disable-animations: false
+          script: |
+            set -euo pipefail
+            ./gradlew :app:connectedProdDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.music.bitchord.PlaybackPipelineFlacInstrumentedTest#localFlacPlaysReportsContainerFactsAndSupportsSeeking
+            ./gradlew :app:connectedProdDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.music.bitchord.data.AppUpdatePersistenceInstrumentedTest
+
+      - name: Upload Android instrumentation reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-playback-instrumentation-reports
+          if-no-files-found: ignore
+          path: |
+            app/build/reports/androidTests/
+            app/build/outputs/androidTest-results/
   backend:
     name: Backend · Go
     runs-on: ubuntu-latest

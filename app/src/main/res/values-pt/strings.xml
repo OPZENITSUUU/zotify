@@ -1,11 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="change_ui_skin">Alterar interface</string>
-    <string name="ui_skin_zotify">Zotify Music</string>
-    <string name="ui_skin_mochy">Mochy Music</string>
-    <string name="ui_skin_zotify_selected">Interface original do Zotify Music</string>
-    <string name="ui_skin_mochy_selected">Interface inspirada no Mochy Music</string>
-
     <string name="app_name">Zotify Music</string>
     <string name="playback_channel_name">Tocando agora</string>
     <string name="download_channel_name">Downloads</string>
@@ -112,10 +106,14 @@
     <string name="dolby_atmos_open_failed">Não foi possível abrir as configurações do Dolby Atmos</string>
     <string name="update_available">Atualização disponível: v%1$s</string>
     <string name="software_update">Atualização de software</string>
+    <string name="new_update_available">Nova atualização disponível</string>
+    <string name="update_required">Atualização obrigatória</string>
+    <string name="update_mandatory_body">Esta versão define uma versão mínima compatível do aplicativo. O download e a instalação ainda exigem sua aprovação no Android.</string>
     <string name="update_available_body">O Zotify Music %1$s está disponível para download.</string>
     <string name="update_downloading_body">Baixando Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s está pronto para instalar.</string>
     <string name="update_failed_body">Não foi possível baixar o Zotify Music %1$s.</string>
+    <string name="update_incompatible_install_body">Este APK não pode atualizar a aplicação instalada porque o pacote ou o certificado de assinatura é diferente. Para mudar a chave de assinatura, faça uma cópia de segurança dos dados importantes, desinstale a aplicação antiga e instale o novo APK na página oficial de lançamentos. A desinstalação pode apagar os dados locais da aplicação.</string>
     <string name="download_now">Baixar agora</string>
     <string name="install_now">Instalar agora</string>
     <string name="later">Mais tarde</string>
@@ -1393,4 +1391,15 @@
     <string name="app_icon_apply">Aplicar</string>
     <string name="app_icon_changed">Ícone alterado. O launcher pode demorar um pouco a atualizar.</string>
     <string name="app_icon_failed">Não foi possível alterar o ícone: %1$s</string>
+    <string name="change_ui_skin">Alterar interface</string>
+
+    <string name="ui_skin_zotify">Zotify Music</string>
+
+    <string name="ui_skin_mochy">Mochy Music</string>
+
+    <string name="ui_skin_zotify_selected">Interface original do Zotify Music</string>
+
+    <string name="ui_skin_mochy_selected">Interface inspirada no Mochy Music</string>
+
+
 </resources>

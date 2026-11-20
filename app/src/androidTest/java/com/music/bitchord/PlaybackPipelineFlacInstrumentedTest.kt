@@ -2,6 +2,7 @@ package com.music.bitchord
 
 import android.content.ComponentName
 import android.net.Uri
+import android.os.Looper
 import android.os.SystemClock
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
@@ -55,7 +56,9 @@ class PlaybackPipelineFlacInstrumentedTest {
         val result = AtomicReference<MediaBrowser?>()
 
         instrumentation.runOnMainSync {
-            val future = MediaBrowser.Builder(context, token).buildAsync()
+            val future = MediaBrowser.Builder(context, token)
+                .setApplicationLooper(Looper.getMainLooper())
+                .buildAsync()
             future.addListener(
                 {
                     runCatching { future.get() }.onSuccess(result::set)
@@ -112,20 +115,22 @@ class PlaybackPipelineFlacInstrumentedTest {
         }
 
         await("FLAC decoder ready") {
-            browser.playbackState == Player.STATE_READY && browser.duration > 0
+            onMain { browser.playbackState == Player.STATE_READY && browser.duration > 0 }
         }
         playbackError.get()?.let { throw AssertionError("FLAC playback failed", it) }
 
         val durationMs = onMain { browser.duration }
         assertTrue("Expected about 8 seconds, got $durationMs ms", durationMs in 7_500L..8_500L)
 
+        // Extractor-populated tags are exposed through Player.mediaMetadata.
+        // currentMediaItem.mediaMetadata remains the original (empty) MediaItem metadata.
         await("FLAC container title metadata") {
-            onMain { browser.currentMediaItem?.mediaMetadata?.title?.toString() } == "BitChord FLAC Pipeline Fixture"
+            onMain { browser.mediaMetadata.title?.toString() } == "BitChord FLAC Pipeline Fixture"
         }
         assertEquals(
             "FLAC container metadata should reach the session",
             "BitChord FLAC Pipeline Fixture",
-            onMain { browser.currentMediaItem?.mediaMetadata?.title?.toString() },
+            onMain { browser.mediaMetadata.title?.toString() },
         )
 
         await("Media3 encoded input telemetry") {

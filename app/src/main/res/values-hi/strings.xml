@@ -1,10 +1,4 @@
 <resources>
-    <string name="change_ui_skin">इंटरफ़ेस बदलें</string>
-    <string name="ui_skin_zotify">Zotify Music</string>
-    <string name="ui_skin_mochy">Mochy Music</string>
-    <string name="ui_skin_zotify_selected">Zotify Music का मूल इंटरफ़ेस</string>
-    <string name="ui_skin_mochy_selected">Mochy Music से प्रेरित इंटरफ़ेस</string>
-
     <string name="app_name">Zotify Music</string>
     <string name="playback_channel_name">अभी चल रहा है</string>
     <string name="download_channel_name">डाउनलोड</string>
@@ -110,10 +104,14 @@
     <string name="dolby_atmos_open_failed">Dolby Atmos सेटिंग्स नहीं खोली जा सकीं</string>
     <string name="update_available">अपडेट उपलब्ध है: v%1$s</string>
     <string name="software_update">सॉफ़्टवेयर अपडेट</string>
+    <string name="new_update_available">नया अपडेट उपलब्ध है</string>
+    <string name="update_required">ज़रूरी अपडेट</string>
+    <string name="update_mandatory_body">यह रिलीज़ ऐप का न्यूनतम समर्थित संस्करण निर्धारित करती है। Android में डाउनलोड और इंस्टॉल करने के लिए अब भी आपकी मंज़ूरी ज़रूरी है।</string>
     <string name="update_available_body">Zotify Music %1$s डाउनलोड के लिए उपलब्ध है।</string>
     <string name="update_downloading_body">Zotify Music %1$s डाउनलोड हो रहा है…</string>
     <string name="update_ready_body">Zotify Music %1$s इंस्टॉल के लिए तैयार है।</string>
     <string name="update_failed_body">Zotify Music %1$s डाउनलोड नहीं हो सका।</string>
+    <string name="update_incompatible_install_body">यह APK इंस्टॉल किए गए ऐप को अपडेट नहीं कर सकता, क्योंकि पैकेज या साइनिंग प्रमाणपत्र अलग है। साइनिंग कुंजी बदलने के लिए, पहले ज़रूरी डेटा का बैकअप लें, पुराने ऐप को अनइंस्टॉल करें और फिर आधिकारिक Releases पेज से नया APK इंस्टॉल करें। अनइंस्टॉल करने से ऐप का स्थानीय डेटा मिट सकता है।</string>
     <string name="download_now">अभी डाउनलोड करें</string>
     <string name="install_now">अभी इंस्टॉल करें</string>
     <string name="later">बाद में</string>
@@ -1388,4 +1386,15 @@
     <string name="app_icon_apply">लागू करें</string>
     <string name="app_icon_changed">ऐप आइकन बदल गया। लॉन्चर को रीफ़्रेश होने में थोड़ा समय लग सकता है।</string>
     <string name="app_icon_failed">ऐप आइकन नहीं बदल सका: %1$s</string>
+    <string name="change_ui_skin">इंटरफ़ेस बदलें</string>
+
+    <string name="ui_skin_zotify">Zotify Music</string>
+
+    <string name="ui_skin_mochy">Mochy Music</string>
+
+    <string name="ui_skin_zotify_selected">Zotify Music का मूल इंटरफ़ेस</string>
+
+    <string name="ui_skin_mochy_selected">Mochy Music से प्रेरित इंटरफ़ेस</string>
+
+
 </resources>

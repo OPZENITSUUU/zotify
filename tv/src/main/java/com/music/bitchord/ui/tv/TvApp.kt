@@ -168,10 +168,10 @@ fun TvApp(
         }
     }
 
-    // Offered once per launch, and not over first-time setup. Settings'
-    // "Software Update" row reopens it after it is dismissed.
+    // Offered once per launch, and not over first-time setup. Hiding the
+    // automatic prompt keeps the update pending for Settings' Software Update row.
     val update by viewModel.updateAvailable.collectAsState()
-    var updateDismissed by remember { mutableStateOf(false) }
+    var updatePromptHidden by remember { mutableStateOf(false) }
 
     val spatialAudio by TvSettings.spatialAudioEnabled.collectAsState()
     LaunchedEffect(spatialAudio) {
@@ -249,8 +249,12 @@ fun TvApp(
         }
 
         val pendingUpdate = update
-        if (pendingUpdate != null && !updateDismissed && !isRunningSetup && !showAccountDialog) {
-            TvUpdateDialog(update = pendingUpdate, onDismiss = { updateDismissed = true })
+        if (pendingUpdate != null && !updatePromptHidden && !isRunningSetup && !showAccountDialog) {
+            TvUpdateDialog(
+                update = pendingUpdate,
+                onDismiss = { updatePromptHidden = true },
+                onNotNow = { updatePromptHidden = true },
+            )
         }
     }
 }
@@ -561,7 +565,7 @@ private fun TvTopBar(
         // The mark only, as the phone's Home heading shows it.
         Icon(
             painter = painterResource(R.drawable.ic_logo),
-            contentDescription = "BitChord",
+            contentDescription = "Zotify Music",
             tint = TvGlass.TextPrimary,
             modifier = Modifier
                 .align(Alignment.CenterStart)
@@ -668,7 +672,7 @@ fun TvAppMark(modifier: Modifier = Modifier, size: androidx.compose.ui.unit.Dp =
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_logo),
-            contentDescription = "BitChord",
+            contentDescription = "Zotify Music",
             tint = Color.White,
             modifier = Modifier.size(size * 0.52f),
         )

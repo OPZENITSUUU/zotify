@@ -9,7 +9,7 @@
 A customizable music client with flexible sources, detailed playback controls, synced lyrics, an artwork-rich player and a library that stays yours.
 
 <p>
-  <a href="https://github.com/OPZENITSUUU/zotify-music/releases/latest/download/Zotify.Music.apk"><img src="https://img.shields.io/badge/GET%20ZOTIFY%20MUSIC-Latest%20Android%20APK-8B5CF6?style=for-the-badge&logo=android&logoColor=white" alt="Download the latest Android APK" /></a>
+  <a href="https://github.com/OPZENITSUUU/zotify-music/releases"><img src="https://img.shields.io/badge/VIEW%20ANDROID%20APK-Releases-8B5CF6?style=for-the-badge&logo=android&logoColor=white" alt="View Android APK releases" /></a>
 </p>
 
 <p>
@@ -27,10 +27,6 @@ A customizable music client with flexible sources, detailed playback controls, s
 </div>
 
 ---
-
-## Optional UI skins
-
-Zotify Music keeps its original interface as the default and offers an optional Mochy-inspired visual skin. The Mochy adaptation is an independent UI implementation: it does not use Mochy Music playback, backend, APIs or streaming logic. Visual reference: [Mochy Music](https://github.com/realidkroo/Mochy-Music) (GPL-3.0; see its [license](https://github.com/realidkroo/Mochy-Music/blob/main/LICENSE)).
 
 ## What is Zotify Music?
 
@@ -193,21 +189,21 @@ Setting availability can vary with app version, operating system, hardware and c
 
 ## 📱 Platform availability
 
-The repository contains more than one target, but **the current Zotify Music Releases page publishes the Android APK**. The presence of source code for another platform is not the same thing as a ready-to-download Zotify Music build.
+The repository contains more than one target. The presence of source code for another platform is not the same thing as a ready-to-download Zotify Music build; check the Releases page for currently published artifacts.
 
 | Target | What the source includes | Current distribution note |
 | --- | --- | --- |
-| **Android phone/tablet** | Main music app, player, sources, lyrics, library, integrations and downloads. | **Published:** install the APK from the Releases page. |
-| **Android TV / Google TV** | Remote-first home, library, search, settings, full-screen player, synced lyrics, display-refresh-rate options, spatial audio and QR sign-in. | Source target; build instructions below. |
+| **Android phone/tablet** | Main music app, player, sources, lyrics, library, integrations and downloads. | Signed phone APKs are published on the Releases page. |
+| **Android TV / Google TV** | Remote-first home, library, search, settings, full-screen player, synced lyrics, display-refresh-rate options, spatial audio and QR sign-in. | TV source target; no TV APK is attached to the latest published phone release. |
 | **Wear OS companion** | Watch-facing now-playing and playback components connected to the phone app. | Companion source is included; compatibility depends on the paired phone/watch builds. |
-| **Desktop** | Compose Multiplatform desktop code for Windows, Linux and macOS, with desktop playback, local music, lyrics, downloads, equalizer and desktop integrations. | Source target; installers are not attached to the current Zotify Music Android release. Check branding and updater configuration before distributing a custom desktop build. |
+| **Desktop** | Compose Multiplatform desktop code for Windows, Linux and macOS, with desktop playback, local music, lyrics, downloads, equalizer and desktop integrations. | Source target; the current repository release workflow does not publish desktop installers. |
 | **Web player + browser extension** | React/TypeScript web client and Chromium/Firefox extension source, with a page-to-extension bridge. | Development source is included. It is not the Android APK and should be built/deployed separately. |
 
 ## ⬇️ Download
 
 <div align="center">
 
-<a href="https://github.com/OPZENITSUUU/zotify-music/releases/latest/download/Zotify.Music.apk"><img src="https://img.shields.io/badge/Download-Zotify.Music.apk-8B5CF6?style=for-the-badge&logo=android&logoColor=white" alt="Download Zotify.Music.apk" /></a>
+<a href="https://github.com/OPZENITSUUU/zotify-music/releases"><img src="https://img.shields.io/badge/View-Android%20APK%20releases-8B5CF6?style=for-the-badge&logo=android&logoColor=white" alt="View Android APK releases" /></a>
 
 **[Open all releases](https://github.com/OPZENITSUUU/zotify-music/releases)** · **[Report a problem](https://github.com/OPZENITSUUU/zotify-music/issues)**
 
@@ -215,14 +211,14 @@ The repository contains more than one target, but **the current Zotify Music Rel
 
 ### Install on Android
 
-1. Open the [latest release](https://github.com/OPZENITSUUU/zotify-music/releases/latest).
-2. Download **Zotify.Music.apk** from the release assets.
+1. Open the [Android APK Releases page](https://github.com/OPZENITSUUU/zotify-music/releases).
+2. Download **Zotify.Music.apk** from the latest release's assets.
 3. Open the APK. If prompted, allow your browser or file manager to install apps from that source.
 4. Install and open Zotify Music, then configure the sources and optional services you use.
 
 **Minimum Android version:** Android 8.0 (API 26) or newer.
 
-**Package identity migration:** The Zotify Music Android app uses package ID `com.zotifymusic.player`. Android treats it as a separate app from the previous Void Music package (`com.voidmusic.player`), so this first Zotify installation does not update or migrate the old app data. Keep the previous app installed until you have moved anything you need. Future Zotify updates can be installed in place, subject to Android approval.
+**Compatibility:** Published phone releases use the established `com.zotifymusic.player` application ID and production signing identity. Install only releases signed for that same app identity; do not uninstall an existing installation or sideload a build from a stale branch using a different ID or key. The finalization changes retain the published package IDs and certificate pin. Do not publish another release until the final PR's required CI checks pass and release approval is given.
 
 Android only accepts an in-place update when the package identity and signing certificate are compatible. Back up important data before changing signing tracks or uninstalling an older build.
 
@@ -235,7 +231,7 @@ Maintainers: see [RELEASE_SETUP.md](RELEASE_SETUP.md) for the protected Actions 
 **Requirements:** JDK 17+, Android SDK and the native build components requested by the Gradle project.
 
 <pre><code>git clone https://github.com/OPZENITSUUU/zotify-music.git
-cd zotify
+cd zotify-music
 ./gradlew :app:assemblePersonalDebug</code></pre>
 
 The personal debug APK is created under <code>app/build/outputs/apk/personal/debug/</code>.
@@ -320,7 +316,7 @@ Zotify Music is an independent community distribution. It is **not affiliated wi
 
 Zotify Music does not claim ownership of third-party catalogues or user media. You are responsible for ensuring that your use of any source or content is authorized and complies with local law and the relevant service terms. Availability, stream quality and permissions may change when an external service changes.
 
-This repository builds on the open-source Zotify Music project. Applicable upstream notices, copyright information and license obligations must be retained when redistributing the software. See [LICENSE](LICENSE) for the repository's **GNU General Public License v3.0 (GPL-3.0)** terms.
+This repository builds on the open-source BitChord project. Applicable upstream notices, copyright information and license obligations must be retained when redistributing the software. See [LICENSE](LICENSE) for the repository's **GNU General Public License v3.0 (GPL-3.0)** terms.
 
 ---
 
