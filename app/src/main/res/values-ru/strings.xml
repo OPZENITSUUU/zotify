@@ -114,6 +114,9 @@
     <string name="dolby_atmos_open_failed">Не удалось открыть настройки Dolby Atmos</string>
     <string name="update_available">Доступно обновление: v%1$s</string>
     <string name="software_update">Обновление ПО</string>
+    <string name="new_update_available">Доступно новое обновление</string>
+    <string name="update_required">Обязательное обновление</string>
+    <string name="update_mandatory_body">В этом выпуске устанавливается минимальная поддерживаемая версия приложения. Для скачивания и установки по-прежнему требуется ваше разрешение в Android.</string>
     <string name="update_available_body">Zotify Music %1$s доступен для загрузки.</string>
     <string name="update_downloading_body">Загрузка Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s готов к установке.</string>

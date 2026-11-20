@@ -104,6 +104,9 @@
     <string name="dolby_atmos_open_failed">Dolby Atmos सेटिंग्स नहीं खोली जा सकीं</string>
     <string name="update_available">अपडेट उपलब्ध है: v%1$s</string>
     <string name="software_update">सॉफ़्टवेयर अपडेट</string>
+    <string name="new_update_available">नया अपडेट उपलब्ध है</string>
+    <string name="update_required">ज़रूरी अपडेट</string>
+    <string name="update_mandatory_body">यह रिलीज़ ऐप का न्यूनतम समर्थित संस्करण निर्धारित करती है। Android में डाउनलोड और इंस्टॉल करने के लिए अब भी आपकी मंज़ूरी ज़रूरी है।</string>
     <string name="update_available_body">Zotify Music %1$s डाउनलोड के लिए उपलब्ध है।</string>
     <string name="update_downloading_body">Zotify Music %1$s डाउनलोड हो रहा है…</string>
     <string name="update_ready_body">Zotify Music %1$s इंस्टॉल के लिए तैयार है।</string>

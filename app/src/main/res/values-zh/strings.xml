@@ -99,6 +99,9 @@
     <string name="dolby_atmos_open_failed">无法打开杜比全景声设置</string>
     <string name="update_available">有可用更新：v%1$s</string>
     <string name="software_update">软件更新</string>
+    <string name="new_update_available">有新版本可用</string>
+    <string name="update_required">必须更新</string>
+    <string name="update_mandatory_body">此版本设定了受支持的最低应用版本。在 Android 中下载和安装仍需获得您的批准。</string>
     <string name="update_available_body">Zotify Music %1$s 现已可供下载。</string>
     <string name="update_downloading_body">正在下载 Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s 已准备好安装。</string>

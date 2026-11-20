@@ -106,6 +106,9 @@
     <string name="dolby_atmos_open_failed">Không thể mở cài đặt Dolby Atmos</string>
     <string name="update_available">Có bản cập nhật mới: v%1$s</string>
     <string name="software_update">Cập nhật phần mềm</string>
+    <string name="new_update_available">Có bản cập nhật mới</string>
+    <string name="update_required">Bản cập nhật bắt buộc</string>
+    <string name="update_mandatory_body">Bản phát hành này đặt ra phiên bản ứng dụng tối thiểu được hỗ trợ. Bạn vẫn cần phê duyệt trên Android để tải xuống và cài đặt.</string>
     <string name="update_available_body">Zotify Music %1$s đã sẵn sàng để tải xuống.</string>
     <string name="update_downloading_body">Đang tải xuống Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s đã sẵn sàng để cài đặt.</string>

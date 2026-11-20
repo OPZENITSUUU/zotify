@@ -109,6 +109,9 @@
     <string name="dolby_atmos_open_failed">Dolby Atmos ayarları açılamadı</string>
     <string name="update_available">Güncelleme mevcut: v%1$s</string>
     <string name="software_update">Yazılım Güncellemesi</string>
+    <string name="new_update_available">Yeni Güncelleme Mevcut</string>
+    <string name="update_required">Zorunlu Güncelleme</string>
+    <string name="update_mandatory_body">Bu sürüm, desteklenen en düşük uygulama sürümünü belirler. Android’de indirme ve yükleme işlemleri için onayınız yine gereklidir.</string>
     <string name="update_available_body">Zotify Music %1$s indirilmeye hazır.</string>
     <string name="update_downloading_body">Zotify Music %1$s indiriliyor…</string>
     <string name="update_ready_body">Zotify Music %1$s yüklenmeye hazır.</string>

@@ -99,6 +99,9 @@
     <string name="dolby_atmos_open_failed">Tidak dapat membuka pengaturan Dolby Atmos</string>
     <string name="update_available">Pembaruan tersedia: v%1$s</string>
     <string name="software_update">Pembaruan Perangkat Lunak</string>
+    <string name="new_update_available">Pembaruan Baru Tersedia</string>
+    <string name="update_required">Pembaruan Wajib</string>
+    <string name="update_mandatory_body">Rilis ini menetapkan versi minimum aplikasi yang didukung. Pengunduhan dan pemasangan tetap memerlukan persetujuan Anda di Android.</string>
     <string name="update_available_body">Zotify Music %1$s tersedia untuk diunduh.</string>
     <string name="update_downloading_body">Mengunduh Zotify Music %1$s…</string>
     <string name="update_ready_body">Zotify Music %1$s siap dipasang.</string>
