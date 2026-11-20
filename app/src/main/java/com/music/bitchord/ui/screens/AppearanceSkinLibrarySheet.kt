@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.music.bitchord.data.settings.AppSettings
 import com.music.bitchord.data.settings.AppearanceLookOverrides
 import com.music.bitchord.data.settings.AppearanceSkinLibrary
@@ -55,9 +56,9 @@ import com.music.bitchord.data.settings.UiSkin
 
 private data class BuiltInAppearancePreset(
     val id: String,
-    val name: String,
-    val subtitle: String,
-    val description: String,
+    val nameRes: Int,
+    val subtitleRes: Int,
+    val descriptionRes: Int,
     val uiSkin: UiSkin,
     val overrides: AppearanceLookOverrides,
     val background: Color,
@@ -70,9 +71,9 @@ private data class BuiltInAppearancePreset(
 private val BuiltInAppearancePresets = listOf(
     BuiltInAppearancePreset(
         id = "zotify",
-        name = "Zotify Original",
-        subtitle = "The default Zotify Music look",
-        description = "Keep the original interface and your selected light or dark theme.",
+        nameRes = R.string.appearance_preset_zotify_name,
+        subtitleRes = R.string.appearance_preset_zotify_subtitle,
+        descriptionRes = R.string.appearance_preset_zotify_description,
         uiSkin = UiSkin.ZOTIFY,
         overrides = AppearanceLookOverrides(),
         background = Color(0xFF101114),
@@ -83,9 +84,9 @@ private val BuiltInAppearancePresets = listOf(
     ),
     BuiltInAppearancePreset(
         id = "mochy",
-        name = "Mochy Music",
-        subtitle = "Mochy-inspired dark interface",
-        description = "A bundled monochrome look with dark surfaces, softer typography and rounded artwork. It is already inside the app.",
+        nameRes = R.string.appearance_preset_mochy_name,
+        subtitleRes = R.string.appearance_preset_mochy_subtitle,
+        descriptionRes = R.string.appearance_preset_mochy_description,
         uiSkin = UiSkin.MOCHY,
         overrides = AppearanceLookOverrides(),
         background = Color.Black,
@@ -96,9 +97,9 @@ private val BuiltInAppearancePresets = listOf(
     ),
     BuiltInAppearancePreset(
         id = "amoled-cyan",
-        name = "AMOLED Cyan",
-        subtitle = "Pure black with a cool accent",
-        description = "A high-contrast black interface with cyan highlights and rounded artwork.",
+        nameRes = R.string.appearance_preset_amoled_name,
+        subtitleRes = R.string.appearance_preset_amoled_subtitle,
+        descriptionRes = R.string.appearance_preset_amoled_description,
         uiSkin = UiSkin.ZOTIFY,
         overrides = AppearanceLookOverrides(
             accentArgb = Color(0xFF5DD6FF).toArgb(),
@@ -113,9 +114,9 @@ private val BuiltInAppearancePresets = listOf(
     ),
     BuiltInAppearancePreset(
         id = "midnight-violet",
-        name = "Midnight Violet",
-        subtitle = "Dark surfaces with violet highlights",
-        description = "A calm violet accent across the existing Zotify interface.",
+        nameRes = R.string.appearance_preset_violet_name,
+        subtitleRes = R.string.appearance_preset_violet_subtitle,
+        descriptionRes = R.string.appearance_preset_violet_description,
         uiSkin = UiSkin.ZOTIFY,
         overrides = AppearanceLookOverrides(
             accentArgb = Color(0xFFB39DFF).toArgb(),
@@ -130,9 +131,9 @@ private val BuiltInAppearancePresets = listOf(
     ),
     BuiltInAppearancePreset(
         id = "emerald-night",
-        name = "Emerald Night",
-        subtitle = "Dark green accent",
-        description = "A deep night palette with a clear emerald highlight.",
+        nameRes = R.string.appearance_preset_emerald_name,
+        subtitleRes = R.string.appearance_preset_emerald_subtitle,
+        descriptionRes = R.string.appearance_preset_emerald_description,
         uiSkin = UiSkin.ZOTIFY,
         overrides = AppearanceLookOverrides(
             accentArgb = Color(0xFF63D6A5).toArgb(),
@@ -147,9 +148,9 @@ private val BuiltInAppearancePresets = listOf(
     ),
     BuiltInAppearancePreset(
         id = "rose-night",
-        name = "Rose Night",
-        subtitle = "Dark with a warm rose accent",
-        description = "A softer rose highlight on the familiar Zotify interface.",
+        nameRes = R.string.appearance_preset_rose_name,
+        subtitleRes = R.string.appearance_preset_rose_subtitle,
+        descriptionRes = R.string.appearance_preset_rose_description,
         uiSkin = UiSkin.ZOTIFY,
         overrides = AppearanceLookOverrides(
             accentArgb = Color(0xFFFF829D).toArgb(),
@@ -194,9 +195,9 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
             AppearanceSkinState.apply(preset.overrides)
             AppSettings.setUiSkin(preset.uiSkin)
         }.onSuccess {
-            status = "${preset.name} applied."
+            status = context.getString(R.string.appearance_preset_applied, context.getString(preset.nameRes))
         }.onFailure {
-            status = it.message ?: "Could not apply this appearance."
+            status = it.message ?: context.getString(R.string.appearance_preset_apply_failed)
         }
         applyingId = null
     }
@@ -229,12 +230,12 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f)) {
                     Text(
-                        "Appearance",
+                        stringResource(R.string.appearance_gallery_title),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                     )
                     Text(
-                        "Built-in themes and interface styles",
+                        stringResource(R.string.appearance_gallery_subtitle),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodySmall,
                     )
@@ -248,7 +249,7 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
-                    "Every look below is bundled inside Zotify. No ZIP, JSON, URL or external skin file is needed.",
+                    stringResource(R.string.appearance_gallery_notice),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(14.dp),
@@ -256,9 +257,9 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
             }
 
             Spacer(Modifier.height(22.dp))
-            Text("Built-in looks", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.appearance_gallery_section), fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
             Text(
-                "Preview a style and apply it with one tap.",
+                stringResource(R.string.appearance_gallery_hint),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodySmall,
             )
@@ -283,9 +284,9 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                         Spacer(Modifier.height(12.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Column(Modifier.weight(1f)) {
-                                Text(preset.name, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+                                Text(stringResource(preset.nameRes), fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
                                 Text(
-                                    preset.subtitle,
+                                    stringResource(preset.subtitleRes),
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     style = MaterialTheme.typography.bodySmall,
                                 )
@@ -293,7 +294,7 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                             if (selected) {
                                 Icon(
                                     Icons.Rounded.CheckCircle,
-                                    contentDescription = "Selected",
+                                    contentDescription = stringResource(R.string.appearance_preset_selected),
                                     tint = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.size(22.dp),
                                 )
@@ -301,7 +302,7 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                         }
                         Spacer(Modifier.height(7.dp))
                         Text(
-                            preset.description,
+                            stringResource(preset.descriptionRes),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.bodySmall,
                         )
@@ -312,7 +313,7 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                                 enabled = false,
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
-                                Text("Currently applied")
+                                Text(stringResource(R.string.appearance_preset_currently_applied))
                             }
                         } else {
                             Button(
@@ -321,7 +322,7 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 Text(
-                                    if (applyingId == preset.id) "Applying…" else "Apply",
+                                    if (applyingId == preset.id) stringResource(R.string.appearance_preset_applying) else stringResource(R.string.appearance_preset_apply),
                                 )
                             }
                         }
@@ -342,7 +343,7 @@ fun AppearanceSkinLibrarySheet(onDismiss: () -> Unit) {
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f),
             )
             Text(
-                "Mochy Music style is included locally in the app. Selecting it changes the native Zotify interface immediately and works offline.",
+                stringResource(R.string.appearance_gallery_footer),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodySmall,
             )
@@ -364,7 +365,7 @@ private fun SkinPreview(preset: BuiltInAppearancePreset) {
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    if (preset.id == "mochy") "MOCHY MUSIC" else "ZOTIFY MUSIC",
+                    stringResource(if (preset.id == "mochy") R.string.appearance_preview_mochy else R.string.appearance_preview_zotify),
                     color = preset.foreground,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
@@ -400,7 +401,7 @@ private fun SkinPreview(preset: BuiltInAppearancePreset) {
                 }
                 Column(Modifier.weight(1f)) {
                     Text(
-                        "Now playing",
+                        stringResource(R.string.appearance_preview_now_playing),
                         color = preset.foreground,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -408,7 +409,7 @@ private fun SkinPreview(preset: BuiltInAppearancePreset) {
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(
-                        "Your music, your style",
+                        stringResource(R.string.appearance_preview_tagline),
                         color = preset.muted,
                         fontSize = 10.sp,
                         maxLines = 1,
