@@ -220,12 +220,28 @@ object AppUpdateChecker {
         return digest.takeIf { it.length == 64 && it.all { character -> character in '0'..'9' || character in 'a'..'f' } }
     }
 
-    internal fun releaseVersionCode(body: String?): Long? {
-        val line = body?.lineSequence()?.firstOrNull { it.contains("Android version code:", ignoreCase = true) }
-            ?: return null
-        val match = Regex("^\\s*Android version code:\\s*(\\d+)\\s*$", RegexOption.IGNORE_CASE)
-            .matchEntire(line) ?: return null
-        return match.groupValues[1].toLongOrNull()?.takeIf { it > 0L }
+    private const val TV_VERSION_CODE_OFFSET = 26L
+
+    internal fun releaseVersionCode(
+        body: String?,
+        updateApkPrefix: String = BuildConfig.UPDATE_APK_PREFIX,
+    ): Long? {
+        fun parse(field: String): Long? {
+            val line = body?.lineSequence()?.firstOrNull {
+                it.trimStart().startsWith("$field:", ignoreCase = true)
+            } ?: return null
+            val match = Regex("^\s*\${Regex.escape(field)}:\s*(\d+)\s*$", RegexOption.IGNORE_CASE)
+                .matchEntire(line) ?: return null
+            return match.groupValues[1].toLongOrNull()?.takeIf { it > 0L }
+        }
+
+        if (updateApkPrefix.startsWith("ZotifyMusicTV-", ignoreCase = true)) {
+            // New releases publish this explicitly. Older releases predate that field, so
+            // derive the TV code from the phone code using the TV module's stable offset.
+            return parse("Android TV version code")
+                ?: parse("Android version code")?.plus(TV_VERSION_CODE_OFFSET)
+        }
+        return parse("Android version code")
     }
 
     internal fun isNewerVersionCode(candidate: Long, installed: Long): Boolean = candidate > installed
