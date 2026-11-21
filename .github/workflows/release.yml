@@ -197,9 +197,9 @@ jobs:
             "$build_tools/zipalign" -c -v 4 "$apk"
             "$build_tools/apksigner" verify --verbose --print-certs "$apk"
             case "$variant" in
-              arm64-v8a) cp "$apk" dist/Zotify.Music-arm64-v8a.apk ;;
-              armeabi-v7a) cp "$apk" dist/Zotify.Music-armeabi-v7a.apk ;;
-              universal) cp "$apk" dist/Zotify.Music-universal.apk ;;
+              arm64-v8a) cp "$apk" dist/Zotify.Music_arm64-v8a.apk ;;
+              armeabi-v7a) cp "$apk" dist/Zotify.Music_armeabi-v7a.apk ;;
+              universal) cp "$apk" dist/Zotify.Music.apk ;;
             esac
           done
 
