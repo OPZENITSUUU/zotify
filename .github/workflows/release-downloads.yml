@@ -248,6 +248,49 @@ jobs:
               raise SystemExit("Unrecognised TV version metadata; refusing a mismatched build.")
           PY
 
+      - name: Align historical TV updater with platform-specific release version metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path("app/src/main/java/com/music/bitchord/data/AppUpdateChecker.kt")
+          source = path.read_text(encoding="utf-8")
+          old = r'''    internal fun releaseVersionCode(body: String?): Long? {
+                  val line = body?.lineSequence()?.firstOrNull { it.contains("Android version code:", ignoreCase = true) }
+                      ?: return null
+                  val match = Regex("^\\s*Android version code:\\s*(\\d+)\\s*$", RegexOption.IGNORE_CASE)
+                      .matchEntire(line) ?: return null
+                  return match.groupValues[1].toLongOrNull()?.takeIf { it > 0L }
+              }'''
+          new = r'''    private const val TV_VERSION_CODE_OFFSET = 26L
+
+              internal fun releaseVersionCode(
+                  body: String?,
+                  updateApkPrefix: String = BuildConfig.UPDATE_APK_PREFIX,
+              ): Long? {
+                  fun parse(field: String): Long? {
+                      val line = body?.lineSequence()?.firstOrNull {
+                          it.trimStart().startsWith("$field:", ignoreCase = true)
+                      } ?: return null
+                      val match = Regex("""^\s*${Regex.escape(field)}:\s*(\d+)\s*$""", RegexOption.IGNORE_CASE)
+                          .matchEntire(line) ?: return null
+                      return match.groupValues[1].toLongOrNull()?.takeIf { it > 0L }
+                  }
+
+                  if (updateApkPrefix.startsWith("ZotifyMusicTV-", ignoreCase = true)) {
+                      return parse("Android TV version code")
+                          ?: parse("Android version code")?.plus(TV_VERSION_CODE_OFFSET)
+                  }
+                  return parse("Android version code")
+              }'''
+          if old in source:
+              source = source.replace(old, new, 1)
+              path.write_text(source, encoding="utf-8")
+          elif new not in source:
+              raise SystemExit("Could not safely align TV updater version metadata in this historical tag.")
+          PY
+
       - name: Verify and configure official release signing key
         shell: bash
         env:
