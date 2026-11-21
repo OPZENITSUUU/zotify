@@ -7201,6 +7201,7 @@ class PlaybackService : MediaLibraryService() {
                     positionMs = exoPlayer.currentPosition.coerceAtLeast(0L),
                     durationMs = exoPlayer.duration.takeIf { it > 0 } ?: 0L,
                     spotifyStyle = true,
+                    playing = false,
                 )
             }
         }
