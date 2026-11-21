@@ -339,6 +339,17 @@ val patchedDiscordSdkAar = tasks.register<org.gradle.api.tasks.bundling.Zip>("pa
     from(discordSdkPatchedManifest) {
         rename { "AndroidManifest.xml" }
     }
+    // The recovered archive retains the ABI binaries under jni/, but its
+    // Prefab package's libs/android.<abi> entries are empty. Populate the exact
+    // paths referenced by module.json from those intact native libraries.
+    from(zipTree(discordSdkOriginalAar)) {
+        include("jni/**/libdiscord_partner_sdk.so")
+        eachFile {
+            val abi = path.substringAfter("jni/").substringBefore("/")
+            path = "prefab/modules/discord_partner_sdk/libs/android.$abi/discord_partner_sdk.so"
+        }
+        includeEmptyDirs = false
+    }
     archiveFileName.set("discord_partner_sdk.aar")
     destinationDirectory.set(layout.buildDirectory.dir("intermediates/discord-social-sdk"))
 }
