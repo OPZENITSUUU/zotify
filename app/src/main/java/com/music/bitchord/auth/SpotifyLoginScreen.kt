@@ -68,7 +68,7 @@ fun clearSpotifyWebSession() {
  * login, then hands the `sp_dc` cookie to [onConnected] once the page lands on
  * open.spotify.com.
  *
- * Must be hosted as a root overlay, like [DiscordLoginScreen], never inside the
+ * Must be hosted as a root overlay, like [SpotifyLoginScreen], never inside the
  * page content: that subtree is the `hazeSource` and the glass backdrop, both of
  * which record it into a layer and draw it a second time. A WebView drawn twice
  * flickers, drops parts of the page, and on some devices takes the app down in
@@ -88,7 +88,7 @@ fun SpotifyLoginScreen(
         factory = { context ->
             WebView(context).apply {
                 // MATCH_PARENT, not the WRAP_CONTENT Compose hands a bare view:
-                // see DiscordLoginScreen — a zero layout viewport collapses
+                // see SpotifyLoginScreen — a zero layout viewport collapses
                 // any page sized off `height: 100%`, and Spotify's is.
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
