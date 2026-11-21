@@ -83,7 +83,7 @@ android {
         minSdk = 26
         targetSdk = 36
         // Keep TV installs and updates in lockstep with the phone release for this tag.
-        versionCode = rootProject.extra["bitchordVersionCode"] as Int
+        versionCode = (rootProject.extra["bitchordVersionCode"] as Int) + 26
         versionName = rootProject.extra["bitchordVersionName"] as String
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
