@@ -7089,7 +7089,6 @@ class PlaybackService : MediaLibraryService() {
         scope.launch {
             AppSettings.discordPersonalRpcEnabled
                 .distinctUntilChanged()
-                .drop(1)
                 .collect { enabled ->
                     if (enabled) {
                         player?.takeIf { p -> p.isPlaying }?.let(::pushDiscordPresence)
