@@ -55,6 +55,30 @@ class AppUpdateCheckerTest {
     }
 
     @Test
+    fun \`TV release version code uses explicit metadata when present\`() {
+        assertEquals(
+            30L,
+            AppUpdateChecker.releaseVersionCode(
+                "Android version code: 4\nAndroid TV version code: 30",
+                "ZotifyMusicTV-",
+            ),
+        )
+    }
+
+    @Test
+    fun \`legacy release derives TV version code from phone metadata\`() {
+        assertEquals(
+            30L,
+            AppUpdateChecker.releaseVersionCode("Android version code: 4", "ZotifyMusicTV-"),
+        )
+    }
+
+    @Test
+    fun \`phone release version code remains unchanged\`() {
+        assertEquals(4L, AppUpdateChecker.releaseVersionCode("Android version code: 4", "Zotify.Music"))
+    }
+
+    @Test
     fun `version code comparison detects only strictly higher codes`() {
         assertTrue(AppUpdateChecker.isNewerVersionCode(candidate = 44L, installed = 43L))
         assertFalse(AppUpdateChecker.isNewerVersionCode(candidate = 43L, installed = 43L))
