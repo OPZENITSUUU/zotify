@@ -7088,7 +7088,6 @@ class PlaybackService : MediaLibraryService() {
         // to the Discord account already signed in on this Android device.
         scope.launch {
             AppSettings.discordPersonalRpcEnabled
-                .distinctUntilChanged()
                 .collect { enabled ->
                     if (enabled) {
                         player?.takeIf { p -> p.isPlaying }?.let(::pushDiscordPresence)
