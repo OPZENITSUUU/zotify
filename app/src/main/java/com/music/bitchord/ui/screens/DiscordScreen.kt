@@ -626,6 +626,7 @@ fun DiscordDialogHost(
                 title = "Zotify bot bridge secret",
                 message = "Use the ZOTIFY_WEBHOOK_SECRET value configured privately in Render. Never paste your Discord bot token here.",
                 placeholder = "Bridge secret",
+                isPassword = true,
                 value = input,
                 onValueChange = { input = it },
                 onSave = {
