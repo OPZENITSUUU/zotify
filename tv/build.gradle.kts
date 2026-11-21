@@ -82,8 +82,9 @@ android {
         // Haze falls back to a translucent scrim below that.
         minSdk = 26
         targetSdk = 36
-        versionCode = 26
-        versionName = "1.8"
+        // Keep TV installs and updates in lockstep with the phone release for this tag.
+        versionCode = (rootProject.extra["bitchordVersionCode"] as Int) + 26
+        versionName = rootProject.extra["bitchordVersionName"] as String
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
