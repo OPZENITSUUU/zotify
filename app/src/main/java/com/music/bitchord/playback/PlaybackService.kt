@@ -120,6 +120,7 @@ import com.music.bitchord.data.LikeState
 import com.music.bitchord.data.NerdStats
 import com.music.bitchord.data.TrackLog
 import com.music.bitchord.data.discord.DiscordRPC
+import com.music.bitchord.data.discord.DiscordSocialPresence
 import com.music.bitchord.data.discord.discordAudioQualityLine
 import com.music.bitchord.data.innertube.PlaybackTracker
 import com.music.bitchord.data.stats.ListeningRecorder
@@ -7083,6 +7084,21 @@ class PlaybackService : MediaLibraryService() {
                 }
         }
 
+        // The native Social SDK path is independent of the bot bridge and posts
+        // to the Discord account already signed in on this Android device.
+        scope.launch {
+            AppSettings.discordPersonalRpcEnabled
+                .distinctUntilChanged()
+                .drop(1)
+                .collect { enabled ->
+                    if (enabled) {
+                        player?.takeIf { p -> p.isPlaying }?.let(::pushDiscordPresence)
+                    } else {
+                        DiscordSocialPresence.clear()
+                    }
+                }
+        }
+
         // A network coming back, which is the other half of surviving a spell in
         // the background: the gateway heals itself, but its retry backoff climbs
         // to a minute, and a listener who walked back into Wi-Fi shouldn't watch
@@ -7118,13 +7134,23 @@ class PlaybackService : MediaLibraryService() {
      * track change.
      */
     private fun pushDiscordPresence(exoPlayer: ExoPlayer) {
-        val rpc = discordRpc ?: return
         val song = exoPlayer.currentMediaItem?.toSong() ?: return
         // Read on the main thread, before the push is handed to IO: by the time
         // a coroutine gets to run, the queue may have moved on, and ExoPlayer's
         // state is only legal to read from the thread it was built on.
         val positionMs = exoPlayer.currentPosition.coerceAtLeast(0L)
         val durationMs = exoPlayer.duration.takeIf { it > 0 } ?: 0L
+        if (AppSettings.discordPersonalRpcEnabled.value) {
+            DiscordSocialPresence.update(
+                title = song.title,
+                artist = song.artist,
+                artworkUrl = song.artworkAt(NOTIFICATION_ART_PX),
+                positionMs = positionMs,
+                durationMs = durationMs,
+                spotifyStyle = true,
+            )
+        }
+        val rpc = discordRpc ?: return
         // The listener's own rate, not the player's instantaneous one.
         //
         // This is called from the middle of a track change, which is exactly
@@ -7163,11 +7189,25 @@ class PlaybackService : MediaLibraryService() {
      * Pauses the bot activity on pause and clears it when playback actually stops.
      */
     private fun clearDiscordPresence(exoPlayer: ExoPlayer) {
+        val song = exoPlayer.currentMediaItem?.toSong()
+        val stopped = song == null || exoPlayer.playbackState == Player.STATE_IDLE || exoPlayer.playbackState == Player.STATE_ENDED
+        if (AppSettings.discordPersonalRpcEnabled.value) {
+            if (stopped || song == null) {
+                DiscordSocialPresence.clear()
+            } else {
+                DiscordSocialPresence.update(
+                    title = song.title,
+                    artist = song.artist,
+                    artworkUrl = song.artworkAt(NOTIFICATION_ART_PX),
+                    positionMs = exoPlayer.currentPosition.coerceAtLeast(0L),
+                    durationMs = exoPlayer.duration.takeIf { it > 0 } ?: 0L,
+                    spotifyStyle = true,
+                )
+            }
+        }
         val rpc = discordRpc ?: return
         if (!discordPresenceUp) return
         discordUpdateJob?.cancel()
-        val song = exoPlayer.currentMediaItem?.toSong()
-        val stopped = song == null || exoPlayer.playbackState == Player.STATE_IDLE || exoPlayer.playbackState == Player.STATE_ENDED
         discordPresenceUp = !stopped
         discordUpdateJob = scope.launch(Dispatchers.IO) {
             if (stopped) runCatching { rpc.close() }
