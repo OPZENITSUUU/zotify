@@ -202,6 +202,8 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             dist/Zotify.Music.apk
+            dist/Zotify.Music_arm64-v8a.apk
+            dist/Zotify.Music_armeabi-v7a.apk
           body: |
             ## Zotify Music ${{ inputs.release_tag || github.ref_name }}
 
