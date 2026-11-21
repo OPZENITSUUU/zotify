@@ -677,27 +677,23 @@ class PlaybackService : MediaLibraryService() {
     private var listenBrainzDurationMs: Long? = null
 
     /**
-     * The gateway connection publishing what's playing to Discord, or null when
-     * the feature is off or no account is connected. See [DiscordRPC].
+     * The official bot bridge publishing what's playing to Discord, or null
+     * when the feature is off or no bridge secret is configured. See [DiscordRPC].
      */
     private var discordRpc: DiscordRPC? = null
 
     /**
      * The in-flight presence push. Held so the next one can cancel it: the
-     * pushes hit the network — the artwork has to be mirrored onto Discord's CDN
-     * before the activity can name it — and a skipped-through queue would
+     * requests hit the network, and a skipped-through queue would
      * otherwise land its presences in whatever order the requests happened to
      * finish in, leaving the profile on a track the listener passed seconds ago.
      */
     private var discordUpdateJob: Job? = null
 
     /**
-     * Whether a presence has been published and not yet taken down.
-     *
-     * Tracked because [KizzyRPC.close] — which is what clears the card — opens a
-     * gateway connection first if one isn't already up. Clearing unconditionally
-     * would therefore dial Discord for the sole purpose of sending it nothing,
-     * every time playback paused without a presence ever having been set.
+     * Whether a presence has been published and not yet taken down. This avoids
+     * sending a redundant clear request when playback stops before the first
+     * track presence was ever published.
      */
     private var discordPresenceUp = false
 
@@ -923,7 +919,7 @@ class PlaybackService : MediaLibraryService() {
                 pushDiscordPresence(exoPlayer)
                 startLyricsTicker()
             } else {
-                clearDiscordPresence()
+                clearDiscordPresence(exoPlayer)
                 stopLyricsTicker()
             }
         }
@@ -7001,7 +6997,7 @@ class PlaybackService : MediaLibraryService() {
     private fun observeDiscord() {
         scope.launch {
             combine(
-                AppSettings.discordToken,
+                AppSettings.discordBotSecret,
                 AppSettings.discordRpcEnabled,
             ) { token, enabled -> token.takeIf { enabled && it.isNotBlank() } }
                 .distinctUntilChanged()
@@ -7035,7 +7031,7 @@ class PlaybackService : MediaLibraryService() {
                     discordRpc = null
 
                     if (token == null) return@collectLatest
-                    discordRpc = DiscordRPC(this@PlaybackService, token)
+                    discordRpc = DiscordRPC(token)
                     // A presence that only appeared at the next track change
                     // would make turning the switch on look like it had done
                     // nothing for the length of a song.
@@ -7155,7 +7151,7 @@ class PlaybackService : MediaLibraryService() {
                 useDetails = AppSettings.discordUseDetails.value,
                 status = AppSettings.discordStatus.value,
                 activityType = AppSettings.discordActivityType.value,
-                activityName = AppSettings.discordActivityName.value,
+                activityName = AppSettings.discordActivityName.value.ifBlank { "BitChord" },
                 audioQuality = audioQuality,
             ).onFailure {
                 TrackLog.d("BitChord", "Discord presence failed: ${it.message}", about = song.videoId)
@@ -7164,16 +7160,27 @@ class PlaybackService : MediaLibraryService() {
     }
 
     /**
-     * Takes the presence down but leaves the socket up, so resuming doesn't pay
-     * for a reconnect. Discord clears the card on an activity-less presence.
+     * Pauses the bot activity on pause and clears it when playback actually stops.
      */
-    private fun clearDiscordPresence() {
+    private fun clearDiscordPresence(exoPlayer: ExoPlayer) {
         val rpc = discordRpc ?: return
         if (!discordPresenceUp) return
-        discordPresenceUp = false
         discordUpdateJob?.cancel()
+        val song = exoPlayer.currentMediaItem?.toSong()
+        val stopped = song == null || exoPlayer.playbackState == Player.STATE_IDLE || exoPlayer.playbackState == Player.STATE_ENDED
+        discordPresenceUp = !stopped
         discordUpdateJob = scope.launch(Dispatchers.IO) {
-            runCatching { rpc.close() }
+            if (stopped) runCatching { rpc.close() }
+            else runCatching {
+                rpc.pause(
+                    song!!,
+                    exoPlayer.currentPosition,
+                    exoPlayer.duration,
+                    AppSettings.discordActivityName.value.ifBlank { "BitChord" },
+                    AppSettings.discordActivityType.value,
+                    AppSettings.discordStatus.value,
+                )
+            }
         }
     }
 
