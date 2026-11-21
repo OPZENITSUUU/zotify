@@ -162,7 +162,7 @@ jobs:
           ditto -c -k --sequesterRsrc --keepParent "$app_dir" "$asset"
           unzip -tq "$asset"
           test -s "$asset"
-          echo "ASSET=$asset" >> "$GITHUB_ENV"
+          echo "asset=$asset" >> "$GITHUB_OUTPUT"
 
       - name: Wait for release and upload desktop asset (Linux/macOS)
         if: matrix.platform != 'windows'
