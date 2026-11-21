@@ -1403,4 +1403,71 @@
     <string name="appearance_skins_version">版本 %1$s</string>
     <string name="appearance_skins_version_author">版本 %1$s · %2$s</string>
     <string name="appearance_skins_settings_entry_subtitle">匯入、預覽及管理自訂外觀套件</string>
+
+    <!-- English fallback for strings not yet translated in this locale -->
+    <string name="search_source_youtube" translatable="false">YouTube</string>
+    <string name="update_versions" translatable="false">Current: %1$s · Available: %2$s</string>
+    <string name="settings_update_check_subtitle" translatable="false">Current %1$s · Background alerts need notifications</string>
+    <string name="settings_update_available" translatable="false">Current %1$s · Update %2$s available</string>
+    <string name="settings_update_current" translatable="false">Zotify Music is up to date (%1$s).</string>
+    <string name="settings_update_no_apk" translatable="false">A newer release exists, but has no compatible verified APK.</string>
+    <string name="settings_update_check_failed" translatable="false">Could not check GitHub right now. Try again later.</string>
+    <string name="update_notification_channel" translatable="false">App updates</string>
+    <string name="update_notification_channel_description" translatable="false">Alerts when a verified Zotify Music update is available.</string>
+    <string name="update_notification_title" translatable="false">Zotify Music update available: v%1$s</string>
+    <string name="update_notification_body" translatable="false">Tap to review the update and choose whether to download it.</string>
+    <string name="update_unavailable" translatable="false">No compatible APK available</string>
+    <string name="pipeline_pcm_data_rate" translatable="false">PCM Data Rate</string>
+    <string name="pipeline_unknown_source" translatable="false">Unknown — source not attributed</string>
+    <string name="pipeline_unknown_format" translatable="false">Unknown — Media3 has not reported this track format</string>
+    <string name="pipeline_unknown_bit_depth" translatable="false">Unknown — bit depth not exposed by the input format</string>
+    <string name="pipeline_unknown_sample_rate" translatable="false">Unknown — sample rate not exposed by the input format</string>
+    <string name="pipeline_unknown_bitrate" translatable="false">Unknown — encoded bitrate not supplied</string>
+    <string name="pipeline_unknown_channels" translatable="false">Unknown — channel count not exposed by the input format</string>
+    <string name="pipeline_unknown_pcm_data_rate" translatable="false">Unknown — sample parameters are incomplete</string>
+    <string name="pipeline_not_applicable_bit_depth" translatable="false">Not applicable — selected input is not lossless</string>
+    <string name="pipeline_not_applicable_pcm_rate" translatable="false">Not applicable — selected input is not lossless</string>
+    <string name="pipeline_source_claim" translatable="false">Source claim</string>
+    <string name="pipeline_provenance_reported" translatable="false">reported</string>
+    <string name="pipeline_provenance_measured" translatable="false">measured</string>
+    <string name="pipeline_provenance_source" translatable="false">source-reported</string>
+    <string name="pipeline_provenance_derived" translatable="false">derived</string>
+    <string name="pipeline_provenance_unknown" translatable="false">provenance unknown</string>
+    <string name="addon_network_access_title" translatable="false">Allow this remote source?</string>
+    <string name="addon_network_access_body" translatable="false">Enabling sends search terms, selected quality, and track IDs to this remote source. A legacy module source can also supply JavaScript that runs in a sandbox and contacts its services. The source is not given access to Zotify Music lyrics, clipboard, library, playlists, listening history, account data, or unrelated text. Only continue if you trust its operator.</string>
+    <string name="addon_network_access_allow" translatable="false">Allow and enable</string>
+    <string name="appearance_gallery_title">Appearance</string>
+    <string name="appearance_gallery_subtitle">Built-in themes and interface styles</string>
+    <string name="appearance_gallery_notice">Every look below is bundled inside Zotify. No ZIP, JSON, URL or external skin file is needed.</string>
+    <string name="appearance_gallery_section">Built-in looks</string>
+    <string name="appearance_gallery_hint">Preview a style and apply it with one tap.</string>
+    <string name="appearance_gallery_footer">Mochy Music style is included locally in the app. Selecting it changes the native Zotify interface immediately and works offline.</string>
+    <string name="appearance_preset_selected">Selected</string>
+    <string name="appearance_preset_currently_applied">Currently applied</string>
+    <string name="appearance_preset_applying">Applying…</string>
+    <string name="appearance_preset_apply">Apply</string>
+    <string name="appearance_preset_applied">%1$s applied.</string>
+    <string name="appearance_preset_apply_failed">Could not apply this appearance.</string>
+    <string name="appearance_preview_mochy">MOCHY MUSIC</string>
+    <string name="appearance_preview_zotify">ZOTIFY MUSIC</string>
+    <string name="appearance_preview_now_playing">Now playing</string>
+    <string name="appearance_preview_tagline">Your music, your style</string>
+    <string name="appearance_preset_zotify_name">Zotify Original</string>
+    <string name="appearance_preset_zotify_subtitle">The default Zotify Music look</string>
+    <string name="appearance_preset_zotify_description">Keep the original interface and your selected light or dark theme.</string>
+    <string name="appearance_preset_mochy_name">Mochy Music</string>
+    <string name="appearance_preset_mochy_subtitle">Mochy-inspired dark interface</string>
+    <string name="appearance_preset_mochy_description">A bundled monochrome look with dark surfaces, softer typography and rounded artwork. It is already inside the app.</string>
+    <string name="appearance_preset_amoled_name">AMOLED Cyan</string>
+    <string name="appearance_preset_amoled_subtitle">Pure black with a cool accent</string>
+    <string name="appearance_preset_amoled_description">A high-contrast black interface with cyan highlights and rounded artwork.</string>
+    <string name="appearance_preset_violet_name">Midnight Violet</string>
+    <string name="appearance_preset_violet_subtitle">Dark surfaces with violet highlights</string>
+    <string name="appearance_preset_violet_description">A calm violet accent across the existing Zotify interface.</string>
+    <string name="appearance_preset_emerald_name">Emerald Night</string>
+    <string name="appearance_preset_emerald_subtitle">Dark green accent</string>
+    <string name="appearance_preset_emerald_description">A deep night palette with a clear emerald highlight.</string>
+    <string name="appearance_preset_rose_name">Rose Night</string>
+    <string name="appearance_preset_rose_subtitle">Dark with a warm rose accent</string>
+    <string name="appearance_preset_rose_description">A softer rose highlight on the familiar Zotify interface.</string>
 </resources>

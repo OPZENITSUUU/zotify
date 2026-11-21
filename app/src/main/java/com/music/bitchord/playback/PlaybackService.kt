@@ -120,6 +120,7 @@ import com.music.bitchord.data.LikeState
 import com.music.bitchord.data.NerdStats
 import com.music.bitchord.data.TrackLog
 import com.music.bitchord.data.discord.DiscordRPC
+import com.music.bitchord.data.discord.DiscordSocialPresence
 import com.music.bitchord.data.discord.discordAudioQualityLine
 import com.music.bitchord.data.innertube.PlaybackTracker
 import com.music.bitchord.data.stats.ListeningRecorder
@@ -677,27 +678,23 @@ class PlaybackService : MediaLibraryService() {
     private var listenBrainzDurationMs: Long? = null
 
     /**
-     * The gateway connection publishing what's playing to Discord, or null when
-     * the feature is off or no account is connected. See [DiscordRPC].
+     * The official bot bridge publishing what's playing to Discord, or null
+     * when the feature is off or no bridge secret is configured. See [DiscordRPC].
      */
     private var discordRpc: DiscordRPC? = null
 
     /**
      * The in-flight presence push. Held so the next one can cancel it: the
-     * pushes hit the network — the artwork has to be mirrored onto Discord's CDN
-     * before the activity can name it — and a skipped-through queue would
+     * requests hit the network, and a skipped-through queue would
      * otherwise land its presences in whatever order the requests happened to
      * finish in, leaving the profile on a track the listener passed seconds ago.
      */
     private var discordUpdateJob: Job? = null
 
     /**
-     * Whether a presence has been published and not yet taken down.
-     *
-     * Tracked because [KizzyRPC.close] — which is what clears the card — opens a
-     * gateway connection first if one isn't already up. Clearing unconditionally
-     * would therefore dial Discord for the sole purpose of sending it nothing,
-     * every time playback paused without a presence ever having been set.
+     * Whether a presence has been published and not yet taken down. This avoids
+     * sending a redundant clear request when playback stops before the first
+     * track presence was ever published.
      */
     private var discordPresenceUp = false
 
@@ -923,7 +920,7 @@ class PlaybackService : MediaLibraryService() {
                 pushDiscordPresence(exoPlayer)
                 startLyricsTicker()
             } else {
-                clearDiscordPresence()
+                clearDiscordPresence(exoPlayer)
                 stopLyricsTicker()
             }
         }
@@ -7001,7 +6998,7 @@ class PlaybackService : MediaLibraryService() {
     private fun observeDiscord() {
         scope.launch {
             combine(
-                AppSettings.discordToken,
+                AppSettings.discordBotSecret,
                 AppSettings.discordRpcEnabled,
             ) { token, enabled -> token.takeIf { enabled && it.isNotBlank() } }
                 .distinctUntilChanged()
@@ -7035,7 +7032,7 @@ class PlaybackService : MediaLibraryService() {
                     discordRpc = null
 
                     if (token == null) return@collectLatest
-                    discordRpc = DiscordRPC(this@PlaybackService, token)
+                    discordRpc = DiscordRPC(token)
                     // A presence that only appeared at the next track change
                     // would make turning the switch on look like it had done
                     // nothing for the length of a song.
@@ -7087,6 +7084,19 @@ class PlaybackService : MediaLibraryService() {
                 }
         }
 
+        // The native Social SDK path is independent of the bot bridge and posts
+        // to the Discord account already signed in on this Android device.
+        scope.launch {
+            AppSettings.discordPersonalRpcEnabled
+                .collect { enabled ->
+                    if (enabled) {
+                        player?.takeIf { p -> p.isPlaying }?.let(::pushDiscordPresence)
+                    } else {
+                        DiscordSocialPresence.clear()
+                    }
+                }
+        }
+
         // A network coming back, which is the other half of surviving a spell in
         // the background: the gateway heals itself, but its retry backoff climbs
         // to a minute, and a listener who walked back into Wi-Fi shouldn't watch
@@ -7122,13 +7132,23 @@ class PlaybackService : MediaLibraryService() {
      * track change.
      */
     private fun pushDiscordPresence(exoPlayer: ExoPlayer) {
-        val rpc = discordRpc ?: return
         val song = exoPlayer.currentMediaItem?.toSong() ?: return
         // Read on the main thread, before the push is handed to IO: by the time
         // a coroutine gets to run, the queue may have moved on, and ExoPlayer's
         // state is only legal to read from the thread it was built on.
         val positionMs = exoPlayer.currentPosition.coerceAtLeast(0L)
         val durationMs = exoPlayer.duration.takeIf { it > 0 } ?: 0L
+        if (AppSettings.discordPersonalRpcEnabled.value) {
+            DiscordSocialPresence.update(
+                title = song.title,
+                artist = song.artist,
+                artworkUrl = song.artworkAt(NOTIFICATION_ART_PX),
+                positionMs = positionMs,
+                durationMs = durationMs,
+                spotifyStyle = true,
+            )
+        }
+        val rpc = discordRpc ?: return
         // The listener's own rate, not the player's instantaneous one.
         //
         // This is called from the middle of a track change, which is exactly
@@ -7155,7 +7175,7 @@ class PlaybackService : MediaLibraryService() {
                 useDetails = AppSettings.discordUseDetails.value,
                 status = AppSettings.discordStatus.value,
                 activityType = AppSettings.discordActivityType.value,
-                activityName = AppSettings.discordActivityName.value,
+                activityName = AppSettings.discordActivityName.value.ifBlank { "BitChord" },
                 audioQuality = audioQuality,
             ).onFailure {
                 TrackLog.d("BitChord", "Discord presence failed: ${it.message}", about = song.videoId)
@@ -7164,16 +7184,42 @@ class PlaybackService : MediaLibraryService() {
     }
 
     /**
-     * Takes the presence down but leaves the socket up, so resuming doesn't pay
-     * for a reconnect. Discord clears the card on an activity-less presence.
+     * Pauses the bot activity on pause and clears it when playback actually stops.
      */
-    private fun clearDiscordPresence() {
+    private fun clearDiscordPresence(exoPlayer: ExoPlayer) {
+        val song = exoPlayer.currentMediaItem?.toSong()
+        val stopped = song == null || exoPlayer.playbackState == Player.STATE_IDLE || exoPlayer.playbackState == Player.STATE_ENDED
+        if (AppSettings.discordPersonalRpcEnabled.value) {
+            if (stopped || song == null) {
+                DiscordSocialPresence.clear()
+            } else {
+                DiscordSocialPresence.update(
+                    title = song.title,
+                    artist = song.artist,
+                    artworkUrl = song.artworkAt(NOTIFICATION_ART_PX),
+                    positionMs = exoPlayer.currentPosition.coerceAtLeast(0L),
+                    durationMs = exoPlayer.duration.takeIf { it > 0 } ?: 0L,
+                    spotifyStyle = true,
+                    playing = false,
+                )
+            }
+        }
         val rpc = discordRpc ?: return
         if (!discordPresenceUp) return
-        discordPresenceUp = false
         discordUpdateJob?.cancel()
+        discordPresenceUp = !stopped
         discordUpdateJob = scope.launch(Dispatchers.IO) {
-            runCatching { rpc.close() }
+            if (stopped) runCatching { rpc.close() }
+            else runCatching {
+                rpc.pause(
+                    song!!,
+                    exoPlayer.currentPosition,
+                    exoPlayer.duration,
+                    AppSettings.discordActivityName.value.ifBlank { "BitChord" },
+                    AppSettings.discordActivityType.value,
+                    AppSettings.discordStatus.value,
+                )
+            }
         }
     }
 
@@ -7291,6 +7337,7 @@ class PlaybackService : MediaLibraryService() {
         // Last chance to get the current track's minutes onto disk: the scope is
         // cancelled a few lines down and the sampler goes with it.
         ListeningRecorder.onStopped()
+        DiscordSocialPresence.clear()
         // Discord, on the same terms as the ListenBrainz submit above: the
         // service scope is cancelled a few lines down, and a presence left up
         // would advertise a track that stopped when the process did — until

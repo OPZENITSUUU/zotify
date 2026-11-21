@@ -682,26 +682,18 @@ object AppSettings {
 
     // ── Discord Rich Presence ───────────────────────────────────────────
 
-    /**
-     * The connected Discord account's token, mirrored out of [AuthStore] so
-     * [PlaybackService][com.music.bitchord.playback.PlaybackService] can pick
-     * up a login without polling for one. Empty means not connected.
-     *
-     * Only the mirror is here — the persisted copy is encrypted, because unlike
-     * a scrobbler key this one is the account itself.
-     */
-    val discordToken = MutableStateFlow("")
+    /** Encrypted shared secret used only to authenticate with the official Zotify bot bridge. */
+    val discordBotSecret = MutableStateFlow("")
 
-    /**
-     * Who the token belongs to, cached at login. Kept so the settings screen
-     * can show the account without a round trip every time it opens, and can
-     * still show it offline.
-     */
+    // Legacy account labels are retained as empty compatibility flows for older UI surfaces.
     val discordUsername = MutableStateFlow("")
     val discordName = MutableStateFlow("")
     val discordAvatar = MutableStateFlow("")
 
     val discordRpcEnabled = MutableStateFlow(true)
+
+    /** Personal-account Spotify-style Rich Presence through Discord's official Android RPC. */
+    val discordPersonalRpcEnabled = MutableStateFlow(false)
 
     /** Put the track title on the bold profile line, in place of the artist. */
     val discordUseDetails = MutableStateFlow(false)
@@ -992,11 +984,12 @@ object AppSettings {
             webdavPassword.value,
         )
         pinnedPlaylists.value = readPinnedPlaylists()
-        discordToken.value = authStore.discordToken.orEmpty()
+        discordBotSecret.value = authStore.discordBotSecret.orEmpty()
         discordUsername.value = prefs.getString(KEY_DISCORD_USERNAME, "").orEmpty()
         discordName.value = prefs.getString(KEY_DISCORD_NAME, "").orEmpty()
         discordAvatar.value = prefs.getString(KEY_DISCORD_AVATAR, "").orEmpty()
         discordRpcEnabled.value = prefs.getBoolean(KEY_DISCORD_RPC_ENABLED, true)
+        discordPersonalRpcEnabled.value = prefs.getBoolean(KEY_DISCORD_PERSONAL_RPC_ENABLED, false)
         discordUseDetails.value = prefs.getBoolean(KEY_DISCORD_USE_DETAILS, false)
         discordShowAudioQuality.value = prefs.getBoolean(KEY_DISCORD_SHOW_AUDIO_QUALITY, true)
         discordAdvancedMode.value = prefs.getBoolean(KEY_DISCORD_ADVANCED_MODE, false)
@@ -1669,10 +1662,10 @@ object AppSettings {
         prefs.edit().putBoolean(KEY_LISTENBRAINZ_PRIMARY_ARTIST_ONLY, value).apply()
     }
 
-    /** Writes through to the encrypted store; pass "" to disconnect. */
-    fun setDiscordToken(value: String) {
-        discordToken.value = value
-        authStore.discordToken = value.ifEmpty { null }
+    /** Writes the bot bridge secret through to encrypted storage; pass empty to disconnect. */
+    fun setDiscordBotSecret(value: String) {
+        discordBotSecret.value = value
+        authStore.discordBotSecret = value.ifEmpty { null }
     }
 
     fun setDiscordAccount(username: String, name: String, avatar: String?) {
@@ -1689,6 +1682,11 @@ object AppSettings {
     fun setDiscordRpcEnabled(value: Boolean) {
         discordRpcEnabled.value = value
         prefs.edit().putBoolean(KEY_DISCORD_RPC_ENABLED, value).apply()
+    }
+
+    fun setDiscordPersonalRpcEnabled(value: Boolean) {
+        discordPersonalRpcEnabled.value = value
+        prefs.edit().putBoolean(KEY_DISCORD_PERSONAL_RPC_ENABLED, value).apply()
     }
 
     fun setDiscordUseDetails(value: Boolean) {
@@ -1935,9 +1933,9 @@ object AppSettings {
         return stored.split(",").filter { it.isNotBlank() }
     }
 
-    /** Forgets the account: token and cached profile. */
+    /** Disconnects the official bot bridge and erases its local shared secret. */
     fun clearDiscordAccount() {
-        setDiscordToken("")
+        setDiscordBotSecret("")
         setDiscordAccount("", "", null)
     }
 
@@ -2159,6 +2157,7 @@ object AppSettings {
     private const val KEY_DISCORD_NAME = "discord_name"
     private const val KEY_DISCORD_AVATAR = "discord_avatar"
     private const val KEY_DISCORD_RPC_ENABLED = "discord_rpc_enabled"
+    private const val KEY_DISCORD_PERSONAL_RPC_ENABLED = "discord_personal_rpc_enabled"
     private const val KEY_DISCORD_USE_DETAILS = "discord_use_details"
     private const val KEY_DISCORD_SHOW_AUDIO_QUALITY = "discord_show_audio_quality"
     private const val KEY_DISCORD_ADVANCED_MODE = "discord_advanced_mode"

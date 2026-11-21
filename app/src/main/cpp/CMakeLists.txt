@@ -59,3 +59,12 @@ target_link_options(bitchord_dsd PRIVATE "-Wl,-z,max-page-size=16384")
 add_library(bitchord_dst SHARED dsd/dst/decoder.c dsd/dst/jni.cpp)
 target_compile_options(bitchord_dst PRIVATE -O3 -fno-strict-aliasing -fvisibility=hidden)
 target_link_options(bitchord_dst PRIVATE "-Wl,-z,max-page-size=16384")
+
+# Discord Social SDK: Android's unauthenticated RPC transport for personal Rich Presence.
+find_package(discord_partner_sdk REQUIRED CONFIG)
+add_library(bitchord_discord SHARED jni/discord_rpc_jni.cpp)
+target_compile_features(bitchord_discord PRIVATE cxx_std_17)
+target_compile_options(bitchord_discord PRIVATE -fvisibility=hidden)
+target_link_options(bitchord_discord PRIVATE "-Wl,-z,max-page-size=16384")
+find_library(discord-log-lib log)
+target_link_libraries(bitchord_discord PRIVATE discord_partner_sdk::discord_partner_sdk ${discord-log-lib})
