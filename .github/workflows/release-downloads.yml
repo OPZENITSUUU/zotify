@@ -101,6 +101,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Desktop image build failed." }
 
       - name: Verify and archive Linux app
+        id: archive
         if: matrix.platform == 'linux'
         shell: bash
         env:
@@ -117,9 +118,10 @@ jobs:
           tar -czf "$asset" -C "$(dirname "$app_dir")" "$(basename "$app_dir")"
           tar -tzf "$asset" >/dev/null
           test -s "$asset"
-          echo "ASSET=$asset" >> "$GITHUB_ENV"
+          echo "asset=$asset" >> "$GITHUB_OUTPUT"
 
       - name: Verify and archive Windows app
+        id: archive
         if: matrix.platform == 'windows'
         shell: pwsh
         env:
@@ -137,9 +139,10 @@ jobs:
           $asset = "ZotifyMusic-$env:TAG-windows-x64.zip"
           Compress-Archive -Path $appDir -DestinationPath $asset -Force
           if (-not (Test-Path $asset) -or (Get-Item $asset).Length -le 0) { throw "Windows archive is empty." }
-          "ASSET=$asset" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "asset=$asset" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
       - name: Verify and archive macOS app
+        id: archive
         if: matrix.platform == 'macos'
         shell: bash
         env:
@@ -164,7 +167,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ matrix.tag }}
-          ASSET: ${{ env.ASSET }}
+          ASSET: ${{ steps.archive.outputs.asset }}
         run: |
           set -euo pipefail
           ready=false
@@ -184,7 +187,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ matrix.tag }}
-          ASSET: ${{ env.ASSET }}
+          ASSET: ${{ steps.archive.outputs.asset }}
         run: |
           $ready = $false
           for ($attempt = 0; $attempt -lt 60; $attempt++) {
