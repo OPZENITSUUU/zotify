@@ -230,7 +230,7 @@ object AppUpdateChecker {
             val line = body?.lineSequence()?.firstOrNull {
                 it.trimStart().startsWith("$field:", ignoreCase = true)
             } ?: return null
-            val match = Regex("^\s*\${Regex.escape(field)}:\s*(\d+)\s*$", RegexOption.IGNORE_CASE)
+            val match = Regex("""^\s*${Regex.escape(field)}:\s*(\d+)\s*$""", RegexOption.IGNORE_CASE)
                 .matchEntire(line) ?: return null
             return match.groupValues[1].toLongOrNull()?.takeIf { it > 0L }
         }
