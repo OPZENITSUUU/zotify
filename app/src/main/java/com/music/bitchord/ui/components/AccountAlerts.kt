@@ -191,6 +191,7 @@ fun TextValueAlert(
     saveEnabled: Boolean = true,
     /** A third action between Save and Cancel, for a value that can be cleared. */
     onRemove: (() -> Unit)? = null,
+    isPassword: Boolean = false,
 ) {
     AlertScaffold(hazeState = hazeState, onDismiss = onDismiss) {
         Column(
@@ -216,6 +217,7 @@ fun TextValueAlert(
                 value = value,
                 onValueChange = onValueChange,
                 placeholder = placeholder,
+                isPassword = isPassword,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(onDone = { onSave() }),
             )
