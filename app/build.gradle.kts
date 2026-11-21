@@ -265,9 +265,51 @@ val newPipeExtractorStripped = tasks.register<org.gradle.api.tasks.bundling.Jar>
     }
 }
 
+// The recovered SDK archive has a text AndroidManifest.xml without the package
+// attribute required by current AGP manifest merging. Patch only that metadata at
+// build time; all classes, Prefab headers, and ABI libraries remain byte-for-byte
+// sourced from the supplied AAR.
+val discordSdkOriginalAar = layout.projectDirectory.file("libs/discord_partner_sdk-recovered.aar")
+val discordSdkPatchedManifest = layout.buildDirectory.file("generated/discord-social-sdk/AndroidManifest.xml")
+val prepareDiscordSdkManifest = tasks.register("prepareDiscordSdkManifest") {
+    inputs.file(discordSdkOriginalAar)
+    outputs.file(discordSdkPatchedManifest)
+    doLast {
+        val originalManifest = zipTree(discordSdkOriginalAar)
+            .matching { include("AndroidManifest.xml") }
+            .singleFile
+            .readText()
+        val hasPackage = Regex("""<manifest\\b[^>]*\\bpackage\\s*=""").containsMatchIn(originalManifest)
+        val patchedManifest = if (hasPackage) originalManifest else {
+            originalManifest.replaceFirst(Regex("<manifest\\\\b"), "<manifest package=\\\"com.discord.socialsdk\\\"")
+        }
+        if (patchedManifest == originalManifest && !hasPackage) {
+            throw GradleException("Could not add the package attribute to the Discord SDK manifest")
+        }
+        discordSdkPatchedManifest.get().asFile.apply {
+            parentFile.mkdirs()
+            writeText(patchedManifest)
+        }
+    }
+}
+val patchedDiscordSdkAar = tasks.register<org.gradle.api.tasks.bundling.Zip>("patchDiscordSocialSdkAar") {
+    dependsOn(prepareDiscordSdkManifest)
+    from(zipTree(discordSdkOriginalAar)) {
+        exclude("AndroidManifest.xml")
+    }
+    from(discordSdkPatchedManifest) {
+        rename { "AndroidManifest.xml" }
+    }
+    archiveFileName.set("discord_partner_sdk.aar")
+    destinationDirectory.set(layout.buildDirectory.dir("intermediates/discord-social-sdk"))
+}
+
 dependencies {
     // Official Discord Social SDK (Android RPC transport; no user-token login).
-    implementation(files("libs/discord_partner_sdk-recovered.aar"))
+    implementation(
+        files(patchedDiscordSdkAar.map { it.archiveFile.get().asFile })
+            .builtBy(patchedDiscordSdkAar)
+    )
     implementation(project(":shared"))
     implementation(project(":sharedUi"))
     // Persistent, battery-aware background checks for verified app updates.
