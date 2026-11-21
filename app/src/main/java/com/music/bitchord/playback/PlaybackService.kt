@@ -120,7 +120,6 @@ import com.music.bitchord.data.LikeState
 import com.music.bitchord.data.NerdStats
 import com.music.bitchord.data.TrackLog
 import com.music.bitchord.data.discord.DiscordRPC
-import com.music.bitchord.data.discord.DiscordSocialPresence
 import com.music.bitchord.data.discord.discordAudioQualityLine
 import com.music.bitchord.data.innertube.PlaybackTracker
 import com.music.bitchord.data.stats.ListeningRecorder
@@ -7084,19 +7083,6 @@ class PlaybackService : MediaLibraryService() {
                 }
         }
 
-        // The native Social SDK path is independent of the bot bridge and posts
-        // to the Discord account already signed in on this Android device.
-        scope.launch {
-            AppSettings.discordPersonalRpcEnabled
-                .collect { enabled ->
-                    if (enabled) {
-                        player?.takeIf { p -> p.isPlaying }?.let(::pushDiscordPresence)
-                    } else {
-                        DiscordSocialPresence.clear()
-                    }
-                }
-        }
-
         // A network coming back, which is the other half of surviving a spell in
         // the background: the gateway heals itself, but its retry backoff climbs
         // to a minute, and a listener who walked back into Wi-Fi shouldn't watch
@@ -7138,16 +7124,6 @@ class PlaybackService : MediaLibraryService() {
         // state is only legal to read from the thread it was built on.
         val positionMs = exoPlayer.currentPosition.coerceAtLeast(0L)
         val durationMs = exoPlayer.duration.takeIf { it > 0 } ?: 0L
-        if (AppSettings.discordPersonalRpcEnabled.value) {
-            DiscordSocialPresence.update(
-                title = song.title,
-                artist = song.artist,
-                artworkUrl = song.artworkAt(NOTIFICATION_ART_PX),
-                positionMs = positionMs,
-                durationMs = durationMs,
-                spotifyStyle = true,
-            )
-        }
         val rpc = discordRpc ?: return
         // The listener's own rate, not the player's instantaneous one.
         //
@@ -7189,21 +7165,6 @@ class PlaybackService : MediaLibraryService() {
     private fun clearDiscordPresence(exoPlayer: ExoPlayer) {
         val song = exoPlayer.currentMediaItem?.toSong()
         val stopped = song == null || exoPlayer.playbackState == Player.STATE_IDLE || exoPlayer.playbackState == Player.STATE_ENDED
-        if (AppSettings.discordPersonalRpcEnabled.value) {
-            if (stopped || song == null) {
-                DiscordSocialPresence.clear()
-            } else {
-                DiscordSocialPresence.update(
-                    title = song.title,
-                    artist = song.artist,
-                    artworkUrl = song.artworkAt(NOTIFICATION_ART_PX),
-                    positionMs = exoPlayer.currentPosition.coerceAtLeast(0L),
-                    durationMs = exoPlayer.duration.takeIf { it > 0 } ?: 0L,
-                    spotifyStyle = true,
-                    playing = false,
-                )
-            }
-        }
         val rpc = discordRpc ?: return
         if (!discordPresenceUp) return
         discordUpdateJob?.cancel()
@@ -7337,7 +7298,6 @@ class PlaybackService : MediaLibraryService() {
         // Last chance to get the current track's minutes onto disk: the scope is
         // cancelled a few lines down and the sampler goes with it.
         ListeningRecorder.onStopped()
-        DiscordSocialPresence.clear()
         // Discord, on the same terms as the ListenBrainz submit above: the
         // service scope is cancelled a few lines down, and a presence left up
         // would advertise a track that stopped when the process did — until
