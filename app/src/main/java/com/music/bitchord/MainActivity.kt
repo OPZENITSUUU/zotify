@@ -369,6 +369,9 @@ internal fun shouldSkipAfterDislike(
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Initializes Discord's official Android RPC bridge; playback remains independent
+        // if Discord is absent or the Social SDK application is not enabled.
+        com.music.bitchord.data.discord.DiscordSocialPresence.initialize(this)
         if (intent?.action == ACTION_OPEN_UPDATE_FROM_NOTIFICATION) {
             updateNotificationTapped.value = true
         }
