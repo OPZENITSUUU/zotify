@@ -50,6 +50,7 @@ object DiscordSocialPresence {
         positionMs: Long,
         durationMs: Long,
         spotifyStyle: Boolean = true,
+        playing: Boolean = true,
     ) {
         if (!ready || title.isBlank()) return
         runCatching {
@@ -60,6 +61,7 @@ object DiscordSocialPresence {
                 positionMs.coerceAtLeast(0L),
                 durationMs.coerceAtLeast(0L),
                 spotifyStyle,
+                playing,
             )
         }
     }
@@ -80,6 +82,7 @@ object DiscordSocialPresence {
         positionMs: Long,
         durationMs: Long,
         spotifyStyle: Boolean,
+        playing: Boolean,
     )
     private external fun nativeClear()
     private external fun nativeRunCallbacks()
