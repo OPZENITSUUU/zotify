@@ -324,18 +324,6 @@ val patchedDiscordSdkAar = tasks.register<org.gradle.api.tasks.bundling.Zip>("pa
         exclude("prefab/modules/discord_partner_sdk/libs/android.armeabi-v7a/discord_partner_sdk.so")
         exclude("prefab/modules/discord_partner_sdk/libs/android.x86_64/discord_partner_sdk.so")
     }
-    // The recovered Prefab metadata names the library without Android's usual
-    // "lib" prefix. Mirror the intact JNI binaries at the exact paths Prefab's
-    // generated CMake target expects for each shipped ABI.
-    listOf("arm64-v8a", "armeabi-v7a", "x86_64").forEach { abi ->
-        from(zipTree(discordSdkOriginalAar)) {
-            include("jni/$abi/libdiscord_partner_sdk.so")
-            eachFile {
-                path = "prefab/modules/discord_partner_sdk/libs/android.$abi/discord_partner_sdk.so"
-            }
-            includeEmptyDirs = false
-        }
-    }
     from(discordSdkPatchedManifest) {
         rename { "AndroidManifest.xml" }
     }
