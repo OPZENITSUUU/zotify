@@ -115,8 +115,9 @@ jobs:
           test -d "$app_dir"
           jar="$(find "$app_dir" -type f -name 'desktopApp*.jar' -print -quit)"
           test -n "$jar"
-          jar tf "$jar" | grep -q '^models/.*\.onnx$'
-          jar tf "$jar" | grep -q '^native/libbitchord_analysis\.so$'
+          entries="$(jar tf "$jar")"
+          grep -q '^models/.*\.onnx$' <<< "$entries"
+          grep -q '^native/libbitchord_analysis\.so$' <<< "$entries"
           asset="ZotifyMusic-$TAG-linux-x64.tar.gz"
           tar -czf "$asset" -C "$(dirname "$app_dir")" "$(basename "$app_dir")"
           tar -tzf "$asset" >/dev/null
@@ -156,7 +157,8 @@ jobs:
           test -d "$app_dir"
           jar="$(find "$app_dir" -type f -name 'desktopApp*.jar' -print -quit)"
           test -n "$jar"
-          jar tf "$jar" | grep -q '^models/.*\.onnx$'
+          entries="$(jar tf "$jar")"
+          grep -q '^models/.*\.onnx$' <<< "$entries"
           arch="$(tr '[:upper:]' '[:lower:]' <<< "$RUNNER_ARCH")"
           asset="ZotifyMusic-$TAG-macos-$arch.zip"
           ditto -c -k --sequesterRsrc --keepParent "$app_dir" "$asset"
