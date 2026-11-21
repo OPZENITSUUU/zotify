@@ -163,7 +163,6 @@ import com.music.bitchord.data.sources.DeviceCodecs
 import com.music.bitchord.data.settings.AudioQuality
 import com.music.bitchord.data.settings.DownloadQuality
 import com.music.bitchord.data.settings.ThemeMode
-import com.music.bitchord.data.settings.UiSkin
 import com.music.bitchord.data.stats.Backup
 import com.music.bitchord.playback.AudioCache
 import com.music.bitchord.ui.player.fullBleedArtworkAvailable
@@ -236,7 +235,6 @@ fun SettingsScreen(
     val lyricsSources by AppSettings.lyricsSources.collectAsStateWithLifecycle()
     val translationLanguage by AppSettings.translationLanguage.collectAsStateWithLifecycle()
     val theme by AppSettings.themeMode.collectAsStateWithLifecycle()
-    val uiSkin by AppSettings.uiSkin.collectAsStateWithLifecycle()
     val selectedLauncherIcon by AppSettings.launcherIcon.collectAsStateWithLifecycle()
     val sessionId by AppSettings.audioSessionId.collectAsStateWithLifecycle()
     val outputPcmMode by AppSettings.outputPcmMode.collectAsStateWithLifecycle()
@@ -896,33 +894,8 @@ fun SettingsScreen(
                     modifier = Modifier.padding(start = ROW_INSET, end = ROW_INSET, bottom = 14.dp),
                 )
             }
-            val uiSkinTitle = stringResource(R.string.change_ui_skin)
-            row(uiSkinTitle, "interface", "appearance", "zotify", "mochy") {
-                SettingsRow(
-                    icon = Icons.Rounded.Apps,
-                    title = uiSkinTitle,
-                    subtitle = stringResource(
-                        if (uiSkin == UiSkin.MOCHY) {
-                            R.string.ui_skin_mochy_selected
-                        } else {
-                            R.string.ui_skin_zotify_selected
-                        },
-                    ),
-                )
-                SegmentedControl(
-                    options = listOf(
-                        stringResource(R.string.ui_skin_zotify),
-                        stringResource(R.string.ui_skin_mochy),
-                    ),
-                    selectedIndex = if (uiSkin == UiSkin.MOCHY) 1 else 0,
-                    onSelect = { selected ->
-                        AppSettings.setUiSkin(if (selected == 1) UiSkin.MOCHY else UiSkin.ZOTIFY)
-                    },
-                    modifier = Modifier.padding(start = ROW_INSET, end = ROW_INSET, bottom = 14.dp),
-                )
-            }
             val appearanceSkinsTitle = stringResource(R.string.appearance_skins_title)
-            row(appearanceSkinsTitle, "skins", "import", "zip", "mochy", "custom look") {
+            row(appearanceSkinsTitle, "appearance", "theme", "built in", "mochy", "style") {
                 SettingsRow(
                     icon = Icons.Rounded.Draw,
                     title = appearanceSkinsTitle,
