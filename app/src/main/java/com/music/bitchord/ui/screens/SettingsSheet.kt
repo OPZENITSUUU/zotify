@@ -163,6 +163,7 @@ import com.music.bitchord.data.sources.DeviceCodecs
 import com.music.bitchord.data.settings.AudioQuality
 import com.music.bitchord.data.settings.DownloadQuality
 import com.music.bitchord.data.settings.ThemeMode
+import com.music.bitchord.data.settings.UiSkin
 import com.music.bitchord.data.stats.Backup
 import com.music.bitchord.playback.AudioCache
 import com.music.bitchord.ui.player.fullBleedArtworkAvailable
@@ -235,6 +236,7 @@ fun SettingsScreen(
     val lyricsSources by AppSettings.lyricsSources.collectAsStateWithLifecycle()
     val translationLanguage by AppSettings.translationLanguage.collectAsStateWithLifecycle()
     val theme by AppSettings.themeMode.collectAsStateWithLifecycle()
+    val uiSkin by AppSettings.uiSkin.collectAsStateWithLifecycle()
     val selectedLauncherIcon by AppSettings.launcherIcon.collectAsStateWithLifecycle()
     val sessionId by AppSettings.audioSessionId.collectAsStateWithLifecycle()
     val outputPcmMode by AppSettings.outputPcmMode.collectAsStateWithLifecycle()
@@ -891,6 +893,20 @@ fun SettingsScreen(
                     options = ThemeMode.entries.map { it.localizedLabel() },
                     selectedIndex = ThemeMode.entries.indexOf(theme),
                     onSelect = { AppSettings.setThemeMode(ThemeMode.entries[it]) },
+                    modifier = Modifier.padding(start = ROW_INSET, end = ROW_INSET, bottom = 14.dp),
+                )
+            }
+            val uiSkinTitle = "App interface"
+            row(uiSkinTitle, "mochy", "zotify", "interface", "layout", "skin") {
+                SettingsRow(
+                    icon = Icons.Rounded.Draw,
+                    title = uiSkinTitle,
+                    subtitle = if (uiSkin == UiSkin.MOCHY) "Mochy-inspired dark appearance" else "Zotify default appearance",
+                )
+                SegmentedControl(
+                    options = UiSkin.entries.map { it.label },
+                    selectedIndex = UiSkin.entries.indexOf(uiSkin),
+                    onSelect = { AppSettings.setUiSkin(UiSkin.entries[it]) },
                     modifier = Modifier.padding(start = ROW_INSET, end = ROW_INSET, bottom = 14.dp),
                 )
             }
