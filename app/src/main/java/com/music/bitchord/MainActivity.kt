@@ -105,6 +105,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -148,7 +149,9 @@ import com.music.bitchord.data.model.PlaybackSourceType
 import com.music.bitchord.data.model.SearchFilter
 import com.music.bitchord.data.model.SearchResult
 import com.music.bitchord.data.model.ShelfItem
+import com.music.bitchord.data.model.CARD_ART_PX
 import com.music.bitchord.data.model.Song
+import com.music.bitchord.data.model.artworkAt
 import com.music.bitchord.data.model.isUnresolvedSpotify
 import com.music.bitchord.data.model.UiState
 import com.music.bitchord.data.model.UserPlaylist
@@ -1018,6 +1021,31 @@ private fun BitChordApp(
     }
     val controller = rememberMediaController()
     val player = rememberPlayerState(controller)
+    val personalDiscordRpcEnabled by AppSettings.discordPersonalRpcEnabled.collectAsStateWithLifecycle()
+    val latestPlayerState by rememberUpdatedState(player)
+    LaunchedEffect(personalDiscordRpcEnabled) {
+        if (!personalDiscordRpcEnabled) {
+            com.music.bitchord.data.discord.DiscordSocialPresence.clear()
+            return@LaunchedEffect
+        }
+        while (true) {
+            val current = latestPlayerState
+            val song = current.song
+            if (song == null) {
+                com.music.bitchord.data.discord.DiscordSocialPresence.clear()
+            } else {
+                com.music.bitchord.data.discord.DiscordSocialPresence.update(
+                    title = song.title,
+                    artist = song.artist,
+                    artworkUrl = song.artworkAt(CARD_ART_PX),
+                    positionMs = current.position.positionMs,
+                    durationMs = current.durationMs,
+                    spotifyStyle = true,
+                )
+            }
+            delay(15_000)
+        }
+    }
     // A resume in a party is performed on the instant the server schedules, not
     // when it was pressed, and nothing about the player moves in between — so
     // the transport spends that round trip drawn as though the tap never landed.
