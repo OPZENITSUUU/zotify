@@ -7,6 +7,8 @@ on:
     paths:
       - ".github/workflows/release-downloads.yml"
       - "tv/build.gradle.kts"
+  pull_request:
+    types: [closed]
   workflow_dispatch:
     inputs:
       release_tag:
@@ -20,6 +22,7 @@ permissions:
 
 jobs:
   release-tags:
+    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
     name: Resolve published release tags
     runs-on: ubuntu-22.04
     outputs:
@@ -44,7 +47,7 @@ jobs:
             [[ "$REF_NAME" =~ $pattern ]] || { echo "::error::Unsupported tag"; exit 1; }
             tags_json="$(jq -cn --arg tag "$REF_NAME" '[$tag]')"
           else
-            tags_json="$(gh release list --limit 100 --json tagName --repo "$GITHUB_REPOSITORY" \
+            tags_json="$(gh release list --limit 1000 --json tagName --repo "$GITHUB_REPOSITORY" \
               | jq -c '[.[].tagName | select(test("^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"))] | unique')"
           fi
           [[ "$tags_json" != "[]" ]] || { echo "::error::No published releases found"; exit 1; }
