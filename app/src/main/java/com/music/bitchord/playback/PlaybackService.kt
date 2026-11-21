@@ -7338,6 +7338,7 @@ class PlaybackService : MediaLibraryService() {
         // Last chance to get the current track's minutes onto disk: the scope is
         // cancelled a few lines down and the sampler goes with it.
         ListeningRecorder.onStopped()
+        DiscordSocialPresence.clear()
         // Discord, on the same terms as the ListenBrainz submit above: the
         // service scope is cancelled a few lines down, and a presence left up
         // would advertise a track that stopped when the process did — until
