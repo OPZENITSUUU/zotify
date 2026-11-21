@@ -164,7 +164,6 @@ fun DiscordScreen(
     val name by AppSettings.discordName.collectAsStateWithLifecycle()
     val avatar by AppSettings.discordAvatar.collectAsStateWithLifecycle()
     val rpcEnabled by AppSettings.discordRpcEnabled.collectAsStateWithLifecycle()
-    val personalRpcEnabled by AppSettings.discordPersonalRpcEnabled.collectAsStateWithLifecycle()
     val useDetails by AppSettings.discordUseDetails.collectAsStateWithLifecycle()
     val showAudioQuality by AppSettings.discordShowAudioQuality.collectAsStateWithLifecycle()
     val advancedMode by AppSettings.discordAdvancedMode.collectAsStateWithLifecycle()
@@ -284,28 +283,6 @@ fun DiscordScreen(
 
 
             }
-        }
-
-        SettingsGroup(
-            header = "Personal Spotify-style Rich Presence",
-            footer = "Posts from your signed-in Discord account using the official Android RPC SDK. Discord must be installed and signed in. This is a Spotify-style activity, not Spotify's verified integration or badge.",
-        ) {
-            SettingsRow(
-                icon = discordIcon,
-                title = "Enable personal Spotify-style RPC",
-                subtitle = "Shows the current track, artist, artwork and playback time on your profile",
-                trailing = {
-                    Switch(
-                        checked = personalRpcEnabled,
-                        onCheckedChange = AppSettings::setDiscordPersonalRpcEnabled,
-                        colors = SwitchDefaults.colors(
-                            checkedTrackColor = MaterialTheme.colorScheme.primary,
-                            checkedBorderColor = MaterialTheme.colorScheme.primary,
-                        ),
-                    )
-                },
-                onClick = { AppSettings.setDiscordPersonalRpcEnabled(!personalRpcEnabled) },
-            )
         }
 
         SettingsGroup(
