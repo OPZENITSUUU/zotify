@@ -16,6 +16,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: release-platform-assets-${{ github.repository }}
+  cancel-in-progress: false
+
 jobs:
   release-tags:
     if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
