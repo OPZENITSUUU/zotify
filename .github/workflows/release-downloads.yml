@@ -238,7 +238,7 @@ jobs:
           old = '        versionCode = 26\n        versionName = "1.8"'
           new = (
               '        // Keep TV installs and updates in lockstep with the phone release for this tag.\n'
-              '        versionCode = rootProject.extra["bitchordVersionCode"] as Int\n'
+              '        versionCode = (rootProject.extra["bitchordVersionCode"] as Int) + 26\n'
               '        versionName = rootProject.extra["bitchordVersionName"] as String'
           )
           if old in source:
@@ -296,7 +296,8 @@ jobs:
         run: |
           set -euo pipefail
           version="$(sed 's/^v//' <<< "$TAG")"
-          expected_code="$(python3 .github/scripts/validate_release.py --tag "$TAG" --repository . --print-version-code)"
+          phone_version_code="$(python3 .github/scripts/validate_release.py --tag "$TAG" --repository . --print-version-code)"
+          expected_code="$((phone_version_code + 26))"
           output_dir="tv/build/outputs/apk/prod/release"
           if ! find "$output_dir" -maxdepth 1 -type f -name '*.apk' -print -quit | grep -q .; then
             echo "::error::No TV APKs were produced."
