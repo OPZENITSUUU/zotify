@@ -78,7 +78,7 @@ Java_com_music_bitchord_data_discord_DiscordSocialPresence_nativeUpdate(
 
     if (!artwork.empty()) {
         discordpp::ActivityAssets assets;
-        assets.SetLargeUrl(std::optional<std::string_view>(artwork));
+        assets.SetLargeImage(std::optional<std::string_view>(artwork));
         assets.SetLargeText(title);
         activity.SetAssets(assets);
     }
