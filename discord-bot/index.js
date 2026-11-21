@@ -49,19 +49,19 @@ app.post("/clear", authorized, (_req, res) => {
 
 app.listen(PORT, "0.0.0.0", () => console.log(`HTTP server listening on ${PORT}`));
 
-if (!BOT_TOKEN || !WEBHOOK_SECRET) {
-  console.error("Missing DISCORD_BOT_TOKEN or ZOTIFY_WEBHOOK_SECRET environment variable.");
-  process.exit(1);
-}
+if (!WEBHOOK_SECRET) console.warn("ZOTIFY_WEBHOOK_SECRET is not set; authenticated endpoints will reject requests.");
 client.once("ready", () => {
   ready = true;
   console.log(`Discord bot logged in as ${client.user.tag}`);
 });
 client.on("error", error => console.error("Discord client error:", error));
-client.login(BOT_TOKEN).catch(error => {
-  console.error("Discord login failed:", error);
-  process.exit(1);
-});
+if (BOT_TOKEN) {
+  client.login(BOT_TOKEN).catch(error => {
+    console.error("Discord login failed:", error);
+  });
+} else {
+  console.warn("DISCORD_BOT_TOKEN is not set yet. Add it in the Render dashboard to connect the bot.");
+}
 process.on("SIGTERM", () => {
   ready = false;
   client.destroy();
