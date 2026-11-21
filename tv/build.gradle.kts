@@ -305,7 +305,7 @@ val prepareDiscordSdkManifest = tasks.register("prepareDiscordSdkManifest") {
             .readText()
         val hasPackage = Regex("""<manifest\b[^>]*\bpackage\s*=""").containsMatchIn(originalManifest)
         val patchedManifest = if (hasPackage) originalManifest else {
-            originalManifest.replaceFirst(Regex("<manifest\\b"), "<manifest package=\\\"com.discord.socialsdk\\\"")
+            originalManifest.replaceFirst(Regex("<manifest\\b"), "<manifest package=\"com.discord.socialsdk\"")
         }
         if (patchedManifest == originalManifest && !hasPackage) {
             throw GradleException("Could not add the package attribute to the Discord SDK manifest")
