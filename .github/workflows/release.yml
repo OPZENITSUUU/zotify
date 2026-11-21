@@ -90,6 +90,7 @@ jobs:
             --latest-release-tag "$latest_tag" \
             --print-version-code)"
           echo "version_code=$version_code" >> "$GITHUB_OUTPUT"
+          echo "tv_version_code=$((version_code + 26))" >> "$GITHUB_OUTPUT"
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -199,6 +200,7 @@ jobs:
             ## Zotify Music ${{ inputs.release_tag || github.ref_name }}
 
             Android version code: ${{ steps.release_validation.outputs.version_code }}
+            Android TV version code: ${{ steps.release_validation.outputs.tv_version_code }}
 
             ### New in this release
             - **Mochy-compatible Appearance Skin Manager:** import Look skins from ZIP/JSON files, HTTPS links, and public GitHub repositories or releases.
