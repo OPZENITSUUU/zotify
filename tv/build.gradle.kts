@@ -234,6 +234,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        prefab = true
     }
     testOptions {
         unitTests {
@@ -289,6 +290,9 @@ val newPipeExtractorStripped = tasks.register<org.gradle.api.tasks.bundling.Jar>
 }
 
 dependencies {
+    // TV compiles the phone's shared native CMake target too, so it must import
+    // the same Discord Social SDK Prefab package as the phone app module.
+    implementation(files("../app/libs/discord_partner_sdk-recovered.aar"))
     implementation(project(":shared"))
     implementation(project(":sharedUi"))
     // The TV target compiles the phone app's shared source tree, including its
