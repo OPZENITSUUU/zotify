@@ -327,6 +327,17 @@ val patchedDiscordSdkAar = tasks.register<org.gradle.api.tasks.bundling.Zip>("pa
     from(discordSdkPatchedManifest) {
         rename { "AndroidManifest.xml" }
     }
+    // Prefab metadata points at these files, while the recovered archive keeps
+    // the intact binaries in the standard AAR jni/ directories. Restore the
+    // expected module paths so CMake can link the imported target.
+    from(zipTree(discordSdkOriginalAar)) {
+        include("jni/**/libdiscord_partner_sdk.so")
+        eachFile {
+            val abi = path.substringAfter("jni/").substringBefore("/")
+            path = "prefab/modules/discord_partner_sdk/libs/android.$abi/discord_partner_sdk.so"
+        }
+        includeEmptyDirs = false
+    }
     archiveFileName.set("discord_partner_sdk.aar")
     destinationDirectory.set(layout.buildDirectory.dir("intermediates/discord-social-sdk"))
 }
