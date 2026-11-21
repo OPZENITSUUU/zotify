@@ -26,10 +26,11 @@ object DiscordSocialPresence {
 
     @Synchronized
     fun initialize(activity: Activity) {
-        if (ready) return
         try {
-            // Required by the Android Social SDK before the native client is used.
+            // The SDK keeps an Activity reference; refresh it after Android recreates
+            // MainActivity (rotation, process restore, or returning from Settings).
             com.discord.socialsdk.DiscordSocialSdkInit.setEngineActivity(activity)
+            if (ready) return
             System.loadLibrary("bitchord_discord")
             ready = nativeInit()
             if (ready) {
