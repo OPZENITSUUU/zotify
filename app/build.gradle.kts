@@ -210,6 +210,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        prefab = true
     }
     testOptions {
         unitTests {
@@ -265,6 +266,8 @@ val newPipeExtractorStripped = tasks.register<org.gradle.api.tasks.bundling.Jar>
 }
 
 dependencies {
+    // Official Discord Social SDK (Android RPC transport; no user-token login).
+    implementation(files("libs/discord_partner_sdk-recovered.aar"))
     implementation(project(":shared"))
     implementation(project(":sharedUi"))
     // Persistent, battery-aware background checks for verified app updates.
