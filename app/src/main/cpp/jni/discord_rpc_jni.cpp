@@ -46,7 +46,7 @@ extern "C" JNIEXPORT void JNICALL
 Java_com_music_bitchord_data_discord_DiscordSocialPresence_nativeUpdate(
     JNIEnv* env, jobject, jstring titleValue, jstring artistValue,
     jstring artworkValue, jlong positionMs, jlong durationMs,
-    jboolean spotifyStyle) {
+    jboolean spotifyStyle, jboolean playing) {
     const std::string title = fromJava(env, titleValue);
     const std::string artist = fromJava(env, artistValue);
     const std::string artwork = fromJava(env, artworkValue);
@@ -66,15 +66,17 @@ Java_com_music_bitchord_data_discord_DiscordSocialPresence_nativeUpdate(
     if (!artist.empty()) activity.SetState(artist);
     activity.SetSupportedPlatforms(discordpp::ActivityGamePlatforms::Android);
 
-    const uint64_t now = nowMillis();
-    const uint64_t position = static_cast<uint64_t>(positionMs > 0 ? positionMs : 0);
-    discordpp::ActivityTimestamps timestamps;
-    timestamps.SetStart(now > position ? now - position : now);
-    if (durationMs > 0) {
-        timestamps.SetEnd(now + static_cast<uint64_t>(durationMs > positionMs
-            ? durationMs - positionMs : 0));
+    if (playing == JNI_TRUE) {
+        const uint64_t now = nowMillis();
+        const uint64_t position = static_cast<uint64_t>(positionMs > 0 ? positionMs : 0);
+        discordpp::ActivityTimestamps timestamps;
+        timestamps.SetStart(now > position ? now - position : now);
+        if (durationMs > 0) {
+            timestamps.SetEnd(now + static_cast<uint64_t>(durationMs > positionMs
+                ? durationMs - positionMs : 0));
+        }
+        activity.SetTimestamps(timestamps);
     }
-    activity.SetTimestamps(timestamps);
 
     if (!artwork.empty()) {
         discordpp::ActivityAssets assets;
