@@ -2,11 +2,7 @@ name: Release Desktop and Android TV Downloads
 
 on:
   push:
-    branches: [main]
     tags: ["v*"]
-    paths:
-      - ".github/workflows/release-downloads.yml"
-      - "tv/build.gradle.kts"
   pull_request:
     types: [closed]
   workflow_dispatch:
