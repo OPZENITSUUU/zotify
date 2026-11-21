@@ -289,10 +289,52 @@ val newPipeExtractorStripped = tasks.register<org.gradle.api.tasks.bundling.Jar>
     }
 }
 
+// Keep TV's copy of the shared native CMake target on the same recovered
+// Discord SDK archive as the phone app. The supplied AAR's text manifest has
+// no package attribute, so patch that metadata at build time without altering
+// its Prefab headers or ABI libraries.
+val discordSdkOriginalAar = layout.projectDirectory.file("../app/libs/discord_partner_sdk-recovered.aar")
+val discordSdkPatchedManifest = layout.buildDirectory.file("generated/discord-social-sdk/AndroidManifest.xml")
+val prepareDiscordSdkManifest = tasks.register("prepareDiscordSdkManifest") {
+    inputs.file(discordSdkOriginalAar)
+    outputs.file(discordSdkPatchedManifest)
+    doLast {
+        val originalManifest = zipTree(discordSdkOriginalAar)
+            .matching { include("AndroidManifest.xml") }
+            .singleFile
+            .readText()
+        val hasPackage = Regex("""<manifest\b[^>]*\bpackage\s*=""").containsMatchIn(originalManifest)
+        val patchedManifest = if (hasPackage) originalManifest else {
+            originalManifest.replaceFirst(Regex("<manifest\\b"), "<manifest package=\\\"com.discord.socialsdk\\\"")
+        }
+        if (patchedManifest == originalManifest && !hasPackage) {
+            throw GradleException("Could not add the package attribute to the Discord SDK manifest")
+        }
+        discordSdkPatchedManifest.get().asFile.apply {
+            parentFile.mkdirs()
+            writeText(patchedManifest)
+        }
+    }
+}
+val patchedDiscordSdkAar = tasks.register<org.gradle.api.tasks.bundling.Zip>("patchDiscordSocialSdkAar") {
+    dependsOn(prepareDiscordSdkManifest)
+    from(zipTree(discordSdkOriginalAar)) {
+        exclude("AndroidManifest.xml")
+    }
+    from(discordSdkPatchedManifest) {
+        rename { "AndroidManifest.xml" }
+    }
+    archiveFileName.set("discord_partner_sdk.aar")
+    destinationDirectory.set(layout.buildDirectory.dir("intermediates/discord-social-sdk"))
+}
+
 dependencies {
     // TV compiles the phone's shared native CMake target too, so it must import
     // the same Discord Social SDK Prefab package as the phone app module.
-    implementation(files("../app/libs/discord_partner_sdk-recovered.aar"))
+    implementation(
+        files(patchedDiscordSdkAar.map { it.archiveFile.get().asFile })
+            .builtBy(patchedDiscordSdkAar)
+    )
     implementation(project(":shared"))
     implementation(project(":sharedUi"))
     // The TV target compiles the phone app's shared source tree, including its
